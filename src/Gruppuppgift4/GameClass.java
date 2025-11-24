@@ -13,7 +13,25 @@ public class GameClass {
 
     public GameClass() {
         //    * kategori;fråga;SVAR;Felsvar;Felsvar;Felsvar;
-   // * reader:  delar upp i 5 delar (kategori)(1fråga) (4svar)
+        // * reader:  delar upp i 5 delar (kategori)(1fråga) (4svar)
+    }
+
+
+    public List<Medlem> readList() {
+        Path m = Path.of("src/medlemsregister.txt");
+
+        try (BufferedReader br = new BufferedReader(new FileReader(m.toString()))) {
+            br.readLine();
+
+            String input;
+            while ((input = br.readLine()) != null) {
+                String[] medlem = input.split(";");
+
+                Medlem ny = new Medlem(medlem[0], medlem[1], medlem[2], medlem[3], medlem[4], medlem[5], medlem[6]);
+                list.add(ny);
+            }
+        }
+        return List.of();
     }
 
 
@@ -26,8 +44,7 @@ public class GameClass {
     }
 
 
-
-
+}
 
 
     /*
@@ -63,42 +80,10 @@ import java.time.LocalDate;
 
 public void loadMemberFile(String file) {//Jag kan inte lämna parantesen tom men den används inte
         try (BufferedReader br = new BufferedReader(new FileReader("src/sprint2/BestGymEver/Memberfile.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(";");
-                if (parts.length < 7) continue;
-                if (parts[0].equalsIgnoreCase("Namn")) continue; // för att hoppa över första raden med titlar
+-
+* -
+* -
+*
 
-                String name = parts[0].trim();
-                String address = parts[1].trim();
-                String email = parts[2].trim();
-                String ssn = parts[3].trim();
-                LocalDate firstPaymentDate = LocalDate.parse(parts[4].trim());
-                LocalDate lastPaymentDate = LocalDate.parse(parts[5].trim());
-                String memberLevel = parts[6].trim();
-
-                Member m = new Member(name, address, email, ssn, firstPaymentDate, lastPaymentDate, memberLevel);
-                memberList.add(m);
-            }
-        } catch (Exception e) {
-            //System.out.println("Error reading file");
-            e.printStackTrace();
-        }
-        *
-        *  try (BufferedReader br = new BufferedReader(new FileReader(m.toString()))) {
-            br.readLine();
-
-            String input;
-            while ((input = br.readLine()) != null) {
-                String[] medlem = input.split(";");
-
-                Medlem ny = new Medlem(medlem[0], medlem[1], medlem[2], medlem[3], medlem[4], medlem[5], medlem[6]);
-                list.add(ny);
-            }
-        *
     * */
 
-
-
-
-}
