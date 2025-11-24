@@ -9,7 +9,6 @@ import java.net.Socket;
 public class ServerSidePlayer {
 
     char playerNumber;
-    ServerSidePlayer opponent;
     Socket socket;
     BufferedReader in;
     PrintWriter out;
