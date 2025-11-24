@@ -14,6 +14,7 @@ public class Server {
                 ServerSidePlayer player2 = new ServerSidePlayer(listener.accept(), '2');
                 System.out.println("Both players connected!");
 
+                //allt mellan den här och den följande kommentaren ska flyttas till en spel/fråge klass sen, bara för demo
                 player1.askQuestion("Vad är 1 + 1?");
                 player2.askQuestion("Vad är 1 + 1?");
 
@@ -34,6 +35,8 @@ public class Server {
                 } else {
                     player2.sendMessage("Fel svar!");
                 }
+                //slutet av "spelet"
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
