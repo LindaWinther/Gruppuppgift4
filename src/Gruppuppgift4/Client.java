@@ -17,6 +17,8 @@ public class Client {
                 BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         ){
 
+            //Kod från sigruns BilregisterMultiuser föreläsning, den måste nog ändras sen, funkar typ.
+
             String fromServer = "";
             String fromUser = "";
 

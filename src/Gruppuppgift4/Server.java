@@ -10,6 +10,7 @@ public class Server {
         System.out.println("Server is Running!");
         try{
             while (true){
+
                 ServerSidePlayer player1 = new ServerSidePlayer(listener.accept(), '1');
                 ServerSidePlayer player2 = new ServerSidePlayer(listener.accept(), '2');
                 System.out.println("Both players connected!");
@@ -35,8 +36,7 @@ public class Server {
                 } else {
                     player2.sendMessage("Fel svar!");
                 }
-                //slutet av "spelet"
-
+                //slutet av "spel demot"
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
