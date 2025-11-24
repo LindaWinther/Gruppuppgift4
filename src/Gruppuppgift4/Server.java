@@ -17,6 +17,11 @@ public class Server {
                 player1.askQuestion("Vad är 1 + 1?");
                 player2.askQuestion("Vad är 1 + 1?");
 
+                String answer1 = player1.getAnswer();
+                System.out.println("player 1 answer: " + answer1);
+                String answer2 = player2.getAnswer();
+                System.out.println("player 2 answer: " + answer2);
+
 
 
             }

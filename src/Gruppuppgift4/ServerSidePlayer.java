@@ -35,8 +35,9 @@ public class ServerSidePlayer {
         sendMessage(question);
     }
 
-    public void close() throws IOException {
-        socket.close();
+    public String getAnswer() throws IOException {
+        return in.readLine();
     }
+
 }
 
