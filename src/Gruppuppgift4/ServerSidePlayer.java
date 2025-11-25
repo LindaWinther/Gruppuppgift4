@@ -38,6 +38,7 @@ public class ServerSidePlayer {
 
     public void sendMessage(String message){
         out.println(message);
+        out.flush();
     }
 
     public void askQuestion(String question){

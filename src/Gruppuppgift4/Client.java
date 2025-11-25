@@ -19,10 +19,8 @@ public class Client {
 
             //Kod från sigruns BilregisterMultiuser föreläsning, den måste nog ändras sen, funkar typ.
 
-            String fromServer = "";
-            String fromUser = "";
-
-            System.out.println(fromServer);
+            String fromServer;
+            String fromUser;
 
             while ((fromServer = in.readLine()) != null) {
 
@@ -37,6 +35,8 @@ public class Client {
                 out.println(fromUser);
                 System.out.println("Sent to server: " + fromUser);
             }
+
+            System.out.println("Client closed");
 
         } catch (IOException e) {
             throw new RuntimeException(e);

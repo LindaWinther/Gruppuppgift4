@@ -39,15 +39,13 @@ public class Server {
                 }
                 //slutet av "spel demot"
 
-
-                System.out.println("Game is over, server shutting down.");
-
                 player1.sendMessage("GAME_OVER");
                 player2.sendMessage("GAME_OVER");
 
                 player1.close();
                 player2.close();
 
+                System.out.println("Game is over, server shutting down.");
                 running = false;
             }
         } catch (IOException e) {
