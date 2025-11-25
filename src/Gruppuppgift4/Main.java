@@ -9,7 +9,8 @@ public class Main {
     List<Questions> lista = new ArrayList<Questions>();
     public Main() {
 
-
+    public static void main(String[] args) {
+//        System.out.println("Hello World");
         GameClass g = new GameClass();
         g.readList();
         g.searchCategoryFromList();
