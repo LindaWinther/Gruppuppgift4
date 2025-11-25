@@ -5,6 +5,8 @@ import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GameGUI extends JFrame {
@@ -25,13 +27,40 @@ public class GameGUI extends JFrame {
     private JLabel titleLabel;
 
     // Test för fråga och svar
-    private String gameQuestion = "Vilken dag kommer efter måndag?";
+    /*    private String gameQuestion = "Vilken dag kommer efter måndag?";
     private String[] gameAnswers = {
             "Tisdag", "Fredag", "Söndag", "Torsdag"
-    };
+    };*/
+
+    // Lägger in svar från gameClass
+    private String gameQuestion = "1";
+    private String[] gameAnswers ={ "2", "3","4", "5"} ;
+
     private int correctAnswer = 0;
 
     public GameGUI() {
+
+        GameClass game = new GameClass();
+        Questions q = new Questions();
+        List<Questions> questions =  new ArrayList<Questions>();
+        game.readList();
+        game.searchCategoryFromList();
+        questions = game.searchQuestionsFromList();
+        gameQuestion = questions.get(0).question;
+        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+        questions.get(0).setAnswer(gameAnswers[0]);
+        System.out.println(questions.get(0).question);
+
+
+
+
+
+
+
+
+
+
+
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
