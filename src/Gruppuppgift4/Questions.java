@@ -16,6 +16,7 @@ public class Questions {
         this.wrong2 = wrong2;
         this.wrong3 = wrong3;
     }
+    public Questions() {}
 
     public String getCategory() {
         return category;

@@ -20,7 +20,7 @@ public class GameClass {
     }
 
     public List<Questions> readList() {
-        Path q2 = Path.of("Gruppuppgift4/src/Gruppuppgift4/questions");
+        Path q2 = Path.of("src/Gruppuppgift4/questions");
 
         try (BufferedReader br = new BufferedReader(new FileReader(q2.toString()))) {
             // br.readLine();
