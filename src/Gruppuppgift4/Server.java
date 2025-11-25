@@ -8,8 +8,9 @@ public class Server {
     void main(String[] args) throws IOException {
         ServerSocket listener = new ServerSocket(55555);
         System.out.println("Server is Running!");
+        boolean running = true;
         try{
-            while (true){
+            while (running){
 
                 ServerSidePlayer player1 = new ServerSidePlayer(listener.accept(), '1');
                 ServerSidePlayer player2 = new ServerSidePlayer(listener.accept(), '2');
@@ -37,6 +38,17 @@ public class Server {
                     player2.sendMessage("Fel svar!");
                 }
                 //slutet av "spel demot"
+
+
+                System.out.println("Game is over, server shutting down.");
+
+                player1.sendMessage("GAME_OVER");
+                player2.sendMessage("GAME_OVER");
+
+                player1.close();
+                player2.close();
+
+                running = false;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

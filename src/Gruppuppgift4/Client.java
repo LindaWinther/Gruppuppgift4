@@ -22,17 +22,20 @@ public class Client {
             String fromServer = "";
             String fromUser = "";
 
-            fromServer = in.readLine();
             System.out.println(fromServer);
 
-            while((fromUser = userInput.readLine()) != null){
+            while ((fromServer = in.readLine()) != null) {
 
-                out.println(fromUser);
-                System.out.println("Sent to server: "+fromUser);
+                if (fromServer.equals("GAME_OVER")) {
+                    System.out.println("Server is shutting down, disconnecting client.");
+                    break;
+                }
 
-                fromServer = in.readLine();
                 System.out.println(fromServer);
 
+                fromUser = userInput.readLine();
+                out.println(fromUser);
+                System.out.println("Sent to server: " + fromUser);
             }
 
         } catch (IOException e) {
