@@ -5,12 +5,11 @@ import java.net.ServerSocket;
 
 public class Server {
 
-    void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
         ServerSocket listener = new ServerSocket(55555);
         System.out.println("Server is Running!");
-        boolean running = true;
         try{
-            while (running){
+            while (true){
 
                 ServerSidePlayer player1 = new ServerSidePlayer(listener.accept(), '1');
                 ServerSidePlayer player2 = new ServerSidePlayer(listener.accept(), '2');
@@ -46,7 +45,7 @@ public class Server {
                 player2.close();
 
                 System.out.println("Game is over, server shutting down.");
-                running = false;
+                break;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

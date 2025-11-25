@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Client {
 
-    public Client(){
+    public void start(){
 
         try(
                 Socket s = new Socket("localhost", 55555);
@@ -43,7 +43,7 @@ public class Client {
         }
     }
 
-    void main(String[] args) {
-        Client k = new Client();
+    public static void main(String[] args) {
+        new Client().start();
     }
 }
