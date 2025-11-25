@@ -40,7 +40,7 @@ public class Client {
         }
     }
 
-    public static void main(String[] args) {
+    void main(String[] args) {
         Client k = new Client();
     }
 }
