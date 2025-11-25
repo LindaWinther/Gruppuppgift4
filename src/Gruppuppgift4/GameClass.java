@@ -23,7 +23,7 @@ public class GameClass {
         Path q2 = Path.of("src/Gruppuppgift4/questions");
 
         try (BufferedReader br = new BufferedReader(new FileReader(q2.toString()))) {
-           // br.readLine();
+            // br.readLine();
 
             String input;
             while ((input = br.readLine()) != null) {
@@ -41,21 +41,20 @@ public class GameClass {
         return q;
     }
 
-   public List<Questions> searchCategoryFromList() {
+    public List<Questions> searchCategoryFromList() {
         for (Questions q2 : q) {
-            if(q2.category.equalsIgnoreCase("djur")){
+            if (q2.category.equalsIgnoreCase("djur")) {
                 categoryList.add(q2);
             }
 //            System.out.println(categoryList.size());
-            }
-        return categoryList;
         }
+        return categoryList;
+    }
 
 
-
-    public void searchQuestionsFromList() {
+    public List<Questions> searchQuestionsFromList() {
         Random rand = new Random();
-        int siffra = rand.nextInt(0,categoryList.size());
+        int siffra = rand.nextInt(0, categoryList.size());
 //        System.out.println(rand.nextInt(siffra));
 //        System.out.println(siffra);
         categoryList.get(siffra);
@@ -63,37 +62,38 @@ public class GameClass {
         activeList.add(categoryList.get(siffra));
         activeList.add(categoryList.get(siffra));
 
-        System.out.println(activeList.size());
-        System.out.println(activeList.get(1).getAnswer());
-        System.out.println(activeList.stream().toList());
-       // System.out.println(activeList.);
+//        System.out.println(activeList.size());
+//        System.out.println(activeList.get(1).getAnswer());
+//        System.out.println(activeList.stream().toList());
+        // System.out.println(activeList.);
+    return activeList;
 
+    }
+}
 
-    }}
+/*
+ *
+ * input namn
+ * anslutning upprättad
+ * fråga klient 1 väntar klient2
+ * sökerKategri()  -
+ * 10 frågor lista
+ * 3frågor random3 1,5,9 (1)  -
+ *
+ * SkrivUtFråga()
+ * knapp1 = SVAR
+ * knapp2 = Felsvar
+ * knapp3 = Felsvar
+ * knapp4 = Felsvar
+ * *Collections.shullfe
+ *
+ *
+ *     * kategori;fråga;SVAR;Felsvar;Felsvar;Felsvar;
+ * reader:  delar upp i 5 delar (kategori)(1fråga) (4svar)
+ *alltid svar 1 rätt.
+ * lägger in i en arraylist
 
-    /*
-    *
-    * input namn
-    * anslutning upprättad
-    * fråga klient 1 väntar klient2
-    * sökerKategri()  -
-    * 10 frågor lista
-    * 3frågor random3 1,5,9 (1)  -
-    *
-    * SkrivUtFråga()
-    * knapp1 = SVAR
-    * knapp2 = Felsvar
-    * knapp3 = Felsvar
-    * knapp4 = Felsvar
-    * *Collections.shullfe
-    *
-    *
-    *     * kategori;fråga;SVAR;Felsvar;Felsvar;Felsvar;
-    * reader:  delar upp i 5 delar (kategori)(1fråga) (4svar)
-    *alltid svar 1 rätt.
-    * lägger in i en arraylist
-
-    *lägger ut på
-    *
-    * */
+ *lägger ut på
+ *
+ * */
 
