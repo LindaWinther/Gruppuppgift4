@@ -18,12 +18,13 @@ public class GameGUI extends JFrame {
     private JPanel startPanel;
     private JButton startButton;
 
+    // Kategorisidan
+    private JPanel categoryPanel;
+
     // Frågesidan
     private JPanel questionPanel;
     private JLabel questionLabel;
     private JButton[] answerButtons;
-
-
     private JLabel titleLabel;
 
     // Test för fråga och svar
@@ -34,7 +35,7 @@ public class GameGUI extends JFrame {
 
     // Lägger in svar från gameClass
     private String gameQuestion = "1";
-    private String[] gameAnswers ={ "2", "3","4", "5"} ;
+    private String[] gameAnswers = {"2", "3", "4", "5"};
 
     private int correctAnswer = 0;
 
@@ -42,7 +43,7 @@ public class GameGUI extends JFrame {
 
         GameClass game = new GameClass();
         Questions q = new Questions();
-        List<Questions> questions =  new ArrayList<Questions>();
+        List<Questions> questions = new ArrayList<Questions>();
         game.readList();
         game.searchCategoryFromList();
         questions = game.searchQuestionsFromList();
@@ -50,15 +51,6 @@ public class GameGUI extends JFrame {
         gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
         questions.get(0).setAnswer(gameAnswers[0]);
         System.out.println(questions.get(0).question);
-
-
-
-
-
-
-
-
-
 
 
         setSize(800, 600);
@@ -72,6 +64,7 @@ public class GameGUI extends JFrame {
         add(mainPanel);
 
         buildStartPanel();
+        buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
@@ -109,7 +102,8 @@ public class GameGUI extends JFrame {
         startButton.addActionListener(e -> {
             loadQuestion(gameQuestion, gameAnswers);
             lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
+            //cardLayout.show(mainPanel, "QUESTION");
+            cardLayout.show(mainPanel, "CATEGORY");
         });
 
         buttonPanel.add(startButton);
@@ -117,6 +111,63 @@ public class GameGUI extends JFrame {
 
         mainPanel.add(startPanel, "START");
     }
+
+    // KATEGORISIDAN
+
+     private void buildCategoryPanel(){
+        categoryPanel = new JPanel(new BorderLayout());
+        categoryPanel.setBackground((new Color(27, 47, 112)));
+        categoryPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
+
+        JLabel categoryLabel = new JLabel("Välj kategori", SwingConstants.CENTER);
+         categoryLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+         categoryLabel.setForeground(Color.WHITE);
+         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
+         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
+
+         JPanel buttons = new JPanel(new GridLayout(1, 2, 20, 20));
+         buttons.setBackground(new Color(27, 47, 112));
+
+         JButton djurButton = new JButton("Djur");
+         JButton naturButton = new JButton("Natur");
+
+         styleCategoryButton(djurButton);
+         styleCategoryButton(naturButton);
+
+         djurButton.addActionListener(e -> {
+             // Kalla på GameClass med kategori djur
+             loadQuestion(gameQuestion, gameAnswers);
+             lockAnswerButtons(true);
+             cardLayout.show(mainPanel, "QUESTION");
+         });
+
+         naturButton.addActionListener(e -> {
+             // Kalla på GameClass med kategori natur
+             loadQuestion(gameQuestion, gameAnswers);
+             lockAnswerButtons(true);
+             cardLayout.show(mainPanel, "QUESTION");
+         });
+
+         buttons.add(djurButton);
+         buttons.add(naturButton);
+
+         categoryPanel.add(buttons, BorderLayout.CENTER);
+
+         mainPanel.add(categoryPanel, "CATEGORY");
+     }
+    private void styleCategoryButton(JButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(31, 169, 164));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+
+
+
+
+
+
 
         // FRÅGESIDAN
 
