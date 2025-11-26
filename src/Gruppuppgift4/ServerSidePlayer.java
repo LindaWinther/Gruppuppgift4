@@ -26,8 +26,19 @@ public class ServerSidePlayer {
         }
     }
 
+    public void close(){
+        try{
+            in.close();
+            out.close();
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void sendMessage(String message){
         out.println(message);
+        out.flush();
     }
 
     public void askQuestion(String question){
