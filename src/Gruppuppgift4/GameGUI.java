@@ -37,12 +37,13 @@ public class GameGUI extends JFrame {
     private String[] gameAnswers ={ "2", "3","4", "5"} ;
 
     private int correctAnswer = 0;
+    GameClass game = new GameClass();
+    Questions q = new Questions();
+    List<Questions> questions =  new ArrayList<Questions>();
 
     public GameGUI() {
 
-        GameClass game = new GameClass();
-        Questions q = new Questions();
-        List<Questions> questions =  new ArrayList<Questions>();
+
         game.readList();
         game.searchCategoryFromList();
         questions = game.searchQuestionsFromList();
