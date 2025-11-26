@@ -37,6 +37,15 @@ public class Server {
                     player2.sendMessage("Fel svar!");
                 }
                 //slutet av "spel demot"
+
+                player1.sendMessage("GAME_OVER");
+                player2.sendMessage("GAME_OVER");
+
+                player1.close();
+                player2.close();
+
+                System.out.println("Game is over, server shutting down.");
+                break;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

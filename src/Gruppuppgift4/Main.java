@@ -1,7 +1,6 @@
 package Gruppuppgift4;
 
 import java.awt.*;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

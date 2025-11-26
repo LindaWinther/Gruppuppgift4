@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class Client {
 
-    public Client(){
+    public void start(){
 
         try(
                 Socket s = new Socket("localhost", 55555);
@@ -17,23 +17,24 @@ public class Client {
                 BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
         ){
 
-            //Kod från sigruns BilregisterMultiuser föreläsning, den måste nog ändras sen, funkar typ.
+            String fromServer;
+            String fromUser;
 
-            String fromServer = "";
-            String fromUser = "";
+            while ((fromServer = in.readLine()) != null) {
 
-            fromServer = in.readLine();
-            System.out.println(fromServer);
+                if (fromServer.equals("GAME_OVER")) {
+                    System.out.println("Server is shutting down, disconnecting client.");
+                    break;
+                }
 
-            while((fromUser = userInput.readLine()) != null){
-
-                out.println(fromUser);
-                System.out.println("Sent to server: "+fromUser);
-
-                fromServer = in.readLine();
                 System.out.println(fromServer);
 
+                fromUser = userInput.readLine();
+                out.println(fromUser);
+                System.out.println("Sent to server: " + fromUser);
             }
+
+            System.out.println("Client closed");
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -41,6 +42,7 @@ public class Client {
     }
 
     public static void main(String[] args) {
-        Client k = new Client();
+        new GameGUI();
+        new Client().start();
     }
 }
