@@ -48,13 +48,5 @@ public class ServerSidePlayer extends Thread {
         out.flush();
     }
 
-    public void askQuestion(String question){
-        sendMessage(question);
-    }
-
-    public String getAnswer() throws IOException {
-        return in.readLine();
-    }
-
 }
 
