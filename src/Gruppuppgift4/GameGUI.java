@@ -41,6 +41,8 @@ public class GameGUI extends JFrame {
     Questions q = new Questions();
     List<Questions> questions =  new ArrayList<Questions>();
 
+    boolean unused = true;
+
     public GameGUI() {
 
         setSize(800, 600);
@@ -163,6 +165,7 @@ public class GameGUI extends JFrame {
         lockAnswerButtons(false);
     }
     public String setGameQuestions() {
+
         game.readList();
         questions = game.searchCategoryFromList();
         gameQuestion = questions.getFirst().question;

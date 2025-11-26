@@ -49,6 +49,7 @@ public class GameClass {
     }
 
     public List<Questions> searchQuestionsFromList() {
+
         Random rand = new Random();
         int siffra = rand.nextInt(0, categoryList.size());
         categoryList.get(siffra);
