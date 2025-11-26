@@ -38,7 +38,12 @@ public class GameGUI extends JFrame {
 
     private int correctAnswer = 0;
 
+    private Client client;
+
     public GameGUI() {
+
+        client = new Client(this);
+        client.start();
 
         GameClass game = new GameClass();
         Questions q = new Questions();
@@ -50,16 +55,6 @@ public class GameGUI extends JFrame {
         gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
         questions.get(0).setAnswer(gameAnswers[0]);
         System.out.println(questions.get(0).question);
-
-
-
-
-
-
-
-
-
-
 
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -171,14 +166,38 @@ public class GameGUI extends JFrame {
     }
 
     // Färgar svaret
+//    private void checkAnswer(int index) {
+//
+//        if (index == correctAnswer) {
+//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
+//        } else {
+//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
+//        }
+//        lockAnswerButtons(false);
+//    }
+
     private void checkAnswer(int index) {
 
-        if (index == correctAnswer) {
-            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-        } else {
-            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-        }
-        lockAnswerButtons(false);
+        client.send(answerButtons[index].getText());
+    }
+
+    public void receiveFromServer(String msg) {
+        SwingUtilities.invokeLater(() -> {
+            if (msg.startsWith("Fråga:")) {
+                String fråga = msg.substring(6);
+                questionLabel.setText(fråga);
+                cardLayout.show(mainPanel, "QUESTION");
+            }
+            if (msg.equals("Rätt!")) {
+                JOptionPane.showMessageDialog(this, "Rätt!");
+            }
+            if (msg.equals("Fel!")) {
+                JOptionPane.showMessageDialog(this, "Fel svar!");
+            }
+            if (msg.equals("GAME_OVER")) {
+                JOptionPane.showMessageDialog(this, "Spelet är slut!");
+            }
+        });
     }
 
     public static void main(String[] args) {

@@ -7,44 +7,36 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
+    private GameGUI gui;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Socket socket;
+
+    public Client(GameGUI gui) {
+        this.gui = gui;
+    }
 
     public void start(){
+        new Thread(()->{
 
         try(
                 Socket s = new Socket("localhost", 55555);
-                PrintWriter out = new PrintWriter(s.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
+                PrintWriter out = new PrintWriter(s.getOutputStream(), true);
         ){
 
-            //Kod från sigruns BilregisterMultiuser föreläsning, den måste nog ändras sen, funkar typ.
-
             String fromServer;
-            String fromUser;
-
             while ((fromServer = in.readLine()) != null) {
-
-                if (fromServer.equals("GAME_OVER")) {
-                    System.out.println("Server is shutting down, disconnecting client.");
-                    break;
-                }
-
-                System.out.println(fromServer);
-
-                fromUser = userInput.readLine();
-                out.println(fromUser);
-                System.out.println("Sent to server: " + fromUser);
+                gui.receiveFromServer(fromServer);
             }
-
-            System.out.println("Client closed");
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        }).start();
     }
 
-    public static void main(String[] args) {
-        new GameGUI();
-        new Client().start();
+    public void send(String message){
+        out.println(message);
     }
 }

@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerSidePlayer {
+public class ServerSidePlayer extends Thread {
 
     char playerNumber;
     Socket socket;
@@ -26,13 +26,20 @@ public class ServerSidePlayer {
         }
     }
 
-    public void close(){
-        try{
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    public void run() {
+        try {
+            out.println("Fråga: Vad är 1 + 1?");
+            while(true){
+                String answer = in.readLine();
+                if(answer == null) break;
+
+                if(answer.equals("2"))
+                    out.println("Rätt!");
+                else
+                    out.println("Fel!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
