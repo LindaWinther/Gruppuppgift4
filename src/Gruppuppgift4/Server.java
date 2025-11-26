@@ -13,8 +13,15 @@ public class Server {
         Socket p1 = server.accept();
         Socket p2 = server.accept();
 
-        new ServerSidePlayer(p1, '1').start();
-        new ServerSidePlayer(p2, '2').start();
+        ServerSidePlayer s1 = new ServerSidePlayer(p1, '1');
+        ServerSidePlayer s2 = new ServerSidePlayer(p2, '1');
+
+        s1.start();
+        s2.start();
+
+        s1.sendMessage("Fråga: Vad är 1+1?");
+        s2.sendMessage("Fråga: Vad är 1+1?");
+
     }
 
 }

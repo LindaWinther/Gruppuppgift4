@@ -10,7 +10,7 @@ public class Client {
     private GameGUI gui;
     private PrintWriter out;
     private BufferedReader in;
-    private Socket socket;
+    private Socket s;
 
     public Client(GameGUI gui) {
         this.gui = gui;
@@ -18,12 +18,11 @@ public class Client {
 
     public void start(){
         new Thread(()->{
+        try{
 
-        try(
-                Socket s = new Socket("localhost", 55555);
-                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-        ){
+            s = new Socket("localhost", 55555);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
 
             String fromServer;
             while ((fromServer = in.readLine()) != null) {
@@ -37,6 +36,9 @@ public class Client {
     }
 
     public void send(String message){
-        out.println(message);
+        if(out!=null){
+            out.println(message);
+            out.flush();
+        }
     }
 }
