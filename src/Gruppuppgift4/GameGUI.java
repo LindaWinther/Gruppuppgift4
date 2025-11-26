@@ -33,8 +33,8 @@ public class GameGUI extends JFrame {
     };*/
 
     // Lägger in svar från gameClass
-    private String gameQuestion = "1";
-    private String[] gameAnswers ={ "2", "3","4", "5"} ;
+    private String gameQuestion;
+    private String[] gameAnswers;
 
     private int correctAnswer = 0;
     GameClass game = new GameClass();
@@ -42,25 +42,6 @@ public class GameGUI extends JFrame {
     List<Questions> questions =  new ArrayList<Questions>();
 
     public GameGUI() {
-
-
-        game.readList();
-        game.searchCategoryFromList();
-        questions = game.searchQuestionsFromList();
-        gameQuestion = questions.get(0).question;
-        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-        questions.get(0).setAnswer(gameAnswers[0]);
-        System.out.println(questions.get(0).question);
-
-
-
-
-
-
-
-
-
-
 
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,7 +89,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(gameQuestion, gameAnswers);
+            loadQuestion(setGameQuestions(),setGameAnswers());
             lockAnswerButtons(true);
             cardLayout.show(mainPanel, "QUESTION");
         });
@@ -181,8 +162,31 @@ public class GameGUI extends JFrame {
         }
         lockAnswerButtons(false);
     }
+    public String setGameQuestions() {
+        game.readList();
+        questions = game.searchCategoryFromList();
+        gameQuestion = questions.getFirst().question;
+        setGameAnswers();
+        return gameQuestion;
+    }
+
+    public String [] setGameAnswers() {
+        gameQuestion = questions.get(0).question;
+        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+        questions.get(0).setAnswer(gameAnswers[0]);
+        return gameAnswers;
+    }
 
     public static void main(String[] args) {
         new GameGUI();
     }
 }
+
+
+//game.readList();
+//        game.searchCategoryFromList();
+//questions = game.searchQuestionsFromList();
+//gameQuestion = questions.get(0).question;
+//gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+//        questions.get(0).setAnswer(gameAnswers[0]);
+//        System.out.println(questions.get(0).question);
