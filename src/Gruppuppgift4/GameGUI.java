@@ -165,36 +165,32 @@ public class GameGUI extends JFrame {
         }
     }
 
-    // Färgar svaret
-//    private void checkAnswer(int index) {
-//
-//        if (index == correctAnswer) {
-//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-//        } else {
-//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-//        }
-//        lockAnswerButtons(false);
-//    }
-
+//     Färgar svaret
     private void checkAnswer(int index) {
 
         client.send(answerButtons[index].getText());
+        if (index == correctAnswer) {
+            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
+        } else {
+            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
+        }
+        lockAnswerButtons(false);
     }
 
-    public void receiveFromServer(String msg) {
+
+    public void receiveFromServer(String fromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (msg.startsWith("Fråga:")) {
-                String fråga = msg.substring(6);
-                questionLabel.setText(fråga);
-                cardLayout.show(mainPanel, "QUESTION");
+            if (fromServer.startsWith("Fråga;")) {
+                String[] parts = fromServer.split(";");
+                loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (msg.equals("Rätt!")) {
+            if (fromServer.equals("Rätt!")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (msg.equals("Fel!")) {
+            if (fromServer.equals("Fel!")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
-            if (msg.equals("GAME_OVER")) {
+            if (fromServer.equals("GAME_OVER")) {
                 JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }
         });
