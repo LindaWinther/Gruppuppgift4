@@ -75,7 +75,6 @@ public class GameGUI extends JFrame {
     }
 
     // STARTSIDAN
-
     private void buildStartPanel() {
         startPanel = new JPanel(new BorderLayout());
         startPanel.setBackground(new Color(50, 75, 136));
@@ -114,7 +113,6 @@ public class GameGUI extends JFrame {
     }
 
         // FRÅGESIDAN
-
         private void buildQuestionPanel() {
             questionPanel = new JPanel(new BorderLayout());
             questionPanel.setBackground((new Color(27, 47, 112)));
@@ -177,12 +175,14 @@ public class GameGUI extends JFrame {
         lockAnswerButtons(false);
     }
 
-
     public void receiveFromServer(String fromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (fromServer.startsWith("Fråga;")) {
+            if (fromServer.startsWith("Fråga:")) {
                 String[] parts = fromServer.split(";");
-                loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
+                String fråga = parts[1];
+                String[] answers = {parts[2], parts[3], parts[4], parts[5]};
+                loadQuestion(fråga, answers);
+                cardLayout.show(mainPanel, "QUESTION");
             }
             if (fromServer.equals("Rätt!")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");

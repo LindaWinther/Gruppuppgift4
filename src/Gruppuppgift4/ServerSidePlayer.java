@@ -8,15 +8,21 @@ import java.net.Socket;
 
 public class ServerSidePlayer extends Thread {
 
+    GameClass game = new GameClass();
+
     char playerNumber;
     Socket socket;
     BufferedReader in;
     PrintWriter out;
+    Questions question;
 
 
-    public ServerSidePlayer(Socket socket, char playerNumber) {
+
+    public ServerSidePlayer(Socket socket, char playerNumber, Questions question) {
         this.socket = socket;
         this.playerNumber = playerNumber;
+        this.question = question;
+
         try{
             in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
@@ -28,17 +34,21 @@ public class ServerSidePlayer extends Thread {
 
     public void run() {
         try {
-            out.println("Fråga: Vad är 1 + 1?");
-            while(true){
-                String answer = in.readLine();
-                if(answer == null) break;
+            out.println("Fråga;" + question.question + ";"
+                    + question.answer + ";"
+                    + question.wrong1 + ";"
+                    + question.wrong2 + ";"
+                    + question.wrong3);
 
-                if(answer.equals("2"))
+            String answer;
+            while ((answer = in.readLine()) != null) {
+                if (answer.equals(question.answer)) {
                     out.println("Rätt!");
-                else
+                } else {
                     out.println("Fel!");
+                }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -47,6 +57,4 @@ public class ServerSidePlayer extends Thread {
         out.println(message);
         out.flush();
     }
-
 }
-
