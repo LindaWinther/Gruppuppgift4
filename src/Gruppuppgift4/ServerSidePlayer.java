@@ -8,8 +8,6 @@ import java.net.Socket;
 
 public class ServerSidePlayer extends Thread {
 
-    GameClass game = new GameClass();
-
     char playerNumber;
     Socket socket;
     BufferedReader in;
@@ -34,12 +32,6 @@ public class ServerSidePlayer extends Thread {
 
     public void run() {
         try {
-            out.println("Fråga;" + question.question + ";"
-                    + question.answer + ";"
-                    + question.wrong1 + ";"
-                    + question.wrong2 + ";"
-                    + question.wrong3);
-
             String answer;
             while ((answer = in.readLine()) != null) {
                 if (answer.equals(question.answer)) {

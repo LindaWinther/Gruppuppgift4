@@ -177,7 +177,7 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String fromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (fromServer.startsWith("Fråga:")) {
+            if (fromServer.startsWith("Fråga;")) {
                 String[] parts = fromServer.split(";");
                 String fråga = parts[1];
                 String[] answers = {parts[2], parts[3], parts[4], parts[5]};
