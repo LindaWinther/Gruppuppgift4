@@ -182,7 +182,6 @@ public class GameGUI extends JFrame {
                 String fråga = parts[1];
                 String[] answers = {parts[2], parts[3], parts[4], parts[5]};
                 loadQuestion(fråga, answers);
-                cardLayout.show(mainPanel, "QUESTION");
             }
             if (fromServer.equals("Rätt!")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
