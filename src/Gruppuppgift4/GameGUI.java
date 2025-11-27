@@ -40,9 +40,9 @@ public class GameGUI extends JFrame {
     private String[] gameAnswers;
 
     private int correctAnswer = 0;
-    GameClass game = new GameClass();
-    Questions q = new Questions();
-    List<Questions> questions = new ArrayList<Questions>();
+//    GameClass game = new GameClass();
+//    Questions q = new Questions();
+//    List<Questions> questions = new ArrayList<Questions>();
 
     boolean unused = true;
 
@@ -100,6 +100,8 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
+
+            //ta bort ladda frågor, skicka till server att ändra state till "START" typ?
             loadQuestion(gameQuestion, gameAnswers);
             lockAnswerButtons(true);
 //            cardLayout.show(mainPanel, "QUESTION");
@@ -136,11 +138,13 @@ public class GameGUI extends JFrame {
 
         djurButton.addActionListener(e -> {
             // Kalla på GameClass med kategori djur
-            // Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
+//             Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
+//            loadQuestion(gameQuestion, gameAnswers);
+//            lockAnswerButtons(true);
+//            cardLayout.show(mainPanel, "QUESTION");
+        client.send("START");
         });
+
 
         naturButton.addActionListener(e -> {
             // Kalla på GameClass med kategori natur
