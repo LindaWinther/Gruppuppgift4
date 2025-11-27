@@ -36,7 +36,7 @@ public class GameGUI extends JFrame {
     };*/
 
     // Lägger in svar från gameClass
-    private String gameQuestion;
+    private String gameQuestion ;
     private String[] gameAnswers;
 
     private int correctAnswer = 0;
@@ -64,7 +64,7 @@ public class GameGUI extends JFrame {
         add(mainPanel);
 
         buildStartPanel();
-        buildCategoryPanel();
+//        buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
@@ -100,7 +100,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(setGameQuestions(), setGameAnswers());
+            loadQuestion(gameQuestion, gameAnswers);
             lockAnswerButtons(true);
 //            cardLayout.show(mainPanel, "QUESTION");
             cardLayout.show(mainPanel, "CATEGORY");
@@ -136,6 +136,7 @@ public class GameGUI extends JFrame {
 
         djurButton.addActionListener(e -> {
             // Kalla på GameClass med kategori djur
+            // Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
             loadQuestion(gameQuestion, gameAnswers);
             lockAnswerButtons(true);
             cardLayout.show(mainPanel, "QUESTION");
@@ -199,6 +200,7 @@ public class GameGUI extends JFrame {
 
     private void loadQuestion(String question, String[] answers) {
         questionLabel.setText(question);
+        System.out.println(answers[0]);
 
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i].setText(answers[i]);
@@ -225,28 +227,29 @@ public class GameGUI extends JFrame {
         lockAnswerButtons(false);
     }
 
-    public String setGameQuestions() {
-
-        game.readList();
-        questions = game.searchCategoryFromList();
-        gameQuestion = questions.getFirst().question;
-        setGameAnswers();
-        return gameQuestion;
-    }
-
-    public String[] setGameAnswers() {
-        gameQuestion = questions.get(0).question;
-        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-        questions.get(0).setAnswer(gameAnswers[0]);
-        return gameAnswers;
-    }
+//    public String setGameQuestions() {
+//        game.readList();
+//        questions = game.searchCategoryFromList();
+//        gameQuestion = questions.getFirst().question;
+//        setGameAnswers();
+//        return gameQuestion;
+//    }
+//
+//    public String[] setGameAnswers() {
+//        gameQuestion = questions.get(0).question;
+//        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+//        questions.get(0).setAnswer(gameAnswers[0]);
+//        return gameAnswers;
+//    }
 
     public void receiveFromServer(String fromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (fromServer.startsWith("Fråga;")) {
+            if (fromServer.startsWith("Fråga;")) {     // Ta bort hela if stycke?
                 String[] parts = fromServer.split(";");
                 String fråga = parts[1];
                 String[] answers = {parts[2], parts[3], parts[4], parts[5]};
+                System.out.println(fråga);
+                System.out.println(answers[0]+ answers[1] + answers[2] + answers[3]);
                 loadQuestion(fråga, answers);
             }
             if (fromServer.equals("Rätt!")) {

@@ -15,6 +15,10 @@ public class GameClass {
     List<Questions> completeList = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
     List<Questions> activeList = new ArrayList<>();
+    List<Questions> wrongList = new ArrayList<>();
+    String gameQuestion;
+    String [] gameAnswers;
+
 
     public GameClass() {
     }
@@ -43,7 +47,6 @@ public class GameClass {
             if (q2.category.equalsIgnoreCase("djur")) {
                 categoryList.add(q2);
             }
-
         }
         return categoryList;
     }
@@ -59,6 +62,23 @@ public class GameClass {
 
     return activeList;
 
+    }
+    public String setGameQuestions() {
+        readList();
+        wrongList = searchCategoryFromList();
+        System.out.println(wrongList.getFirst().question);
+        System.out.println(activeList.size());
+        gameQuestion = wrongList.getFirst().question;
+        setGameAnswers();
+        return gameQuestion;
+    }
+
+    public String[] setGameAnswers() {
+
+        gameQuestion = wrongList.get(0).question;
+        gameAnswers = new String[]{wrongList.get(0).answer, wrongList.get(0).wrong1, wrongList.get(0).wrong2, wrongList.get(0).wrong3};
+        wrongList.get(0).setAnswer(gameAnswers[0]);
+        return gameAnswers;
     }
 }
 
