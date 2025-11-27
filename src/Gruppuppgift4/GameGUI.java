@@ -105,6 +105,8 @@ public class GameGUI extends JFrame {
         centerPanel.add(buttonPanel, BorderLayout.CENTER);
 
         mainPanel.add(startPanel, "START");
+
+        //
     }
 
         // FRÅGESIDAN
