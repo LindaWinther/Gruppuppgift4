@@ -25,6 +25,8 @@ public class GameGUI extends JFrame {
     private JPanel questionPanel;
     private JLabel questionLabel;
     private JButton[] answerButtons;
+
+
     private JLabel titleLabel;
 
     // Test för fråga och svar
@@ -71,7 +73,6 @@ public class GameGUI extends JFrame {
     }
 
     // STARTSIDAN
-
 
     private void buildStartPanel() {
         startPanel = new JPanel(new BorderLayout());
@@ -212,7 +213,7 @@ public class GameGUI extends JFrame {
         }
     }
 
-    //     Färgar svaret
+    // Färgar svaret
     private void checkAnswer(int index) {
 
         client.send(answerButtons[index].getText());
