@@ -2,53 +2,35 @@ package Gruppuppgift4;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.List;
 
 public class Server {
 
     public static void main(String[] args) throws IOException {
-        ServerSocket listener = new ServerSocket(55555);
-        System.out.println("Server is Running!");
-        try{
-            while (true){
 
-                ServerSidePlayer player1 = new ServerSidePlayer(listener.accept(), '1');
-                ServerSidePlayer player2 = new ServerSidePlayer(listener.accept(), '2');
-                System.out.println("Both players connected!");
+        GameClass game = new GameClass();
+        game.readList();
+        game.searchCategoryFromList();
+        List<Questions> questions = game.searchQuestionsFromList();
 
-                //allt mellan den här och den följande kommentaren ska flyttas till en spel/fråge klass sen, bara för demo
-                player1.askQuestion("Vad är 1 + 1?");
-                player2.askQuestion("Vad är 1 + 1?");
+        Questions q1 = questions.get(0);
+        Questions q2 = questions.get(1);
 
-                String answer1 = player1.getAnswer();
-                String answer2 = player2.getAnswer();
+        ServerSocket server = new ServerSocket(55555);
+        System.out.println("Server is running!");
 
-                System.out.println("player 1 answer: " + answer1);
-                System.out.println("player 2 answer: " + answer2);
+        Socket p1 = server.accept();
+        Socket p2 = server.accept();
 
-                if (answer1.equals("2")){
-                    player1.sendMessage("Rätt svar!!");
-                } else {
-                    player1.sendMessage("Fel svar!");
-                }
+        ServerSidePlayer s1 = new ServerSidePlayer(p1, '1', q1);
+        ServerSidePlayer s2 = new ServerSidePlayer(p2, '2',q2);
 
-                if (answer2.equals("2")){
-                    player2.sendMessage("Rätt svar!!");
-                } else {
-                    player2.sendMessage("Fel svar!");
-                }
-                //slutet av "spel demot"
+        s1.start();
+        s2.start();
 
-                player1.sendMessage("GAME_OVER");
-                player2.sendMessage("GAME_OVER");
+        s1.sendMessage("Fråga;" + q1.question + ";" + q1.answer + ";" + q1.wrong1 + ";" + q1.wrong2 + ";" + q1.wrong3);
+        s2.sendMessage("Fråga;" + q2.question + ";" + q2.answer + ";" + q2.wrong1 + ";" + q2.wrong2 + ";" + q2.wrong3);
 
-                player1.close();
-                player2.close();
-
-                System.out.println("Game is over, server shutting down.");
-                break;
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
