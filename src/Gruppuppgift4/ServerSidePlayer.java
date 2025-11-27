@@ -6,17 +6,21 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ServerSidePlayer {
+public class ServerSidePlayer extends Thread {
 
     char playerNumber;
     Socket socket;
     BufferedReader in;
     PrintWriter out;
+    Questions question;
 
 
-    public ServerSidePlayer(Socket socket, char playerNumber) {
+
+    public ServerSidePlayer(Socket socket, char playerNumber, Questions question) {
         this.socket = socket;
         this.playerNumber = playerNumber;
+        this.question = question;
+
         try{
             in = new BufferedReader(
                     new InputStreamReader(socket.getInputStream()));
@@ -26,13 +30,18 @@ public class ServerSidePlayer {
         }
     }
 
-    public void close(){
-        try{
-            in.close();
-            out.close();
-            socket.close();
+    public void run() {
+        try {
+            String answer;
+            while ((answer = in.readLine()) != null) {
+                if (answer.equals(question.answer)) {
+                    out.println("Rätt!");
+                } else {
+                    out.println("Fel!");
+                }
+            }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -40,14 +49,4 @@ public class ServerSidePlayer {
         out.println(message);
         out.flush();
     }
-
-    public void askQuestion(String question){
-        sendMessage(question);
-    }
-
-    public String getAnswer() throws IOException {
-        return in.readLine();
-    }
-
 }
-
