@@ -80,6 +80,10 @@ public class GameGUI extends JFrame {
         centerPanel.add(titleLabel, BorderLayout.NORTH);
 
 
+
+
+
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(27, 47, 112));
         buttonPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
@@ -147,6 +151,9 @@ public class GameGUI extends JFrame {
             answerButtons[i].setBackground(new Color(50, 44, 133));
         }
     }
+
+
+
 
     private void lockAnswerButtons(boolean enabled) {
         for (JButton btn : answerButtons) {
