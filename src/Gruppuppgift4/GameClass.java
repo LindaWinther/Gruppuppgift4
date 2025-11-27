@@ -12,7 +12,7 @@ public class GameClass {
 
     String p1 = "Player1";
     String p2 = "Player2";
-    List<Questions> q = new ArrayList<>();
+    List<Questions> completeList = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
     List<Questions> activeList = new ArrayList<>();
 
@@ -20,52 +20,43 @@ public class GameClass {
     }
 
     public List<Questions> readList() {
-        Path q2 = Path.of("src/Gruppuppgift4/questions");
+        Path path = Path.of("src/Gruppuppgift4/questions");
 
-        try (BufferedReader br = new BufferedReader(new FileReader(q2.toString()))) {
-            // br.readLine();
+        try (BufferedReader br = new BufferedReader(new FileReader(path.toString()))) {
 
             String input;
             while ((input = br.readLine()) != null) {
-                String[] QL = input.split(";");
+                String[] ql = input.split(";");
 
-                Questions ny = new Questions(QL[0], QL[1], QL[2], QL[3], QL[4], QL[5]); // Döp om från ny till nått lämpligt.
-                q.add(ny);
-//                System.out.println(ny);
-//                System.out.println(QL[0]);
-//                System.out.println(q.size());
+                Questions quest = new Questions(ql[0], ql[1], ql[2], ql[3], ql[4], ql[5]);
+                completeList.add(quest);
+
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return q;
+        return completeList;
     }
 
     public List<Questions> searchCategoryFromList() {
-        for (Questions q2 : q) {
+        for (Questions q2 : completeList) {
             if (q2.category.equalsIgnoreCase("djur")) {
                 categoryList.add(q2);
             }
-//            System.out.println(categoryList.size());
+
         }
         return categoryList;
     }
 
-
     public List<Questions> searchQuestionsFromList() {
+
         Random rand = new Random();
         int siffra = rand.nextInt(0, categoryList.size());
-//        System.out.println(rand.nextInt(siffra));
-//        System.out.println(siffra);
         categoryList.get(siffra);
         activeList.add(categoryList.get(siffra));
         activeList.add(categoryList.get(siffra));
         activeList.add(categoryList.get(siffra));
 
-//        System.out.println(activeList.size());
-//        System.out.println(activeList.get(1).getAnswer());
-//        System.out.println(activeList.stream().toList());
-        // System.out.println(activeList.);
     return activeList;
 
     }

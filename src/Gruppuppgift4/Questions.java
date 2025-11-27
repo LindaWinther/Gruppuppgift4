@@ -7,6 +7,7 @@ public class Questions {
     String wrong1;
     String wrong2;
     String wrong3;
+    boolean unused = true;
 
     public Questions(String category, String question, String answer, String wrong1, String wrong2, String wrong3) {
         this.category = category;
