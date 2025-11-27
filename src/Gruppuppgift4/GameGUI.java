@@ -18,12 +18,13 @@ public class GameGUI extends JFrame {
     private JPanel startPanel;
     private JButton startButton;
 
+    // Kategorisidan
+    private JPanel categoryPanel;
+
     // Frågesidan
     private JPanel questionPanel;
     private JLabel questionLabel;
     private JButton[] answerButtons;
-
-
     private JLabel titleLabel;
 
     // Test för fråga och svar
@@ -39,7 +40,7 @@ public class GameGUI extends JFrame {
     private int correctAnswer = 0;
     GameClass game = new GameClass();
     Questions q = new Questions();
-    List<Questions> questions =  new ArrayList<Questions>();
+    List<Questions> questions = new ArrayList<Questions>();
 
     boolean unused = true;
 
@@ -61,6 +62,7 @@ public class GameGUI extends JFrame {
         add(mainPanel);
 
         buildStartPanel();
+        buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
@@ -69,6 +71,7 @@ public class GameGUI extends JFrame {
     }
 
     // STARTSIDAN
+
 
     private void buildStartPanel() {
         startPanel = new JPanel(new BorderLayout());
@@ -96,9 +99,10 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(setGameQuestions(),setGameAnswers());
+            loadQuestion(setGameQuestions(), setGameAnswers());
             lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
+//            cardLayout.show(mainPanel, "QUESTION");
+            cardLayout.show(mainPanel, "CATEGORY");
         });
 
         buttonPanel.add(startButton);
@@ -107,40 +111,90 @@ public class GameGUI extends JFrame {
         mainPanel.add(startPanel, "START");
     }
 
-        // FRÅGESIDAN
-        private void buildQuestionPanel() {
-            questionPanel = new JPanel(new BorderLayout());
-            questionPanel.setBackground((new Color(27, 47, 112)));
-            questionPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
-            questionLabel = new JLabel("Frågan här", SwingConstants.CENTER);
-            questionLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-            questionLabel.setForeground(Color.WHITE);
-            questionLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
-            questionPanel.add(questionLabel, BorderLayout.NORTH);
+    // KATEGORISIDAN
 
-            JPanel answersPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-            answersPanel.setBackground(new Color(27, 47, 112));
+    private void buildCategoryPanel() {
+        categoryPanel = new JPanel(new BorderLayout());
+        categoryPanel.setBackground((new Color(27, 47, 112)));
+        categoryPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
 
-            answerButtons = new JButton[4];
+        JLabel categoryLabel = new JLabel("Välj kategori", SwingConstants.CENTER);
+        categoryLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        categoryLabel.setForeground(Color.WHITE);
+        categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
+        categoryPanel.add(categoryLabel, BorderLayout.NORTH);
 
-            for (int i = 0; i < 4; i++) {
-                JButton btn = new JButton("Svar " + (i + 1));
-                btn.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-                btn.setBackground(new Color(31, 169, 164));
-                btn.setForeground(Color.WHITE);
+        JPanel buttons = new JPanel(new GridLayout(1, 2, 20, 20));
+        buttons.setBackground(new Color(27, 47, 112));
 
-                int index = i;
-                btn.addActionListener(e -> checkAnswer(index));
+        JButton djurButton = new JButton("Djur");
+        JButton naturButton = new JButton("Natur");
 
-                answerButtons[i] = btn;
-                answersPanel.add(btn);
-            }
+        styleCategoryButton(djurButton);
+        styleCategoryButton(naturButton);
 
-            questionPanel.add(answersPanel, BorderLayout.CENTER);
-            mainPanel.add(questionPanel, "QUESTION");
+        djurButton.addActionListener(e -> {
+            // Kalla på GameClass med kategori djur
+            loadQuestion(gameQuestion, gameAnswers);
+            lockAnswerButtons(true);
+            cardLayout.show(mainPanel, "QUESTION");
+        });
+
+        naturButton.addActionListener(e -> {
+            // Kalla på GameClass med kategori natur
+            loadQuestion(gameQuestion, gameAnswers);
+            lockAnswerButtons(true);
+            cardLayout.show(mainPanel, "QUESTION");
+        });
+
+        buttons.add(djurButton);
+        buttons.add(naturButton);
+
+        categoryPanel.add(buttons, BorderLayout.CENTER);
+
+        mainPanel.add(categoryPanel, "CATEGORY");
+    }
+
+    private void styleCategoryButton(JButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(31, 169, 164));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    // FRÅGESIDAN
+    private void buildQuestionPanel() {
+        questionPanel = new JPanel(new BorderLayout());
+        questionPanel.setBackground((new Color(27, 47, 112)));
+        questionPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
+        questionLabel = new JLabel("Frågan här", SwingConstants.CENTER);
+        questionLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        questionLabel.setForeground(Color.WHITE);
+        questionLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
+        questionPanel.add(questionLabel, BorderLayout.NORTH);
+
+        JPanel answersPanel = new JPanel(new GridLayout(2, 2, 20, 20));
+        answersPanel.setBackground(new Color(27, 47, 112));
+
+        answerButtons = new JButton[4];
+
+        for (int i = 0; i < 4; i++) {
+            JButton btn = new JButton("Svar " + (i + 1));
+            btn.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+            btn.setBackground(new Color(31, 169, 164));
+            btn.setForeground(Color.WHITE);
+
+            int index = i;
+            btn.addActionListener(e -> checkAnswer(index));
+
+            answerButtons[i] = btn;
+            answersPanel.add(btn);
         }
+        questionPanel.add(answersPanel, BorderLayout.CENTER);
+        mainPanel.add(questionPanel, "QUESTION");
+    }
 
-        // FRÅGELOGIK
+    // FRÅGELOGIK
 
     private void loadQuestion(String question, String[] answers) {
         questionLabel.setText(question);
@@ -158,7 +212,7 @@ public class GameGUI extends JFrame {
         }
     }
 
-//     Färgar svaret
+    //     Färgar svaret
     private void checkAnswer(int index) {
 
         client.send(answerButtons[index].getText());
@@ -169,6 +223,7 @@ public class GameGUI extends JFrame {
         }
         lockAnswerButtons(false);
     }
+
     public String setGameQuestions() {
 
         game.readList();
@@ -178,7 +233,7 @@ public class GameGUI extends JFrame {
         return gameQuestion;
     }
 
-    public String [] setGameAnswers() {
+    public String[] setGameAnswers() {
         gameQuestion = questions.get(0).question;
         gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
         questions.get(0).setAnswer(gameAnswers[0]);
