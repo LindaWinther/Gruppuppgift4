@@ -21,8 +21,7 @@ public class ClientHandler extends Thread {
         this.playerNumber = playerNumber;
 
         try{
-            in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -67,9 +66,9 @@ public class ClientHandler extends Thread {
                     String answer = messageToServer.split(";")[1];
 
                     if(answer.equals(currentQuestion.answer)) {
-                        sendMessageToClient("RÄTT!");
+                        sendMessageToClient("RÄTT");
                     } else {
-                        sendMessageToClient("FEL!");
+                        sendMessageToClient("FEL");
                     }
                 }
 

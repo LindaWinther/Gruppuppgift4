@@ -251,10 +251,10 @@ public class GameGUI extends JFrame {
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (messageFromServer.equals("RÄTT!")) {
+            if (messageFromServer.equals("RÄTT")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (messageFromServer.equals("FEL!")) {
+            if (messageFromServer.equals("FEL")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
             if (messageFromServer.equals("GAME_OVER")) {
