@@ -47,6 +47,9 @@ public class ServerSidePlayer extends Thread {
 
                     currentQuestion = list.get(0);
 
+                    //just nu skickar jag en hel frågestring och splittar det senare i recieveFromServer i GameGUI. Det var kanske det vi ville undvika egentligen.
+                    //Jag vet inte riktigt hur man löser det snyggt.
+
                     sendMessageToClient("Fråga;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
                 }
 
