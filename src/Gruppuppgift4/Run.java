@@ -11,13 +11,13 @@ public class Run {
 
     public Run() {
 
-        game.readList();
-
-        game.searchCategoryFromList();
-
-        questions = game.searchQuestionsFromList();
-
-        System.out.println(questions.get(2).answer);
+//        game.readList();
+//
+//        game.searchCategoryFromList();
+//
+//        questions = game.searchQuestionsFromList();
+//
+//        System.out.println(questions.get(2).answer);
 
 
 

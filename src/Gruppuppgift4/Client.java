@@ -7,40 +7,38 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
+    private GameGUI gui;
+    private PrintWriter out;
+    private BufferedReader in;
+    private Socket s;
 
-    public Client(){
+    public Client(GameGUI gui) {
+        this.gui = gui;
+    }
 
-        try(
-                Socket s = new Socket("localhost", 55555);
-                PrintWriter out = new PrintWriter(s.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in));
-        ){
+    public void start(){
+        new Thread(()->{
+        try{
 
-            //Kod från sigruns BilregisterMultiuser föreläsning, den måste nog ändras sen, funkar typ.
+            s = new Socket("localhost", 55555);
+            in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+            out = new PrintWriter(s.getOutputStream(), true);
 
-            String fromServer = "";
-            String fromUser = "";
-
-            fromServer = in.readLine();
-            System.out.println(fromServer);
-
-            while((fromUser = userInput.readLine()) != null){
-
-                out.println(fromUser);
-                System.out.println("Sent to server: "+fromUser);
-
-                fromServer = in.readLine();
-                System.out.println(fromServer);
-
+            String fromServer;
+            while ((fromServer = in.readLine()) != null) {
+                gui.receiveFromServer(fromServer);
             }
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        }).start();
     }
 
-    public static void main(String[] args) {
-        Client k = new Client();
+    public void sendMessageToServer(String message){
+        if(out!=null){
+            out.println(message);
+            out.flush();
+        }
     }
 }

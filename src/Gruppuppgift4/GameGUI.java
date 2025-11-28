@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -17,6 +18,9 @@ public class GameGUI extends JFrame {
     // Startsidan
     private JPanel startPanel;
     private JButton startButton;
+
+    // Kategorisidan
+    private JPanel categoryPanel;
 
     // Frågesidan
     private JPanel questionPanel;
@@ -33,17 +37,22 @@ public class GameGUI extends JFrame {
     };*/
 
     // Lägger in svar från gameClass
-    private String gameQuestion;
+    private String gameQuestion ;
     private String[] gameAnswers;
 
     private int correctAnswer = 0;
     GameClass game = new GameClass();
     Questions q = new Questions();
-    List<Questions> questions =  new ArrayList<Questions>();
+    List<Questions> questions = new ArrayList<Questions>();
 
     boolean unused = true;
 
+    private Client client;
+
     public GameGUI() {
+
+        client = new Client(this);
+        client.start();
 
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -56,6 +65,7 @@ public class GameGUI extends JFrame {
         add(mainPanel);
 
         buildStartPanel();
+        buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
@@ -95,9 +105,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(setGameQuestions(),setGameAnswers());
-            lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
+            client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
         });
 
         buttonPanel.add(startButton);
@@ -106,41 +114,84 @@ public class GameGUI extends JFrame {
         mainPanel.add(startPanel, "START");
     }
 
-        // FRÅGESIDAN
+    // KATEGORISIDAN
 
-        private void buildQuestionPanel() {
-            questionPanel = new JPanel(new BorderLayout());
-            questionPanel.setBackground((new Color(27, 47, 112)));
-            questionPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
-            questionLabel = new JLabel("Frågan här", SwingConstants.CENTER);
-            questionLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-            questionLabel.setForeground(Color.WHITE);
-            questionLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
-            questionPanel.add(questionLabel, BorderLayout.NORTH);
+    private void buildCategoryPanel() {
+        categoryPanel = new JPanel(new BorderLayout());
+        categoryPanel.setBackground((new Color(27, 47, 112)));
+        categoryPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
 
-            JPanel answersPanel = new JPanel(new GridLayout(2, 2, 20, 20));
-            answersPanel.setBackground(new Color(27, 47, 112));
+        JLabel categoryLabel = new JLabel("Välj kategori", SwingConstants.CENTER);
+        categoryLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        categoryLabel.setForeground(Color.WHITE);
+        categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
-            answerButtons = new JButton[4];
+        categoryPanel.add(categoryLabel, BorderLayout.NORTH);
 
-            for (int i = 0; i < 4; i++) {
-                JButton btn = new JButton("Svar " + (i + 1));
-                btn.setFont(new Font("Segoe UI", Font.PLAIN, 20));
-                btn.setBackground(new Color(31, 169, 164));
-                btn.setForeground(Color.WHITE);
+        // LAGT IN TESTKATEGORIER SÅ LÄNGE
+        mainPanel.add(categoryPanel, "CATEGORY");
+    }
 
-                int index = i;
-                btn.addActionListener(e -> checkAnswer(index));
+    public void loadCategories(List<String> categories) {
+        JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 20, 20));
+        buttonsPanel.setBackground(new Color(27, 47, 112));
 
-                answerButtons[i] = btn;
-                answersPanel.add(btn);
-            }
+        for (String category: categories) {
+            JButton btn = new JButton(category);
+            styleCategoryButton(btn);
 
-            questionPanel.add(answersPanel, BorderLayout.CENTER);
-            mainPanel.add(questionPanel, "QUESTION");
+            btn.addActionListener(e-> {
+                // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
+                client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
+                lockAnswerButtons(true);
+                cardLayout.show(mainPanel, "QUESTION");
+            });
+
+            buttonsPanel.add(btn);
         }
+        categoryPanel.add(buttonsPanel, BorderLayout.CENTER);
+    }
 
-        // FRÅGELOGIK
+    private void styleCategoryButton(JButton btn) {
+        btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        btn.setForeground(Color.WHITE);
+        btn.setBackground(new Color(31, 169, 164));
+        btn.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    // FRÅGESIDAN
+    private void buildQuestionPanel() {
+        questionPanel = new JPanel(new BorderLayout());
+        questionPanel.setBackground((new Color(27, 47, 112)));
+        questionPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
+        questionLabel = new JLabel("Frågan här", SwingConstants.CENTER);
+        questionLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        questionLabel.setForeground(Color.WHITE);
+        questionLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
+        questionPanel.add(questionLabel, BorderLayout.NORTH);
+
+        JPanel answersPanel = new JPanel(new GridLayout(2, 2, 20, 20));
+        answersPanel.setBackground(new Color(27, 47, 112));
+
+        answerButtons = new JButton[4];
+
+        for (int i = 0; i < 4; i++) {
+            JButton btn = new JButton("Svar " + (i + 1));
+            btn.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+            btn.setBackground(new Color(31, 169, 164));
+            btn.setForeground(Color.WHITE);
+
+            int index = i;
+            btn.addActionListener(e -> checkAnswer(index));
+
+            answerButtons[i] = btn;
+            answersPanel.add(btn);
+        }
+        questionPanel.add(answersPanel, BorderLayout.CENTER);
+        mainPanel.add(questionPanel, "QUESTION");
+    }
+
+    // FRÅGELOGIK
 
     private void loadQuestion(String question, String[] answers) {
         questionLabel.setText(question);
@@ -163,7 +214,7 @@ public class GameGUI extends JFrame {
 
     // Färgar svaret
     private void checkAnswer(int index) {
-
+        client.sendMessageToServer("SVAR;" + answerButtons[index].getText());
         if (index == correctAnswer) {
             answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
         } else {
@@ -171,32 +222,55 @@ public class GameGUI extends JFrame {
         }
         lockAnswerButtons(false);
     }
-    public String setGameQuestions() {
 
-        game.readList();
-        questions = game.searchCategoryFromList();
-        gameQuestion = questions.getFirst().question;
-        setGameAnswers();
-        return gameQuestion;
-    }
+//    public String setGameQuestions() {
+//        game.readList();
+//        questions = game.searchCategoryFromList();
+//        gameQuestion = questions.getFirst().question;
+//        setGameAnswers();
+//        return gameQuestion;
+//    }
+//
+//    public String[] setGameAnswers() {
+//        gameQuestion = questions.get(0).question;
+//        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+//        questions.get(0).setAnswer(gameAnswers[0]);
+//        return gameAnswers;
+//    }
 
-    public String [] setGameAnswers() {
-        gameQuestion = questions.get(0).question;
-        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-        questions.get(0).setAnswer(gameAnswers[0]);
-        return gameAnswers;
+    public void receiveFromServer(String messageFromServer) {
+        SwingUtilities.invokeLater(() -> {
+            if(messageFromServer.startsWith("KATEGORIER;")){
+                cardLayout.show(mainPanel, "CATEGORY");
+                String[] parts =  messageFromServer.split(";");
+                //jag måste göra om det från en string till en list eftersom sendMessageToClient tar bara en sträng just nu, och loadCategories tar en list.
+                //Det är nog någonting som går att ändra antingen i sendMessageToClient eller loadCategories. För det här känns inte supersmart, men det funkar.
+                List<String> stringToList = new ArrayList<>();
+                for(int i = 1; i < parts.length; i++){
+                    stringToList.add(parts[i]);
+                }
+                //test
+                System.out.println(stringToList);
+                loadCategories(stringToList);
+            }
+            if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
+                cardLayout.show(mainPanel, "QUESTION");
+                String[] parts = messageFromServer.split(";");
+                loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
+            }
+            if (messageFromServer.equals("RÄTT!")) {
+                JOptionPane.showMessageDialog(this, "Rätt!");
+            }
+            if (messageFromServer.equals("FEL!")) {
+                JOptionPane.showMessageDialog(this, "Fel svar!");
+            }
+            if (messageFromServer.equals("GAME_OVER")) {
+                JOptionPane.showMessageDialog(this, "Spelet är slut!");
+            }
+        });
     }
 
     public static void main(String[] args) {
         new GameGUI();
     }
 }
-
-
-//game.readList();
-//        game.searchCategoryFromList();
-//questions = game.searchQuestionsFromList();
-//gameQuestion = questions.get(0).question;
-//gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-//        questions.get(0).setAnswer(gameAnswers[0]);
-//        System.out.println(questions.get(0).question);

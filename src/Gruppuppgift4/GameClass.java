@@ -15,6 +15,10 @@ public class GameClass {
     List<Questions> completeList = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
     List<Questions> activeList = new ArrayList<>();
+    List<Questions> wrongList = new ArrayList<>();
+    String gameQuestion;
+    String [] gameAnswers;
+
 
     public GameClass() {
     }
@@ -43,22 +47,41 @@ public class GameClass {
             if (q2.category.equalsIgnoreCase("djur")) {
                 categoryList.add(q2);
             }
-
         }
         return categoryList;
     }
 
-    public List<Questions> searchQuestionsFromList() {
+    public Questions searchQuestionsFromList() {
 
         Random rand = new Random();
         int siffra = rand.nextInt(0, categoryList.size());
         categoryList.get(siffra);
-        activeList.add(categoryList.get(siffra));
-        activeList.add(categoryList.get(siffra));
-        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
+        // Fixa så den lägger in 3 olika RANDOMS
+        return categoryList.get(rand.nextInt(categoryList.size())); //?
 
-    return activeList;
 
+//    return activeList;
+
+    }
+    public String setGameQuestions() {
+        readList();
+        wrongList = searchCategoryFromList();
+        System.out.println(wrongList.getFirst().question);
+        System.out.println(activeList.size());
+        gameQuestion = wrongList.getFirst().question;
+        setGameAnswers();
+        return gameQuestion;
+    }
+
+    public String[] setGameAnswers() {
+
+        gameQuestion = wrongList.get(0).question;
+        gameAnswers = new String[]{wrongList.get(0).answer, wrongList.get(0).wrong1, wrongList.get(0).wrong2, wrongList.get(0).wrong3};
+        wrongList.get(0).setAnswer(gameAnswers[0]);
+        return gameAnswers;
     }
 }
 
