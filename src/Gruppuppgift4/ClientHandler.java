@@ -14,7 +14,9 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
 
-
+    //gör inget med dom här variablerna än
+    ClientHandler opponent;
+    boolean myTurn = false;
 
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
