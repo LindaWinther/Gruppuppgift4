@@ -35,31 +35,31 @@ public class ServerSidePlayer extends Thread {
             String messageToServer;
             while( (messageToServer = in.readLine()) != null ) {
 
-                if(messageToServer.startsWith("Redo;")) {
+                if(messageToServer.startsWith("REDO;")) {
+                    GameClass game = new GameClass();
 
                     //TODO!!!!
-                    //Delen om hur man delar och skickar frågorna till servern fungerar inte riktigt som det ska (igen lol), jag vet inte riktgit hur man fixar det
+                    //Delen om hur man delar och skickar frågorna till servern fungerar inte riktigt som det ska (igen lol), jag vet inte riktgit hur man fixar det.
                     //Just nu skickar den alltid samma fråga så det här måste ändras. Jag gjorde bara såhär för att kunna fixa så jag kunde fixa protokollet.
+                    //Måste också få in på något sätt hur man passerar vilken categori som ska väljas ifrån, just nu så bryr den sig inte om kategori.
 
-                    GameClass game = new GameClass();
                     game.readList();
                     List<Questions> list = game.searchCategoryFromList();
-
                     currentQuestion = list.get(0);
 
                     //just nu skickar jag en hel frågestring och splittar det senare i recieveFromServer i GameGUI. Det var kanske det vi ville undvika egentligen.
                     //Jag vet inte riktigt hur man löser det snyggt.
 
-                    sendMessageToClient("Fråga;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+                    sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
                 }
 
-                if(messageToServer.startsWith("Svar;")) {
+                if(messageToServer.startsWith("SVAR;")) {
                     String answer = messageToServer.split(";")[1];
 
                     if(answer.equals(currentQuestion.answer)) {
-                        sendMessageToClient("Rätt!");
+                        sendMessageToClient("RÄTT!");
                     } else {
-                        sendMessageToClient("Fel!");
+                        sendMessageToClient("FEL!");
                     }
                 }
 

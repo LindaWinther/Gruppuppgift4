@@ -134,13 +134,13 @@ public class GameGUI extends JFrame {
         djurButton.addActionListener(e -> {
             // Kalla på GameClass med kategori djur
             // Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
-            client.sendMessageToServer("Redo;djur");
+            client.sendMessageToServer("REDO;djur");
             cardLayout.show(mainPanel, "QUESTION");
         });
 
         naturButton.addActionListener(e -> {
             // Kalla på GameClass med kategori natur
-            client.sendMessageToServer("Redo;natur");
+            client.sendMessageToServer("REDO;natur");
             cardLayout.show(mainPanel, "QUESTION");
         });
 
@@ -212,7 +212,7 @@ public class GameGUI extends JFrame {
 
     // Färgar svaret
     private void checkAnswer(int index) {
-        client.sendMessageToServer("Svar;" + answerButtons[index].getText());
+        client.sendMessageToServer("SVAR;" + answerButtons[index].getText());
         if (index == correctAnswer) {
             answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
         } else {
@@ -238,15 +238,15 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (messageFromServer.startsWith("Fråga;")) {     // Ta bort hela if stycke?
+            if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
                 cardLayout.show(mainPanel, "QUESTION");
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (messageFromServer.equals("Rätt!")) {
+            if (messageFromServer.equals("RÄTT!")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (messageFromServer.equals("Fel!")) {
+            if (messageFromServer.equals("FEL!")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
             if (messageFromServer.equals("GAME_OVER")) {
