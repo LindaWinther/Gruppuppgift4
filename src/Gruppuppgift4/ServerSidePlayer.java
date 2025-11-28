@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.List;
 
 public class ServerSidePlayer extends Thread {
 
@@ -12,14 +13,13 @@ public class ServerSidePlayer extends Thread {
     Socket socket;
     BufferedReader in;
     PrintWriter out;
-    Questions question;
+    Questions currentQuestion;
 
 
 
-    public ServerSidePlayer(Socket socket, char playerNumber, Questions question) {
+    public ServerSidePlayer(Socket socket, char playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
-        this.question = question;
 
         try{
             in = new BufferedReader(
@@ -32,20 +32,36 @@ public class ServerSidePlayer extends Thread {
 
     public void run() {
         try {
-            String answer;
-            while ((answer = in.readLine()) != null) {
-                if (answer.equals(question.answer)) {
-                    out.println("Rätt!");
-                } else {
-                    out.println("Fel!");
+            String messageToServer;
+            while( (messageToServer = in.readLine()) != null ) {
+
+                if(messageToServer.startsWith("Redo;")) {
+
+                    String category = messageToServer.split(";")[1];
+
+                    GameClass game = new GameClass();
+                    game.readList();
+                    List<Questions> list = game.searchCategoryFromList();
+
+                    currentQuestion = list.get(0);
+
+                    sendMessageToClient("Fråga;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+                }
+
+                if(messageToServer.startsWith("Svar;")) {
+                    String answer = messageToServer.split(";")[1];
+
+                    if(answer.equals(currentQuestion.answer)) {
+                        sendMessageToClient("Rätt!");
+                    } else {
+                        sendMessageToClient("Fel!");
+                    }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
-    public void sendMessage(String message){
+    public void sendMessageToClient(String message){
         out.println(message);
         out.flush();
     }

@@ -64,7 +64,7 @@ public class GameGUI extends JFrame {
         add(mainPanel);
 
         buildStartPanel();
-//        buildCategoryPanel();
+        buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
@@ -100,9 +100,6 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
-//            cardLayout.show(mainPanel, "QUESTION");
             cardLayout.show(mainPanel, "CATEGORY");
         });
 
@@ -137,15 +134,13 @@ public class GameGUI extends JFrame {
         djurButton.addActionListener(e -> {
             // Kalla på GameClass med kategori djur
             // Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
+            client.sendMessageToServer("Redo;djur");
             cardLayout.show(mainPanel, "QUESTION");
         });
 
         naturButton.addActionListener(e -> {
             // Kalla på GameClass med kategori natur
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
+            client.sendMessageToServer("Redo;natur");
             cardLayout.show(mainPanel, "QUESTION");
         });
 
@@ -217,8 +212,7 @@ public class GameGUI extends JFrame {
 
     // Färgar svaret
     private void checkAnswer(int index) {
-
-        client.send(answerButtons[index].getText());
+        client.sendMessageToServer("Svar;" + answerButtons[index].getText());
         if (index == correctAnswer) {
             answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
         } else {
@@ -242,23 +236,20 @@ public class GameGUI extends JFrame {
 //        return gameAnswers;
 //    }
 
-    public void receiveFromServer(String fromServer) {
+    public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (fromServer.startsWith("Fråga;")) {     // Ta bort hela if stycke?
-                String[] parts = fromServer.split(";");
-                String fråga = parts[1];
-                String[] answers = {parts[2], parts[3], parts[4], parts[5]};
-                System.out.println(fråga);
-                System.out.println(answers[0]+ answers[1] + answers[2] + answers[3]);
-                loadQuestion(fråga, answers);
+            if (messageFromServer.startsWith("Fråga;")) {     // Ta bort hela if stycke?
+                cardLayout.show(mainPanel, "QUESTION");
+                String[] parts = messageFromServer.split(";");
+                loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (fromServer.equals("Rätt!")) {
+            if (messageFromServer.equals("Rätt!")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (fromServer.equals("Fel!")) {
+            if (messageFromServer.equals("Fel!")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
-            if (fromServer.equals("GAME_OVER")) {
+            if (messageFromServer.equals("GAME_OVER")) {
                 JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }
         });

@@ -60,7 +60,7 @@ public class GameClass {
         activeList.add(categoryList.get(siffra));
         activeList.add(categoryList.get(siffra));
 
-    return activeList;
+        return activeList;
 
     }
     public String setGameQuestions() {
