@@ -34,11 +34,18 @@ public class ClientHandler extends Thread {
         try {
             GameClass game = new GameClass();
             String messageToServer;
+
             while((messageToServer = in.readLine()) != null ) {
 
+                if (messageToServer.equals("START") && playerNumber == '1') {
+                    myTurn = true;
+                    sendMessageToClient("DIN_TUR");
+                    opponent.sendMessageToClient("INTE_DIN_TUR");
+                }
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
                     //Kod för att välja kategorier här
+                    // LAGT IN TESTKATEGORIER SÅ LÄNGE
                     List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
 
@@ -73,6 +80,11 @@ public class ClientHandler extends Thread {
                         sendMessageToClient("FEL");
                     }
                 }
+
+                myTurn = false;
+                opponent.myTurn = true;
+                opponent.sendMessageToClient("DIN_TUR");
+                sendMessageToClient("INTE_DIN_TUR");
 
             }
         } catch (IOException e) {}

@@ -39,9 +39,5 @@ public class Server {
         s1.start();
         s2.start();
 
-        //Gör inget just nu
-        s1.myTurn = true;
-        s1.sendMessageToClient("START");
-
     }
 }

@@ -101,7 +101,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+            client.sendMessageToServer("START");
         });
 
         buttonPanel.add(startButton);
@@ -123,8 +123,6 @@ public class GameGUI extends JFrame {
         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
-
-        // LAGT IN TESTKATEGORIER SÅ LÄNGE
         mainPanel.add(categoryPanel, "CATEGORY");
     }
 
@@ -233,6 +231,12 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
+            if (messageFromServer.equals("DIN_TUR")) {
+                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+            }
+            if (messageFromServer.equals("INTE_DIN_TUR")) {
+                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
+            }
             if(messageFromServer.startsWith("KATEGORIER;")){
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
@@ -257,6 +261,7 @@ public class GameGUI extends JFrame {
             if (messageFromServer.equals("FEL")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
+            //gör inget just nu, kan användas för en exit knapp i framtiden
             if (messageFromServer.equals("GAME_OVER")) {
                 JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }
