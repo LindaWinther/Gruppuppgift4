@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameClass {
 
@@ -16,8 +14,10 @@ public class GameClass {
     List<Questions> categoryList = new ArrayList<>();
     List<Questions> activeList = new ArrayList<>();
     List<Questions> wrongList = new ArrayList<>();
+    //    List<Questions> listOfCategory = new ArrayList<>();
     String gameQuestion;
-    String [] gameAnswers;
+    String[] gameAnswers;
+    Set<String> listOfCategory = new HashSet<String>();
 
 
     public GameClass() {
@@ -42,20 +42,39 @@ public class GameClass {
         return completeList;
     }
 
-    public List<Questions> searchCategoryFromList() {
+    public Set<String> checkCategorys(List<Questions> questions) {
+        for (Questions q : completeList) {
+            listOfCategory.add(q.category);
+//            System.out.println(listOfCategory.size());
+
+        }
+
+        return listOfCategory;
+    }
+//    Set<String> kategorier = new HashSet<>();
+
+//for (Questions q : completeList) {
+//        kategorier.add(q.category);
+//    }
+//
+//    int antalKategorier = kategorier.size();
+//
+//System.out.println("Antal unika kategorier: " + antalKategorier);
+
+    public List<Questions> searchCategoryFromList(String category) {
         for (Questions q2 : completeList) {
-            if (q2.category.equalsIgnoreCase("djur")) {
+            if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);
             }
         }
         return categoryList;
     }
 
-    public Questions searchQuestionsFromList() {
+    public Questions randomQuestion() {
 
         Random rand = new Random();
-        int siffra = rand.nextInt(0, categoryList.size());
-        categoryList.get(siffra);
+//        int siffra = rand.nextInt(0, categoryList.size());
+//        categoryList.get(siffra);
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
@@ -66,24 +85,25 @@ public class GameClass {
 //    return activeList;
 
     }
-    public String setGameQuestions() {
-        readList();
-        wrongList = searchCategoryFromList();
-        System.out.println(wrongList.getFirst().question);
-        System.out.println(activeList.size());
-        gameQuestion = wrongList.getFirst().question;
-        setGameAnswers();
-        return gameQuestion;
-    }
-
-    public String[] setGameAnswers() {
-
-        gameQuestion = wrongList.get(0).question;
-        gameAnswers = new String[]{wrongList.get(0).answer, wrongList.get(0).wrong1, wrongList.get(0).wrong2, wrongList.get(0).wrong3};
-        wrongList.get(0).setAnswer(gameAnswers[0]);
-        return gameAnswers;
-    }
 }
+//    public String setGameQuestions() {
+//        readList();
+//        wrongList = searchCategoryFromList();
+//        System.out.println(wrongList.getFirst().question);
+//        System.out.println(activeList.size());
+//        gameQuestion = wrongList.getFirst().question;
+//        setGameAnswers();
+//        return gameQuestion;
+//    }
+
+//    public String[] setGameAnswers() {
+//
+//        gameQuestion = wrongList.get(0).question;
+//        gameAnswers = new String[]{wrongList.get(0).answer, wrongList.get(0).wrong1, wrongList.get(0).wrong2, wrongList.get(0).wrong3};
+//        wrongList.get(0).setAnswer(gameAnswers[0]);
+//        return gameAnswers;
+//    }
+//}
 
 /*
  *
