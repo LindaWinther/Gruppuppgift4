@@ -123,38 +123,70 @@ public class GameGUI extends JFrame {
         categoryLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
         categoryLabel.setForeground(Color.WHITE);
         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
+
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
 
-        JPanel buttons = new JPanel(new GridLayout(1, 2, 20, 20));
-        buttons.setBackground(new Color(27, 47, 112));
+        // LAGT IN TESTKATEGORIER SÅ LÄNGE
+        List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
+        loadCategories(testCategories);
 
-        JButton djurButton = new JButton("Djur");
-        JButton naturButton = new JButton("Natur");
 
-        styleCategoryButton(djurButton);
-        styleCategoryButton(naturButton);
-
-        djurButton.addActionListener(e -> {
-            // Kalla på GameClass med kategori djur
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
-        });
-
-        naturButton.addActionListener(e -> {
-            // Kalla på GameClass med kategori natur
-            loadQuestion(gameQuestion, gameAnswers);
-            lockAnswerButtons(true);
-            cardLayout.show(mainPanel, "QUESTION");
-        });
-
-        buttons.add(djurButton);
-        buttons.add(naturButton);
-
-        categoryPanel.add(buttons, BorderLayout.CENTER);
-
+      /*  JPanel buttons = new JPanel(new GridLayout(1, 2, 20, 20));
+        *buttons.setBackground(new Color(27, 47, 112));
+        *
+        *JButton djurButton = new JButton("Djur");
+        *JButton naturButton = new JButton("Natur");
+        *
+        *styleCategoryButton(djurButton);
+        *styleCategoryButton(naturButton);
+        *
+        *djurButton.addActionListener(e -> {
+        *    // Kalla på GameClass med kategori djur
+        *   loadQuestion(gameQuestion, gameAnswers);
+        *    lockAnswerButtons(true);
+        *    cardLayout.show(mainPanel, "QUESTION");
+        *});
+        *
+        *naturButton.addActionListener(e -> {
+        *    // Kalla på GameClass med kategori natur
+        *    loadQuestion(gameQuestion, gameAnswers);
+        *    lockAnswerButtons(true);
+        *    cardLayout.show(mainPanel, "QUESTION");
+        *});
+        *
+        *buttons.add(djurButton);
+        *buttons.add(naturButton);
+        *
+        *categoryPanel.add(buttons, BorderLayout.CENTER);
+      */
         mainPanel.add(categoryPanel, "CATEGORY");
     }
+
+    // NYTT FÖR DYNAMISKA KATEGORIKNAPPAR
+
+    private void loadCategories(List<String> categories) {
+        JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 20, 20));
+        buttonsPanel.setBackground(new Color(27, 47, 112));
+
+        for (String category: categories) {
+            JButton btn = new JButton(category);
+            styleCategoryButton(btn);
+
+            btn.addActionListener(e-> {
+                // Skicka kategori till GameClass
+                loadQuestion(gameQuestion, gameAnswers);
+                lockAnswerButtons(true);
+                cardLayout.show(mainPanel, "QUESTION");
+            });
+
+            buttonsPanel.add(btn);
+        }
+        categoryPanel.add(buttonsPanel, BorderLayout.CENTER);
+    }
+
+
+
+
 
     private void styleCategoryButton(JButton btn) {
         btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
