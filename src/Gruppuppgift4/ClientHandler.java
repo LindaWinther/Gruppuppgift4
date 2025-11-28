@@ -14,7 +14,6 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
 
-    //gör inget med dom här variablerna än
     ClientHandler opponent;
     boolean myTurn = false;
 
@@ -41,17 +40,25 @@ public class ClientHandler extends Thread {
                     myTurn = true;
                     sendMessageToClient("DIN_TUR");
                     opponent.sendMessageToClient("INTE_DIN_TUR");
+                    continue;
                 }
+
+                if (!myTurn) {
+                    sendMessageToClient("INTE_DIN_TUR");
+                    continue;
+                }
+
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
-                    //Kod för att välja kategorier här
-                    // LAGT IN TESTKATEGORIER SÅ LÄNGE
+                    //TODO!!
+                    //Just nu är kategorierna hårdkodade i en lista, kod ska vara här som väljer ut kategorierna beronde på questions dokumentet med hjälp av
+                    //någon GameClass metod exempelvis
                     List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
-
 
                     sendMessageToClient("KATEGORIER;" + String.join(";",testCategories));
                     //test
                     System.out.println("KATEGORIER;" + String.join(";",testCategories));
+                    continue;
                 }
 
                 if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
@@ -69,6 +76,7 @@ public class ClientHandler extends Thread {
                     //Jag vet inte riktigt hur man löser det snyggt.
 
                     sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+                    continue;
                 }
 
                 if(messageToServer.startsWith("SVAR;")) {

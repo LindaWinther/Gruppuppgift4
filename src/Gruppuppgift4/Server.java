@@ -32,7 +32,6 @@ public class Server {
         ClientHandler s1 = new ClientHandler(p1, '1');
         ClientHandler s2 = new ClientHandler(p2, '2');
 
-        //gör inget just nu, ska användas sen för att tracka vems tur det är
         s1.opponent = s2;
         s2.opponent = s1;
 
