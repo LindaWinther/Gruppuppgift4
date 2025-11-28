@@ -20,9 +20,10 @@ public class Server {
 //        game.readList();
 //        game.searchCategoryFromList();
 //        List<Questions> questions = game.searchQuestionsFromList();
-
-//        Questions q1 = questions.get(0);
-//        Questions q2 = questions.get(1);
+        Questions q1 = game.searchQuestionsFromList();
+        Questions q2 = game.searchQuestionsFromList();
+        //Questions q1 = questions.get(0);
+        //Questions q2 = questions.get(1);
 
         ServerSocket server = new ServerSocket(55555);
         System.out.println("Server is running!");

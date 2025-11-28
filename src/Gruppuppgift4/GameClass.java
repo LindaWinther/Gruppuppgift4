@@ -24,7 +24,7 @@ public class GameClass {
     }
 
     public List<Questions> readList() {
-        Path path = Path.of("src/Gruppuppgift4/questions");
+        Path path = Path.of("src/Gruppuppgift4/questions.txt");
 
         try (BufferedReader br = new BufferedReader(new FileReader(path.toString()))) {
 
@@ -51,16 +51,20 @@ public class GameClass {
         return categoryList;
     }
 
-    public List<Questions> searchQuestionsFromList() {
+    public Questions searchQuestionsFromList() {
 
         Random rand = new Random();
         int siffra = rand.nextInt(0, categoryList.size());
         categoryList.get(siffra);
-        activeList.add(categoryList.get(siffra));
-        activeList.add(categoryList.get(siffra));
-        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
+//        activeList.add(categoryList.get(siffra));
 
-        return activeList;
+        // Fixa så den lägger in 3 olika RANDOMS
+        return categoryList.get(rand.nextInt(categoryList.size())); //?
+
+
+//    return activeList;
 
     }
     public String setGameQuestions() {
