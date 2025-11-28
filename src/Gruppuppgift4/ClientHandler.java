@@ -6,7 +6,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
 
-public class ServerSidePlayer extends Thread {
+public class ClientHandler extends Thread {
 
     char playerNumber;
     Socket socket;
@@ -16,7 +16,7 @@ public class ServerSidePlayer extends Thread {
 
 
 
-    public ServerSidePlayer(Socket socket, char playerNumber) {
+    public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
 
@@ -32,7 +32,7 @@ public class ServerSidePlayer extends Thread {
     public void run() {
         try {
             String messageToServer;
-            while( (messageToServer = in.readLine()) != null ) {
+            while((messageToServer = in.readLine()) != null ) {
 
                 if(messageToServer.startsWith("REDO;")) {
                     GameClass game = new GameClass();

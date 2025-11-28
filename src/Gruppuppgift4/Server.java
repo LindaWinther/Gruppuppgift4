@@ -3,8 +3,6 @@ package Gruppuppgift4;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Server {
 
@@ -31,8 +29,8 @@ public class Server {
         Socket p1 = server.accept();
         Socket p2 = server.accept();
 
-        ServerSidePlayer s1 = new ServerSidePlayer(p1, '1');
-        ServerSidePlayer s2 = new ServerSidePlayer(p2, '2');
+        ClientHandler s1 = new ClientHandler(p1, '1');
+        ClientHandler s2 = new ClientHandler(p2, '2');
 
         s1.start();
         s2.start();

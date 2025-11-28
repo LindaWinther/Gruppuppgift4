@@ -127,20 +127,10 @@ public class GameGUI extends JFrame {
         List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
         loadCategories(testCategories);
 
+        mainPanel.add(categoryPanel, "CATEGORY");
+    }
 
-        JButton djurButton = new JButton("Djur");
-        JButton naturButton = new JButton("Natur");
-
-        styleCategoryButton(djurButton);
-        styleCategoryButton(naturButton);
-
-        djurButton.addActionListener(e -> {
-            // Kalla på GameClass med kategori djur
-            // Efter att en kategori väljs, skicka till servern att kategori är vald och det är  dags att skicka frågor, till klienten/guin.
-            client.sendMessageToServer("REDO;djur");
-            cardLayout.show(mainPanel, "QUESTION");
-        });
-    private void loadCategories(List<String> categories) {
+    public void loadCategories(List<String> categories) {
         JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 20, 20));
         buttonsPanel.setBackground(new Color(27, 47, 112));
 
@@ -149,28 +139,15 @@ public class GameGUI extends JFrame {
             styleCategoryButton(btn);
 
             btn.addActionListener(e-> {
-                // Skicka kategori till GameClass
-                loadQuestion(gameQuestion, gameAnswers);
+                // Skicka kategori till servern
+                client.sendMessageToServer("REDO;natur");
                 lockAnswerButtons(true);
                 cardLayout.show(mainPanel, "QUESTION");
             });
 
-        naturButton.addActionListener(e -> {
-            // Kalla på GameClass med kategori natur
-            client.sendMessageToServer("REDO;natur");
-            cardLayout.show(mainPanel, "QUESTION");
-        });
             buttonsPanel.add(btn);
         }
         categoryPanel.add(buttonsPanel, BorderLayout.CENTER);
-    }
-
-        buttons.add(djurButton);
-        buttons.add(naturButton);
-
-        categoryPanel.add(buttons, BorderLayout.CENTER);
-
-        mainPanel.add(categoryPanel, "CATEGORY");
     }
 
     private void styleCategoryButton(JButton btn) {
