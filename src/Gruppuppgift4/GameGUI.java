@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -100,7 +101,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            cardLayout.show(mainPanel, "CATEGORY");
+            client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
         });
 
         buttonPanel.add(startButton);
@@ -124,9 +125,6 @@ public class GameGUI extends JFrame {
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
 
         // LAGT IN TESTKATEGORIER SÅ LÄNGE
-        List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
-        loadCategories(testCategories);
-
         mainPanel.add(categoryPanel, "CATEGORY");
     }
 
@@ -139,8 +137,8 @@ public class GameGUI extends JFrame {
             styleCategoryButton(btn);
 
             btn.addActionListener(e-> {
-                // Skicka kategori till servern
-                client.sendMessageToServer("REDO;natur");
+                // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
+                client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
                 lockAnswerButtons(true);
                 cardLayout.show(mainPanel, "QUESTION");
             });
@@ -235,6 +233,18 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
+            if(messageFromServer.startsWith("KATEGORIER;")){
+                cardLayout.show(mainPanel, "CATEGORY");
+                String[] parts =  messageFromServer.split(";");
+                //jag måste göra om det från en string till en list eftersom sendMessageToClient tar bara en sträng just nu, och loadCategories tar en list.
+                //Det är nog någonting som går att ändra antingen i sendMessageToClient eller loadCategories. För det här känns inte supersmart, men det funkar.
+                List<String> stringToList = new ArrayList<>();
+                for(int i = 1; i < parts.length; i++){
+                    stringToList.add(parts[i]);
+                }
+                System.out.println(stringToList);
+                loadCategories(stringToList);
+            }
             if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
                 cardLayout.show(mainPanel, "QUESTION");
                 String[] parts = messageFromServer.split(";");

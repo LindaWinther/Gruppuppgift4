@@ -31,11 +31,21 @@ public class ClientHandler extends Thread {
 
     public void run() {
         try {
+            GameClass game = new GameClass();
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
-                if(messageToServer.startsWith("REDO;")) {
-                    GameClass game = new GameClass();
+                if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
+
+                    //Kod för att välja kategorier här
+                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
+
+
+                    sendMessageToClient("KATEGORIER;" + String.join(";",testCategories));
+                    System.out.println("KATEGORIER;" + String.join(";",testCategories));
+                }
+
+                if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
 
                     //TODO!!!!
                     //Delen om hur man delar och skickar frågorna till servern fungerar inte riktigt som det ska (igen lol), jag vet inte riktgit hur man fixar det.
