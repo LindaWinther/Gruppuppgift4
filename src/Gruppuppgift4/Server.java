@@ -20,8 +20,8 @@ public class Server {
 //        game.readList();
 //        game.searchCategoryFromList();
 //        List<Questions> questions = game.searchQuestionsFromList();
-        Questions q1 = game.searchQuestionsFromList();
-        Questions q2 = game.searchQuestionsFromList();
+//        Questions q1 = game.searchQuestionsFromList();
+//        Questions q2 = game.searchQuestionsFromList();
         //Questions q1 = questions.get(0);
         //Questions q2 = questions.get(1);
 
