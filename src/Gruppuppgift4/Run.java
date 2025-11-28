@@ -8,7 +8,6 @@ public class Run {
     List<Questions> questions =  new ArrayList<Questions>();
     GameClass game = new GameClass();
 
-
     public Run() {
 
         game.readList();
@@ -18,13 +17,7 @@ public class Run {
         questions = game.searchQuestionsFromList();
 
         System.out.println(questions.get(2).answer);
-
-
-
     }
-
-
-
 
     void main(){}
 }
