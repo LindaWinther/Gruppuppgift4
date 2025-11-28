@@ -59,7 +59,6 @@ public class GameClass {
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
-
         // Fixa så den lägger in 3 olika RANDOMS
         return categoryList.get(rand.nextInt(categoryList.size())); //?
 

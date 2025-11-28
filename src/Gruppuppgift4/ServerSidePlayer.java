@@ -37,7 +37,9 @@ public class ServerSidePlayer extends Thread {
 
                 if(messageToServer.startsWith("Redo;")) {
 
-                    String category = messageToServer.split(";")[1];
+                    //TODO!!!!
+                    //Delen om hur man delar och skickar frågorna till servern fungerar inte riktigt som det ska, jag vet inte riktgit hur man fixar det
+                    //Just nu skickar den alltid samma fråga så det här måste ändras. Jag gjorde bara såhär för att kunna fixa så jag kunde fixa protokollet.
 
                     GameClass game = new GameClass();
                     game.readList();
@@ -57,6 +59,10 @@ public class ServerSidePlayer extends Thread {
                         sendMessageToClient("Fel!");
                     }
                 }
+
+
+
+
             }
         } catch (IOException e) {}
     }
