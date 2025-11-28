@@ -1,6 +1,11 @@
 category;question;answer;wrong1;wrong2;wrong3
-djur;fråga1;rättsvar;svar;svar;svar;
-natur;fråga4;rättsvar;svar;svar;svar;
-djur;Vem bor i skogen ;rättsvar;svar;svar;svar;
-djur;fråga3;rättsvar;svar;svar;svar;
-djur;fråga5;rättsvar;svar;svar;svar;
+djur;djur1;rättsvar;svar;svar;svar;
+natur;natur1;rättsvar;svar;svar;svar;
+djur;Vem bor i skogen;rättsvar;svar;svar;svar;
+djur;djur2;rättsvar;svar;svar;svar;
+djur;djur3;rättsvar;svar;svar;svar;
+natur;natur2;rättsvar;svar;svar;svar;
+natur;natur3;rättsvar;svar;svar;svar;
+natur;natur4;rättsvar;svar;svar;svar;
+sport;sport1;rättsvar;svar;svar;svar;
+sportig;sport1;rättsvar;svar;svar;svar;
