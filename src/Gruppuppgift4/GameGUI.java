@@ -3,8 +3,6 @@ package Gruppuppgift4;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +18,7 @@ public class GameGUI extends JFrame {
     private JButton startButton;
 
     private JTextField nicknameField;
-    private JComboBox<ImageIcon> avatarComboBox;
+    private int selectedAvatarIndex = -1;
 
     // Kategorisidan
     private JPanel categoryPanel;
@@ -29,10 +27,7 @@ public class GameGUI extends JFrame {
     private JPanel questionPanel;
     private JLabel questionLabel;
     private JButton[] answerButtons;
-
-
     private JLabel titleLabel;
-
 
     // Lägger in svar från gameClass
     private String gameQuestion ;
@@ -48,7 +43,6 @@ public class GameGUI extends JFrame {
     private Client client;
 
     public GameGUI() {
-
         client = new Client(this);
         client.start();
 
@@ -71,6 +65,7 @@ public class GameGUI extends JFrame {
 
     }
 
+    // Ladda in rätt storlek på ikoner
     private ImageIcon loadAvatarIcon(String fileName){
         String path =  "src/Gruppuppgift4/avatarImages/" + fileName;
         ImageIcon original = new ImageIcon(path);
@@ -79,7 +74,6 @@ public class GameGUI extends JFrame {
     }
 
     // STARTSIDAN
-
     private void buildStartPanel() {
         startPanel = new JPanel(new BorderLayout());
         startPanel.setBackground(new Color(50, 75, 136));
@@ -98,13 +92,6 @@ public class GameGUI extends JFrame {
         titleLabel.setBorder(new EmptyBorder(40, 0, 40, 0));
         centerPanel.add(titleLabel);
 
-        // Form: användarnamn + avatar
-        JPanel formPanel = new JPanel();
-        formPanel.setBackground(new Color(27, 47, 112));
-        formPanel.setBorder(new EmptyBorder(0,0, 20, 0));
-        formPanel.setLayout(new GridLayout(2, 2, 10, 10));
-        formPanel.setMaximumSize(new Dimension(500, 100));
-
         // Användarnamn
         JLabel nickLabel = new JLabel("Ange användarnamn:");
         nickLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
@@ -113,30 +100,60 @@ public class GameGUI extends JFrame {
         nicknameField = new JTextField(15);
         nicknameField.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 
-        //Avatar
+        // Avatar
         JLabel avatarLabel = new JLabel("Välj avatar:");
         avatarLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         avatarLabel.setForeground(Color.WHITE);
 
-      // Ladda PNG-bilder
+        // Ladda PNG-bilder
         ImageIcon chicken = loadAvatarIcon("chicken.png");
         ImageIcon panda = loadAvatarIcon("panda(1).png");
-        ImageIcon fox = loadAvatarIcon("bear.png");
+        ImageIcon bear = loadAvatarIcon("bear.png");
+        ImageIcon[] icons = { chicken, panda, bear };
 
-        ImageIcon[] avatarIcons = {chicken, panda, fox};
+        // Panel för avatarknappar
+        JPanel avatarPanel = new JPanel();
+        avatarPanel.setBackground(new Color(27, 47, 112));
+        avatarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
 
-        avatarComboBox = new JComboBox<>(avatarIcons);
-        avatarComboBox.setPreferredSize(new Dimension(120, 70));
-        avatarComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+        for (int i = 0; i < icons.length; i++) {
+            int idx = i;
+            JButton avatarButton = new JButton(icons[i]);
+            avatarButton.setPreferredSize(new Dimension(70, 70));
+            avatarButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+            avatarButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            avatarButton.setFocusPainted(false);
+            avatarButton.setBackground(new Color(27, 47, 112));
 
-        formPanel.add(nickLabel);
-        formPanel.add(nicknameField);
-        formPanel.add(avatarLabel);
-        formPanel.add(avatarComboBox);
+            avatarButton.addActionListener(e -> {
+                selectedAvatarIndex = idx;
+                highlightSelectedAvatar(avatarPanel, idx);
+            });
+            avatarPanel.add(avatarButton);
+        }
 
+        // Formpanel för två rader: användarnamn/avatar
+        JPanel formPanel = new JPanel();
+        formPanel.setBackground(new Color(27, 47, 112));
+        formPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
         formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        centerPanel.add(formPanel);
 
+        JPanel nickRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        nickRow.setOpaque(false);
+        nickRow.add(nickLabel);
+        nickRow.add(nicknameField);
+
+        JPanel avatarRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        avatarRow.setOpaque(false);
+        avatarRow.add(avatarLabel);
+        avatarRow.add(avatarPanel);
+
+        formPanel.add(nickRow);
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(avatarRow);
+
+        centerPanel.add(formPanel);
         centerPanel.add(Box.createVerticalGlue());
 
         // Panel för starta spel
@@ -157,8 +174,12 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Skriv in ett användarnamn först!");
                 return;
             }
+            if (selectedAvatarIndex == -1) {
+                JOptionPane.showMessageDialog(this, "Välj en avatar först!");
+                return;
+            }
 
-            int avatarIndex = avatarComboBox.getSelectedIndex();
+            int avatarIndex = selectedAvatarIndex;
 
             // SKICKAR BÅDE ANVÄNDARNAMN OCH AVATAR TILL SERVERN
             client.sendMessageToServer("START;" + nickname + ";" + avatarIndex);
@@ -170,8 +191,19 @@ public class GameGUI extends JFrame {
         mainPanel.add(startPanel, "START");
     }
 
-    // KATEGORISIDAN
+    // Hovereffekt på avatarknappar
+    private void highlightSelectedAvatar(JPanel panel, int selectedIndex) {
+        for (int i = 0; i < panel.getComponentCount(); i++) {
+            JButton btn = (JButton) panel.getComponent(i);
+            if (i == selectedIndex) {
+                btn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+            } else {
+                btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+            }
+        }
+    }
 
+    // KATEGORISIDAN
     private void buildCategoryPanel() {
         categoryPanel = new JPanel(new BorderLayout());
         categoryPanel.setBackground((new Color(27, 47, 112)));
