@@ -18,6 +18,8 @@ public class GameGUI extends JFrame {
     private JPanel startPanel;
     private JButton startButton;
 
+    private JTextField nicknameField;
+
     // Kategorisidan
     private JPanel categoryPanel;
 
