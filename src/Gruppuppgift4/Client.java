@@ -35,7 +35,7 @@ public class Client {
         }).start();
     }
 
-    public void send(String message){
+    public void sendMessageToServer(String message){
         if(out!=null){
             out.println(message);
             out.flush();

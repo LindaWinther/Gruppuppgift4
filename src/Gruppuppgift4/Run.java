@@ -1,25 +1,27 @@
 package Gruppuppgift4;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Run {
 
-    List<Questions> questions =  new ArrayList<Questions>();
+    List<Questions> questions = new ArrayList<Questions>();
     GameClass game = new GameClass();
+    Set<String> list = new HashSet<String>();
 
     public Run() {
+        questions = game.readList();
+        list = game.checkCategorys(questions);
+        System.out.println(list.size());
+        System.out.println(list);
 
-        game.readList();
-
-        game.searchCategoryFromList();
-
-        questions = game.searchQuestionsFromList();
-
-        System.out.println(questions.get(2).answer);
     }
 
-    void main(){}
+
+    void main() {
+    }
 }
 
 

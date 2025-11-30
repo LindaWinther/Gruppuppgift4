@@ -6,6 +6,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,7 +39,7 @@ public class GameGUI extends JFrame {
     };*/
 
     // Lägger in svar från gameClass
-    private String gameQuestion;
+    private String gameQuestion ;
     private String[] gameAnswers;
 
     private int correctAnswer = 0;
@@ -91,6 +92,10 @@ public class GameGUI extends JFrame {
         centerPanel.add(titleLabel, BorderLayout.NORTH);
 
 
+
+
+
+
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(27, 47, 112));
         buttonPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
@@ -102,10 +107,7 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            loadQuestion(setGameQuestions(), setGameAnswers());
-            lockAnswerButtons(true);
-//            cardLayout.show(mainPanel, "QUESTION");
-            cardLayout.show(mainPanel, "CATEGORY");
+            client.sendMessageToServer("START");
         });
 
         buttonPanel.add(startButton);
@@ -127,46 +129,10 @@ public class GameGUI extends JFrame {
         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
-
-        // LAGT IN TESTKATEGORIER SÅ LÄNGE
-        List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
-        loadCategories(testCategories);
-
-
-      /*  JPanel buttons = new JPanel(new GridLayout(1, 2, 20, 20));
-        *buttons.setBackground(new Color(27, 47, 112));
-        *
-        *JButton djurButton = new JButton("Djur");
-        *JButton naturButton = new JButton("Natur");
-        *
-        *styleCategoryButton(djurButton);
-        *styleCategoryButton(naturButton);
-        *
-        *djurButton.addActionListener(e -> {
-        *    // Kalla på GameClass med kategori djur
-        *   loadQuestion(gameQuestion, gameAnswers);
-        *    lockAnswerButtons(true);
-        *    cardLayout.show(mainPanel, "QUESTION");
-        *});
-        *
-        *naturButton.addActionListener(e -> {
-        *    // Kalla på GameClass med kategori natur
-        *    loadQuestion(gameQuestion, gameAnswers);
-        *    lockAnswerButtons(true);
-        *    cardLayout.show(mainPanel, "QUESTION");
-        *});
-        *
-        *buttons.add(djurButton);
-        *buttons.add(naturButton);
-        *
-        *categoryPanel.add(buttons, BorderLayout.CENTER);
-      */
         mainPanel.add(categoryPanel, "CATEGORY");
     }
 
-    // NYTT FÖR DYNAMISKA KATEGORIKNAPPAR
-
-    private void loadCategories(List<String> categories) {
+    public void loadCategories(List<String> categories) {
         JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 20, 20));
         buttonsPanel.setBackground(new Color(27, 47, 112));
 
@@ -175,8 +141,8 @@ public class GameGUI extends JFrame {
             styleCategoryButton(btn);
 
             btn.addActionListener(e-> {
-                // Skicka kategori till GameClass
-                loadQuestion(gameQuestion, gameAnswers);
+                // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
+                client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
                 lockAnswerButtons(true);
                 cardLayout.show(mainPanel, "QUESTION");
             });
@@ -185,10 +151,6 @@ public class GameGUI extends JFrame {
         }
         categoryPanel.add(buttonsPanel, BorderLayout.CENTER);
     }
-
-
-
-
 
     private void styleCategoryButton(JButton btn) {
         btn.setFont(new Font("Segoe UI", Font.BOLD, 24));
@@ -241,6 +203,9 @@ public class GameGUI extends JFrame {
         }
     }
 
+
+
+
     private void lockAnswerButtons(boolean enabled) {
         for (JButton btn : answerButtons) {
             btn.setEnabled(enabled);
@@ -249,8 +214,7 @@ public class GameGUI extends JFrame {
 
     // Färgar svaret
     private void checkAnswer(int index) {
-
-        client.send(answerButtons[index].getText());
+        client.sendMessageToServer("SVAR;" + answerButtons[index].getText());
         if (index == correctAnswer) {
             answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
         } else {
@@ -259,37 +223,55 @@ public class GameGUI extends JFrame {
         lockAnswerButtons(false);
     }
 
-    public String setGameQuestions() {
+//    public String setGameQuestions() {
+//        game.readList();
+//        questions = game.searchCategoryFromList();
+//        gameQuestion = questions.getFirst().question;
+//        setGameAnswers();
+//        return gameQuestion;
+//    }
+//
+//    public String[] setGameAnswers() {
+//        gameQuestion = questions.get(0).question;
+//        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
+//        questions.get(0).setAnswer(gameAnswers[0]);
+//        return gameAnswers;
+//    }
 
-        game.readList();
-        questions = game.searchCategoryFromList();
-        gameQuestion = questions.getFirst().question;
-        setGameAnswers();
-        return gameQuestion;
-    }
-
-    public String[] setGameAnswers() {
-        gameQuestion = questions.get(0).question;
-        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-        questions.get(0).setAnswer(gameAnswers[0]);
-        return gameAnswers;
-    }
-
-    public void receiveFromServer(String fromServer) {
+    public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (fromServer.startsWith("Fråga;")) {
-                String[] parts = fromServer.split(";");
-                String fråga = parts[1];
-                String[] answers = {parts[2], parts[3], parts[4], parts[5]};
-                loadQuestion(fråga, answers);
+            if (messageFromServer.equals("DIN_TUR")) {
+                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
             }
-            if (fromServer.equals("Rätt!")) {
+            if (messageFromServer.equals("INTE_DIN_TUR")) {
+                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
+            }
+            if(messageFromServer.startsWith("KATEGORIER;")){
+                cardLayout.show(mainPanel, "CATEGORY");
+                String[] parts =  messageFromServer.split(";");
+                //jag måste göra om det från en string till en list eftersom sendMessageToClient tar bara en sträng just nu, och loadCategories tar en list.
+                //Det är nog någonting som går att ändra antingen i sendMessageToClient eller loadCategories. För det här känns inte supersmart, men det funkar.
+                List<String> stringToList = new ArrayList<>();
+                for(int i = 1; i < parts.length; i++){
+                    stringToList.add(parts[i]);
+                }
+                //test
+                System.out.println(stringToList);
+                loadCategories(stringToList);
+            }
+            if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
+                cardLayout.show(mainPanel, "QUESTION");
+                String[] parts = messageFromServer.split(";");
+                loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
+            }
+            if (messageFromServer.equals("RÄTT")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (fromServer.equals("Fel!")) {
+            if (messageFromServer.equals("FEL")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
-            if (fromServer.equals("GAME_OVER")) {
+            //gör inget just nu, kan användas för en exit knapp i framtiden
+            if (messageFromServer.equals("GAME_OVER")) {
                 JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }
         });
