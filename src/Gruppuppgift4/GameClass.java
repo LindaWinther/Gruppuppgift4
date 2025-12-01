@@ -81,9 +81,7 @@ public class GameClass {
             if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);
             }
-
         }
-
         return categoryList;
     }
     public List<Questions> clearList(List<Questions> questions) {
@@ -150,7 +148,7 @@ public class GameClass {
 //        wrongList.get(0).setAnswer(gameAnswers[0]);
 //        return gameAnswers;
 //    }
-//}
+
 
 /*
  *
@@ -176,5 +174,23 @@ public class GameClass {
 
  *lägger ut på
  *
+ *
+ *     public List<Questions> searchCategoryFromList(String category) {
+        for (Questions q2 : completeList) {
+            if (q2.category.equalsIgnoreCase(category)) {
+                categoryList.add(q2);
+            }
+        }if (category.equalsIgnoreCase("DJUR")) {
+            return  categoryListDjur;
+        }else if (category.equalsIgnoreCase("Natur")) {
+            return  categoryListNatur;
+        }
+        else if (category.equalsIgnoreCase("SPORT")) {
+            return  categoryListSport;
+        }else if (category.equalsIgnoreCase("Category")) {
+            return  categoryList;
+        }else
+        return null;
+    }
  * */
 
