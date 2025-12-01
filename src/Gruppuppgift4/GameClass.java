@@ -7,10 +7,15 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class GameClass {
-//    String gameQuestion;
-//    String[] gameAnswers;
-//    String p1 = "Player1";
-//    String p2 = "Player2";
+
+
+    Config config = new Config();
+
+    int QuestionsinRound = config.getQuestionsinRound();
+    int roundsInGame = config.getRoundsInGame();
+
+    String p1 = "Player1";
+    String p2 = "Player2";
     List<Questions> completeList = new ArrayList<>();
     List<Questions> completeListUse = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();

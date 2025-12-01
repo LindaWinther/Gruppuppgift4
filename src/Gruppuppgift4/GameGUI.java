@@ -3,8 +3,6 @@ package Gruppuppgift4;
 import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +17,9 @@ public class GameGUI extends JFrame {
     private JPanel startPanel;
     private JButton startButton;
 
+    private JTextField nicknameField;
+    private int selectedAvatarIndex = -1;
+
     // Kategorisidan
     private JPanel categoryPanel;
 
@@ -26,15 +27,7 @@ public class GameGUI extends JFrame {
     private JPanel questionPanel;
     private JLabel questionLabel;
     private JButton[] answerButtons;
-
-
     private JLabel titleLabel;
-
-    // Test för fråga och svar
-    /*    private String gameQuestion = "Vilken dag kommer efter måndag?";
-    private String[] gameAnswers = {
-            "Tisdag", "Fredag", "Söndag", "Torsdag"
-    };*/
 
     // Lägger in svar från gameClass
     private String gameQuestion ;
@@ -50,7 +43,6 @@ public class GameGUI extends JFrame {
     private Client client;
 
     public GameGUI() {
-
         client = new Client(this);
         client.start();
 
@@ -73,27 +65,98 @@ public class GameGUI extends JFrame {
 
     }
 
-    // STARTSIDAN
+    // Ladda in rätt storlek på ikoner
+    private ImageIcon loadAvatarIcon(String fileName){
+        String path =  "src/Gruppuppgift4/avatarImages/" + fileName;
+        ImageIcon original = new ImageIcon(path);
+        Image scaled = original.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
+        return new ImageIcon(scaled);
+    }
 
+    // STARTSIDAN
     private void buildStartPanel() {
         startPanel = new JPanel(new BorderLayout());
         startPanel.setBackground(new Color(50, 75, 136));
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        // Centerpanel, titel, formulär, knapp
+        JPanel centerPanel = new JPanel();
         centerPanel.setBackground(new Color(27, 47, 112));
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         startPanel.add(centerPanel, BorderLayout.CENTER);
 
+        // Titel
         titleLabel = new JLabel("Quizduellen", SwingConstants.CENTER);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 48));
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setBorder(new EmptyBorder(40, 0, 40, 0));
-        centerPanel.add(titleLabel, BorderLayout.NORTH);
+        centerPanel.add(titleLabel);
 
+        // Användarnamn
+        JLabel nickLabel = new JLabel("Ange användarnamn:");
+        nickLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        nickLabel.setForeground(Color.WHITE);
 
+        nicknameField = new JTextField(15);
+        nicknameField.setFont(new Font("Segoe UI", Font.PLAIN, 20));
 
+        // Avatar
+        JLabel avatarLabel = new JLabel("Välj avatar:");
+        avatarLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        avatarLabel.setForeground(Color.WHITE);
 
+        // Ladda PNG-bilder
+        ImageIcon chicken = loadAvatarIcon("chicken.png");
+        ImageIcon panda = loadAvatarIcon("panda(1).png");
+        ImageIcon bear = loadAvatarIcon("bear.png");
+        ImageIcon[] icons = { chicken, panda, bear };
 
+        // Panel för avatarknappar
+        JPanel avatarPanel = new JPanel();
+        avatarPanel.setBackground(new Color(27, 47, 112));
+        avatarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
 
+        for (int i = 0; i < icons.length; i++) {
+            int idx = i;
+            JButton avatarButton = new JButton(icons[i]);
+            avatarButton.setPreferredSize(new Dimension(70, 70));
+            avatarButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+            avatarButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            avatarButton.setFocusPainted(false);
+            avatarButton.setBackground(new Color(27, 47, 112));
+
+            avatarButton.addActionListener(e -> {
+                selectedAvatarIndex = idx;
+                highlightSelectedAvatar(avatarPanel, idx);
+            });
+            avatarPanel.add(avatarButton);
+        }
+
+        // Formpanel för två rader: användarnamn/avatar
+        JPanel formPanel = new JPanel();
+        formPanel.setBackground(new Color(27, 47, 112));
+        formPanel.setBorder(new EmptyBorder(0, 0, 20, 0));
+        formPanel.setLayout(new BoxLayout(formPanel, BoxLayout.Y_AXIS));
+        formPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel nickRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        nickRow.setOpaque(false);
+        nickRow.add(nickLabel);
+        nickRow.add(nicknameField);
+
+        JPanel avatarRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
+        avatarRow.setOpaque(false);
+        avatarRow.add(avatarLabel);
+        avatarRow.add(avatarPanel);
+
+        formPanel.add(nickRow);
+        formPanel.add(Box.createVerticalStrut(10));
+        formPanel.add(avatarRow);
+
+        centerPanel.add(formPanel);
+        centerPanel.add(Box.createVerticalGlue());
+
+        // Panel för starta spel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(27, 47, 112));
         buttonPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
@@ -105,17 +168,42 @@ public class GameGUI extends JFrame {
         startButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         startButton.addActionListener(e -> {
-            client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+            String nickname = nicknameField.getText().trim();
+
+            if  (nickname.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Skriv in ett användarnamn först!");
+                return;
+            }
+            if (selectedAvatarIndex == -1) {
+                JOptionPane.showMessageDialog(this, "Välj en avatar först!");
+                return;
+            }
+
+            int avatarIndex = selectedAvatarIndex;
+
+            // SKICKAR BÅDE ANVÄNDARNAMN OCH AVATAR TILL SERVERN
+            client.sendMessageToServer("START;" + nickname + ";" + avatarIndex);
         });
 
         buttonPanel.add(startButton);
-        centerPanel.add(buttonPanel, BorderLayout.CENTER);
+        centerPanel.add(buttonPanel);
 
         mainPanel.add(startPanel, "START");
     }
 
-    // KATEGORISIDAN
+    // Hovereffekt på avatarknappar
+    private void highlightSelectedAvatar(JPanel panel, int selectedIndex) {
+        for (int i = 0; i < panel.getComponentCount(); i++) {
+            JButton btn = (JButton) panel.getComponent(i);
+            if (i == selectedIndex) {
+                btn.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+            } else {
+                btn.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+            }
+        }
+    }
 
+    // KATEGORISIDAN
     private void buildCategoryPanel() {
         categoryPanel = new JPanel(new BorderLayout());
         categoryPanel.setBackground((new Color(27, 47, 112)));
@@ -127,8 +215,6 @@ public class GameGUI extends JFrame {
         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
-
-        // LAGT IN TESTKATEGORIER SÅ LÄNGE
         mainPanel.add(categoryPanel, "CATEGORY");
     }
 
@@ -203,9 +289,6 @@ public class GameGUI extends JFrame {
         }
     }
 
-
-
-
     private void lockAnswerButtons(boolean enabled) {
         for (JButton btn : answerButtons) {
             btn.setEnabled(enabled);
@@ -240,6 +323,12 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
+            if (messageFromServer.equals("DIN_TUR")) {
+                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+            }
+            if (messageFromServer.equals("INTE_DIN_TUR")) {
+                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
+            }
             if(messageFromServer.startsWith("KATEGORIER;")){
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
@@ -258,12 +347,13 @@ public class GameGUI extends JFrame {
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (messageFromServer.equals("RÄTT!")) {
+            if (messageFromServer.equals("RÄTT")) {
                 JOptionPane.showMessageDialog(this, "Rätt!");
             }
-            if (messageFromServer.equals("FEL!")) {
+            if (messageFromServer.equals("FEL")) {
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
+            //gör inget just nu, kan användas för en exit knapp i framtiden
             if (messageFromServer.equals("GAME_OVER")) {
                 JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }

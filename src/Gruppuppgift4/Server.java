@@ -32,7 +32,11 @@ public class Server {
         ClientHandler s1 = new ClientHandler(p1, '1');
         ClientHandler s2 = new ClientHandler(p2, '2');
 
+        s1.opponent = s2;
+        s2.opponent = s1;
+
         s1.start();
         s2.start();
+
     }
 }
