@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
-                if (messageToServer.equals("START") && playerNumber == '1') {
+                if (messageToServer.startsWith("START;") && playerNumber == '1') {
                     myTurn = true;
                     sendMessageToClient("DIN_TUR");
                     opponent.sendMessageToClient("INTE_DIN_TUR");
