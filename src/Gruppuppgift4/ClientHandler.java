@@ -19,6 +19,7 @@ public class ClientHandler extends Thread {
     List<Questions> listanSomSkapas = new ArrayList<>();
 
     ClientHandler opponent;
+    boolean readyToStart;
     boolean myTurn = false;
     String nickname;
     int avatarIndex;
@@ -48,7 +49,11 @@ public class ClientHandler extends Thread {
                     nickname = parts[1];
                     avatarIndex = Integer.parseInt(parts[2]);
 
-                    if (opponent != null && opponent.nickname != null){
+                    readyToStart = true;
+
+
+                    //kontroll om båda spelarana har skrivit in användarnamn/avatar
+                    if(opponent != null && readyToStart){
 
                         sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
                         opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
