@@ -24,8 +24,6 @@ public class ClientHandler extends Thread {
     int avatarIndex;
 
 
-    ClientHandler opponent;
-
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
