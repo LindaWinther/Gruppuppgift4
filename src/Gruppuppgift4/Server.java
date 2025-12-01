@@ -23,7 +23,7 @@ public class Server {
         //Questions q1 = questions.get(0)
         // Questions q2 = questions.get(1);
 
-        ServerSocket server = new ServerSocket(55555);
+        ServerSocket server = new ServerSocket(55551);
         System.out.println("Server is running!");
 
         Socket p1 = server.accept();
