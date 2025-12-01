@@ -7,20 +7,37 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class GameClass {
-
-    String p1 = "Player1";
-    String p2 = "Player2";
+//    String gameQuestion;
+//    String[] gameAnswers;
+//    String p1 = "Player1";
+//    String p2 = "Player2";
     List<Questions> completeList = new ArrayList<>();
+    List<Questions> completeListUse = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
+    List<Questions> categoryListDjur = new ArrayList<>();
+    List<Questions> categoryListNatur = new ArrayList<>();
+    List<Questions> categoryListSport = new ArrayList<>();
+    List<Questions> categoryListCategory = new ArrayList<>();
     List<Questions> activeList = new ArrayList<>();
     List<Questions> wrongList = new ArrayList<>();
     //    List<Questions> listOfCategory = new ArrayList<>();
-    String gameQuestion;
-    String[] gameAnswers;
+
     Set<String> listOfCategory = new HashSet<String>();
+    String natur = "natur";
+    Questions question;
 
 
     public GameClass() {
+        completeListUse= readList();
+        categoryListDjur = searchCategoryFromList("DJUR");
+        categoryListNatur = searchCategoryFromList(natur);
+        categoryListSport = searchCategoryFromList("SPORT");
+        categoryListCategory =  searchCategoryFromList("CATEGORY");
+        question=randomQuestion("djur");
+
+
+
+
     }
 
     public List<Questions> readList() {
@@ -66,14 +83,26 @@ public class GameClass {
             if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);
             }
+        }if (category.equalsIgnoreCase("DJUR")) {
+            return  categoryListDjur;
+        }else if (category.equalsIgnoreCase("Natur")) {
+            return  categoryListNatur;
         }
-        return categoryList;
+        else if (category.equalsIgnoreCase("SPORT")) {
+            return  categoryListSport;
+        }else if (category.equalsIgnoreCase("Category")) {
+            return  categoryList;
+        }else
+        return null;
     }
 
-    public Questions randomQuestion() {
+    public Questions randomQuestion(String category) {
 
         Random rand = new Random();
 //        int siffra = rand.nextInt(0, categoryList.size());
+        if (category.equals("DJUR")) {
+            return categoryListDjur.get(rand.nextInt(categoryListDjur.size()));
+        }
 //        categoryList.get(siffra);
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));

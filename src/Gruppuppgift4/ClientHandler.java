@@ -36,7 +36,7 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             GameClass game = new GameClass();
-            listanSomSkapas = game.readList();
+//            listanSomSkapas = game.readList();
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
@@ -46,7 +46,7 @@ public class ClientHandler extends Thread {
 //                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
                     Set<String> testCategories = new HashSet<String>(); //byt nman
-                    testCategories = game.checkCategorys(listanSomSkapas);
+                    testCategories = game.checkCategorys(game.completeList);
                     System.out.println(testCategories);
 
 
@@ -70,7 +70,7 @@ public class ClientHandler extends Thread {
                         listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
                              System.out.println(listanSomSkapas);
                     System.out.println(listanSomSkapas.size());
-                        currentQuestion = game.randomQuestion();
+//                        currentQuestion = game.randomQuestion(temp);
 //                    Set<String> testCategories = game.searchCategoryFromList();
 //                   List<Questions> list = game.searchCategoryFromList();
 //                    currentQuestion = listanSomSkapas.get(0);
