@@ -105,9 +105,15 @@ public class GameClass {
 }
 
 
-    public Questions randomQuestion() {
 
-        Random rand = new Random();
+
+
+//    public
+//}
+
+//    public Questions randomQuestion(String category) {}
+
+//        Random rand = new Random();
 //        int siffra = rand.nextInt(0, categoryList.size());
 //        if (category.equalsIgnoreCase("DJUR")) {
 //            categoryListDjur = searchCategoryFromList("DJUR");
@@ -144,7 +150,7 @@ public class GameClass {
 //        wrongList.get(0).setAnswer(gameAnswers[0]);
 //        return gameAnswers;
 //    }
-//}
+
 
 /*
  *
@@ -170,5 +176,23 @@ public class GameClass {
 
  *lägger ut på
  *
+ *
+ *     public List<Questions> searchCategoryFromList(String category) {
+        for (Questions q2 : completeList) {
+            if (q2.category.equalsIgnoreCase(category)) {
+                categoryList.add(q2);
+            }
+        }if (category.equalsIgnoreCase("DJUR")) {
+            return  categoryListDjur;
+        }else if (category.equalsIgnoreCase("Natur")) {
+            return  categoryListNatur;
+        }
+        else if (category.equalsIgnoreCase("SPORT")) {
+            return  categoryListSport;
+        }else if (category.equalsIgnoreCase("Category")) {
+            return  categoryList;
+        }else
+        return null;
+    }
  * */
 
