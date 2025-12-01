@@ -9,10 +9,9 @@ import java.util.*;
 public class GameClass {
 
 
-    Config config = new Config();
-
-    int QuestionsinRound = config.getQuestionsinRound();
-    int roundsInGame = config.getRoundsInGame();
+//    Config config = new Config();
+//    int QuestionsinRound = config.getQuestionsinRound();
+//    int roundsInGame = config.getRoundsInGame();
 
     String p1 = "Player1";
     String p2 = "Player2";
