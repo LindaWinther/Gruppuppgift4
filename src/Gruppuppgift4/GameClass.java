@@ -9,24 +9,41 @@ import java.util.*;
 public class GameClass {
 
 
-    Config config = new Config();
+//    Config config = new Config();//
+//    int QuestionsinRound = config.getQuestionsinRound();
+//    int roundsInGame = config.getRoundsInGame();
 
-    int QuestionsinRound = config.getQuestionsinRound();
-    int roundsInGame = config.getRoundsInGame();
 
-    String p1 = "Player1";
-    String p2 = "Player2";
     List<Questions> completeList = new ArrayList<>();
+    List<Questions> listOfGameQuest = new ArrayList<>();
+
+    //    List<Questions> completeListUse = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
-    List<Questions> activeList = new ArrayList<>();
-    List<Questions> wrongList = new ArrayList<>();
+//    List<Questions> categoryListDjur = new ArrayList<>();
+//    List<Questions> categoryListNatur = new ArrayList<>();
+//    List<Questions> categoryListSport = new ArrayList<>();
+//    List<Questions> categoryListCategory = new ArrayList<>();
+//    List<Questions> activeList = new ArrayList<>();
+//    List<Questions> wrongList = new ArrayList<>();
     //    List<Questions> listOfCategory = new ArrayList<>();
-    String gameQuestion;
-    String[] gameAnswers;
+
     Set<String> listOfCategory = new HashSet<String>();
+    String natur = "natur";
+    Questions question;
 
 
     public GameClass() {
+        readList();
+//        categoryListDjur = searchCategoryFromList("DJUR");
+//        categoryListNatur = searchCategoryFromList(natur);
+//        categoryListSport = searchCategoryFromList("SPORT");
+//        categoryListCategory = searchCategoryFromList("CATEGORY");
+
+        checkCategorys(completeList);
+//        listOfCategory=checkCategorys(completeList);
+//        question=randomQuestion("djur");
+
+
     }
 
     public List<Questions> readList() {
@@ -57,41 +74,59 @@ public class GameClass {
 
         return listOfCategory;
     }
-//    Set<String> kategorier = new HashSet<>();
 
-//for (Questions q : completeList) {
-//        kategorier.add(q.category);
-//    }
-//
-//    int antalKategorier = kategorier.size();
-//
-//System.out.println("Antal unika kategorier: " + antalKategorier);
 
     public List<Questions> searchCategoryFromList(String category) {
         for (Questions q2 : completeList) {
             if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);
             }
+
         }
+
         return categoryList;
     }
+    public List<Questions> clearList(List<Questions> questions) {
+        questions.clear();
+        return questions;
+    }
+
+    public List<Questions> listOfGameQuestions (List<Questions> categoryList) {
+        Collections.shuffle(categoryList);
+        for (Questions q : categoryList) {
+            if(q.unused){
+                listOfGameQuest.add(q);
+                q.unused = false;
+            }
+        }
+        return listOfGameQuest;
+    }
+
+}
+
 
     public Questions randomQuestion() {
 
         Random rand = new Random();
 //        int siffra = rand.nextInt(0, categoryList.size());
+//        if (category.equalsIgnoreCase("DJUR")) {
+//            categoryListDjur = searchCategoryFromList("DJUR");
+//            return categoryListDjur.get(rand.nextInt(categoryListDjur.size()));
+//        }
 //        categoryList.get(siffra);
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
 //        activeList.add(categoryList.get(siffra));
         // Fixa så den lägger in 3 olika RANDOMS
-        return categoryList.get(rand.nextInt(categoryList.size())); //?
+
+//            return categoryList.get(rand.nextInt(categoryList.size())); //?}
+
 
 
 //    return activeList;
 
-    }
-}
+//    }
+//}
 //    public String setGameQuestions() {
 //        readList();
 //        wrongList = searchCategoryFromList();
