@@ -12,7 +12,7 @@ public class Config {
         try {
             prop.load(new FileInputStream("src/config.properties"));
         } catch (IOException e) {
-            throw new RuntimeException("Kunne ikke lese config.properties");
+            throw new RuntimeException("Kunde inte läsa config.properties");
         }
     }
 
