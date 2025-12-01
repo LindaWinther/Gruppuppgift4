@@ -17,6 +17,8 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
     List<Questions> listanSomSkapas = new ArrayList<>();
+
+    ClientHandler opponent;
     boolean myTurn = false;
     String nickname;
     int avatarIndex;
