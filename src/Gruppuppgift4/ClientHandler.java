@@ -17,9 +17,12 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
     List<Questions> listanSomSkapas = new ArrayList<>();
+    boolean myTurn = false;
+    String nickname;
+    int avatarIndex;
+
 
     ClientHandler opponent;
-    boolean myTurn = false;
 
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
@@ -40,10 +43,19 @@ public class ClientHandler extends Thread {
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
-                if (messageToServer.equals("START") && playerNumber == '1') {
-                    myTurn = true;
-                    sendMessageToClient("DIN_TUR");
-                    opponent.sendMessageToClient("INTE_DIN_TUR");
+                if (messageToServer.startsWith("START;")) {
+                    String[] parts = messageToServer.split(";");
+                    nickname = parts[1];
+                    avatarIndex = Integer.parseInt(parts[2]);
+
+                    System.out.println(nickname);
+                    System.out.println(avatarIndex);
+
+                    if (playerNumber == '1') {
+                        myTurn = true;
+                        sendMessageToClient("DIN_TUR");
+                        opponent.sendMessageToClient("INTE_DIN_TUR");
+                    }
                     continue;
                 }
 
