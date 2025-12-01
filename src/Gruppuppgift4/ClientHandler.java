@@ -48,9 +48,6 @@ public class ClientHandler extends Thread {
                     nickname = parts[1];
                     avatarIndex = Integer.parseInt(parts[2]);
 
-                    System.out.println(nickname);
-                    System.out.println(avatarIndex);
-
                     if (playerNumber == '1') {
                         myTurn = true;
                         sendMessageToClient("DIN_TUR");
@@ -67,7 +64,7 @@ public class ClientHandler extends Thread {
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
                     //Kod för att välja kategorier här
-//                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
+                    //List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
                     Set<String> testCategories = new HashSet<String>(); //byt nman
                     testCategories = game.checkCategorys(listanSomSkapas);
