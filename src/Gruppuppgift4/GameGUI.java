@@ -250,7 +250,7 @@ public class GameGUI extends JFrame {
         buttonPanel.setBackground(new Color(27, 47, 112));
         buttonPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
 
-        startButton = new JButton("Starta nytt spel");
+        startButton = new JButton("Login");
         startButton.setFont(new Font("Segoe UI", Font.BOLD, 24));
         startButton.setForeground(Color.white);
         startButton.setBackground(new Color(82, 217, 41));
@@ -273,6 +273,9 @@ public class GameGUI extends JFrame {
 
             updateMyPlayerHeader();
             headerInfoPanel.setVisible(true);
+
+            startButton.setEnabled(false);
+            startButton.setText("Väntar på motståndaren");
 
             // SKICKAR BÅDE ANVÄNDARNAMN OCH AVATAR TILL SERVERN
             client.sendMessageToServer("START;" + nickname + ";" + myAvatarIndex);
@@ -426,18 +429,21 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
-            if (messageFromServer.equals("DIN_TUR")) {
-                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
-            }
-            if (messageFromServer.equals("INTE_DIN_TUR")) {
-                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
-            }
+
             if (messageFromServer.startsWith("FIENDEN_REGISTRERAD;")){
                 String [] parts = messageFromServer.split(";");
                 String name = parts [1];
                 int avatarIndex = Integer.parseInt(parts[2]);
                 updateOppHeader(name, avatarIndex);
+                startButton.setEnabled(true);
+                startButton.setText("Starta nytt spel");
+            }
 
+            if (messageFromServer.equals("DIN_TUR")) {
+                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+            }
+            if (messageFromServer.equals("INTE_DIN_TUR")) {
+                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
                 cardLayout.show(mainPanel, "CATEGORY");

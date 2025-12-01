@@ -49,22 +49,22 @@ public class ClientHandler extends Thread {
                     nickname = parts[1];
                     avatarIndex = Integer.parseInt(parts[2]);
 
+                    //kontroll om båda spelarana har skrivit in användarnamn/avatar
                     readyToStart = true;
 
-
-                    //kontroll om båda spelarana har skrivit in användarnamn/avatar
-                    if(opponent != null && readyToStart){
-
-                        sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
-                        opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
-
-                        if (playerNumber == '1') {
-                            myTurn = true;
-                            sendMessageToClient("DIN_TUR");
-                            opponent.sendMessageToClient("INTE_DIN_TUR");
-                        }
-
+                    if (opponent == null || !opponent.readyToStart) {
+                        continue;
                     }
+
+                    sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
+                    opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
+
+                    if (playerNumber == '1') {
+                        myTurn = true;
+                        sendMessageToClient("DIN_TUR");
+                        opponent.sendMessageToClient("INTE_DIN_TUR");
+                    }
+
                     continue;
                 }
 
