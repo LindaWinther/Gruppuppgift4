@@ -19,9 +19,11 @@ public class GameClass {
 
     //    List<Questions> completeListUse = new ArrayList<>();
     List<Questions> categoryList = new ArrayList<>();
-//    List<Questions> categoryListDjur = new ArrayList<>();
-//    List<Questions> categoryListNatur = new ArrayList<>();
-//    List<Questions> categoryListSport = new ArrayList<>();
+    List<Questions> categoryListDjur = new ArrayList<>();
+    List<Questions> categoryListNatur = new ArrayList<>();
+    List<Questions> categoryListSport = new ArrayList<>();
+
+    Set<Questions> categorySet = new HashSet<>();
 //    List<Questions> categoryListCategory = new ArrayList<>();
 //    List<Questions> activeList = new ArrayList<>();
 //    List<Questions> wrongList = new ArrayList<>();
@@ -34,9 +36,9 @@ public class GameClass {
 
     public GameClass() {
         readList();
-//        categoryListDjur = searchCategoryFromList("DJUR");
-//        categoryListNatur = searchCategoryFromList(natur);
-//        categoryListSport = searchCategoryFromList("SPORT");
+        categoryListDjur = searchCategoryFromList("DJUR");
+        categoryListNatur = searchCategoryFromList(natur);
+        categoryListSport = searchCategoryFromList("SPORT");
 //        categoryListCategory = searchCategoryFromList("CATEGORY");
 
         checkCategorys(completeList);
@@ -74,9 +76,18 @@ public class GameClass {
 
         return listOfCategory;
     }
+//    public Set<Questions> getListByCategory(String category) {
+//        for (Questions q : completeList) {
+//            if (q.category.equals(category)) {
+//                categoryList.add(q);
+//            }
+//        }
+//        return categorySet;
+//    }
 
 
     public List<Questions> searchCategoryFromList(String category) {
+
         for (Questions q2 : completeList) {
             if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);
@@ -95,9 +106,33 @@ public class GameClass {
             if(q.unused){
                 listOfGameQuest.add(q);
                 q.unused = false;
+
             }
+
         }
         return listOfGameQuest;
+    }
+
+    public Questions getQuestions(String category, List<Questions> completeList ) {
+        Collections.shuffle(completeList);
+        for (Questions q : completeList) {
+            if (q.category.equalsIgnoreCase(category) && q.unused ) {
+                int i = completeList.indexOf(q);
+                completeList.get(i).unused = false;
+                return completeList.get(i);
+            }
+        } return null;
+    }
+    public Questions getNextQ(List<Questions> hotdog) {
+        for (Questions q : hotdog) {
+            if (q.unused) {
+                 int i = hotdog.indexOf(q);
+                 hotdog.get(i).unused = false;
+
+                return hotdog.get(i);
+            }
+
+        }return null;
     }
 
 }

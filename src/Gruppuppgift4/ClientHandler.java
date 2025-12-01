@@ -84,19 +84,37 @@ public class ClientHandler extends Thread {
                     String temp =  messageToServer.split(";")[1];
 //                    String temp =  messageToServer.substring(messageToServer.indexOf(";")+1);
                     System.out.println(temp);
+
 //                        listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
 //                             System.out.println(listanSomSkapas);
+                    listanSomSkapas= game.completeList;
+                    currentQuestion = game.getQuestions(temp,listanSomSkapas);
+
+//                        listanSomSkapas = game.getQuestions(temp,game.completeList,listanSomSkapas);
 //                    System.out.println(listanSomSkapas.size());
-                    listanSomSkapas = game.clearList(listanSomSkapas);
-                    listanSomSkapas=game.searchCategoryFromList(temp);
-                    System.out.println(listanSomSkapas);
-                    System.out.println(listanSomSkapas.size());
-                    listanSomSkapas= game.listOfGameQuestions(listanSomSkapas);
-//                    System.out.println(listan2);
-                    System.out.println(listanSomSkapas);
-                    System.out.println(listanSomSkapas.size());
-                        currentQuestion = listanSomSkapas.getFirst();
-                    System.out.println(game.listOfGameQuest.getFirst());
+//                        currentQuestion = game.getNextQ(listanSomSkapas);
+//                    System.out.println(currentQuestion.getCategory());
+//                    System.out.println(currentQuestion.isUnused());
+//                    listanSomSkapas.clear();
+//                    System.out.println("listan rensas");
+//                    System.out.println(listanSomSkapas.size());
+//                    System.out.println("listans storlek");
+//                   listanSomSkapas = game.clearList(listanSomSkapas);
+//                    listanSomSkapas=game.searchCategoryFromList(temp);
+//                    System.out.println("skapar ny lista baserat på val");
+//                  System.out.println(listanSomSkapas);
+//                    System.out.println(listanSomSkapas.size());
+//                    System.out.println("listans nya storlek");
+//                    listanSomSkapas= game.listOfGameQuestions(listanSomSkapas);
+//                   System.out.println(listan2);
+//                  System.out.println(listanSomSkapas);
+//                    System.out.println(listanSomSkapas.size());
+//                    sendMessageToClient("kollar storlek efter ha laddat frågor");
+//                    System.out.println(listanSomSkapas.getFirst().isUnused());
+//                        currentQuestion = listanSomSkapas.getFirst();
+//                    System.out.println("Skickar ut första frågan");
+//                    System.out.println(game.listOfGameQuest.getFirst());
+//                    System.out.println(game.listOfGameQuest.getFirst().isUnused());
 //                    Set<String> testCategories = game.searchCategoryFromList();
 //                   List<Questions> list = game.searchCategoryFromList();
 //                    currentQuestion = listanSomSkapas.get(0);
@@ -130,7 +148,9 @@ public class ClientHandler extends Thread {
                 sendMessageToClient("INTE_DIN_TUR");
 
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessageToClient(String message){
