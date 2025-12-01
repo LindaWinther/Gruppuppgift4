@@ -17,6 +17,7 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
     List<Questions> listanSomSkapas = new ArrayList<>();
+    List<Questions> listan2 = new ArrayList<>();
 
     ClientHandler opponent;
     boolean myTurn = false;
@@ -36,7 +37,7 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             GameClass game = new GameClass();
-            listanSomSkapas = game.readList();
+//            listanSomSkapas = game.readList();
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
@@ -58,13 +59,16 @@ public class ClientHandler extends Thread {
 //                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
                     Set<String> testCategories = new HashSet<String>(); //byt nman
-                    testCategories = game.checkCategorys(listanSomSkapas);
+//                    testCategories = game.checkCategorys(listanSomSkapas);
+                    testCategories = game.listOfCategory;
+
                     System.out.println(testCategories);
+                    System.out.println(game.listOfCategory);
 
 
                     sendMessageToClient("KATEGORIER;" + String.join(";",testCategories));
                     //test
-                    System.out.println("KATEGORIER;" + String.join(";",testCategories));
+//                    System.out.println("KATEGORIER;" + String.join(";",testCategories));
                     continue;
                 }
 
@@ -80,10 +84,19 @@ public class ClientHandler extends Thread {
                     String temp =  messageToServer.split(";")[1];
 //                    String temp =  messageToServer.substring(messageToServer.indexOf(";")+1);
                     System.out.println(temp);
-                        listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
-                             System.out.println(listanSomSkapas);
+//                        listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
+//                             System.out.println(listanSomSkapas);
+//                    System.out.println(listanSomSkapas.size());
+                    listanSomSkapas = game.clearList(listanSomSkapas);
+                    listanSomSkapas=game.searchCategoryFromList(temp);
+                    System.out.println(listanSomSkapas);
                     System.out.println(listanSomSkapas.size());
-                        currentQuestion = game.randomQuestion(temp);
+                    listanSomSkapas= game.listOfGameQuestions(listanSomSkapas);
+//                    System.out.println(listan2);
+                    System.out.println(listanSomSkapas);
+                    System.out.println(listanSomSkapas.size());
+                        currentQuestion = listanSomSkapas.getFirst();
+                    System.out.println(game.listOfGameQuest.getFirst());
 //                    Set<String> testCategories = game.searchCategoryFromList();
 //                   List<Questions> list = game.searchCategoryFromList();
 //                    currentQuestion = listanSomSkapas.get(0);
@@ -97,6 +110,7 @@ public class ClientHandler extends Thread {
                     // p1 ansluter, p2, ansluter, server generar kategori, genererar fråga, sparar den, skicckar till p1, väntar på svar, när svar fås skicka till p2 ? programeras i spel eller server?
 
                     sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+
                     continue;
                 }
 
