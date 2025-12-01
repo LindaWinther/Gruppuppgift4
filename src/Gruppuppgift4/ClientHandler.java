@@ -48,10 +48,17 @@ public class ClientHandler extends Thread {
                     nickname = parts[1];
                     avatarIndex = Integer.parseInt(parts[2]);
 
-                    if (playerNumber == '1') {
-                        myTurn = true;
-                        sendMessageToClient("DIN_TUR");
-                        opponent.sendMessageToClient("INTE_DIN_TUR");
+                    if (opponent != null && opponent.nickname != null){
+
+                        sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
+                        opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
+
+                        if (playerNumber == '1') {
+                            myTurn = true;
+                            sendMessageToClient("DIN_TUR");
+                            opponent.sendMessageToClient("INTE_DIN_TUR");
+                        }
+
                     }
                     continue;
                 }

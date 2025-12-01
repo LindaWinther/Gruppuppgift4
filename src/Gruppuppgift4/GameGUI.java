@@ -432,6 +432,13 @@ public class GameGUI extends JFrame {
             if (messageFromServer.equals("INTE_DIN_TUR")) {
                 JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
             }
+            if (messageFromServer.startsWith("FIENDEN_REGISTRERAD;")){
+                String [] parts = messageFromServer.split(";");
+                String name = parts [1];
+                int avatarIndex = Integer.parseInt(parts[2]);
+                updateOppHeader(name, avatarIndex);
+
+            }
             if(messageFromServer.startsWith("KATEGORIER;")){
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
