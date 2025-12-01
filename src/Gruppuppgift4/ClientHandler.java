@@ -18,15 +18,15 @@ public class ClientHandler extends Thread {
     Questions currentQuestion;
     List<Questions> listanSomSkapas = new ArrayList<>();
 
-
+    ClientHandler opponent;
+    boolean myTurn = false;
 
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
 
         try{
-            in = new BufferedReader(
-                    new InputStreamReader(socket.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream(), true);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -36,9 +36,21 @@ public class ClientHandler extends Thread {
     public void run() {
         try {
             GameClass game = new GameClass();
-//            listanSomSkapas = game.readList();
+            listanSomSkapas = game.readList();
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
+
+                if (messageToServer.startsWith("START") && playerNumber == '1') {
+                    myTurn = true;
+                    sendMessageToClient("DIN_TUR");
+                    opponent.sendMessageToClient("INTE_DIN_TUR");
+                    continue;
+                }
+
+                if (!myTurn) {
+                    sendMessageToClient("INTE_DIN_TUR");
+                    continue;
+                }
 
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
@@ -46,13 +58,14 @@ public class ClientHandler extends Thread {
 //                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
                     Set<String> testCategories = new HashSet<String>(); //byt nman
-                    testCategories = game.checkCategorys(game.completeList);
+                    testCategories = game.checkCategorys(listanSomSkapas);
                     System.out.println(testCategories);
 
 
                     sendMessageToClient("KATEGORIER;" + String.join(";",testCategories));
                     //test
                     System.out.println("KATEGORIER;" + String.join(";",testCategories));
+                    continue;
                 }
 
                 if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
@@ -70,7 +83,7 @@ public class ClientHandler extends Thread {
                         listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
                              System.out.println(listanSomSkapas);
                     System.out.println(listanSomSkapas.size());
-//                        currentQuestion = game.randomQuestion(temp);
+                        currentQuestion = game.randomQuestion(temp);
 //                    Set<String> testCategories = game.searchCategoryFromList();
 //                   List<Questions> list = game.searchCategoryFromList();
 //                    currentQuestion = listanSomSkapas.get(0);
@@ -84,17 +97,23 @@ public class ClientHandler extends Thread {
                     // p1 ansluter, p2, ansluter, server generar kategori, genererar fråga, sparar den, skicckar till p1, väntar på svar, när svar fås skicka till p2 ? programeras i spel eller server?
 
                     sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+                    continue;
                 }
 
                 if(messageToServer.startsWith("SVAR;")) {
                     String answer = messageToServer.split(";")[1];
 
                     if(answer.equals(currentQuestion.answer)) {
-                        sendMessageToClient("RÄTT!");
+                        sendMessageToClient("RÄTT");
                     } else {
-                        sendMessageToClient("FEL!");
+                        sendMessageToClient("FEL");
                     }
                 }
+
+                myTurn = false;
+                opponent.myTurn = true;
+                opponent.sendMessageToClient("DIN_TUR");
+                sendMessageToClient("INTE_DIN_TUR");
 
             }
         } catch (IOException e) {}
