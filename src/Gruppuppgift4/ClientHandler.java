@@ -51,8 +51,7 @@ public class ClientHandler extends Thread {
 
                     //kontroll om båda spelarana har skrivit in användarnamn/avatar
                     readyToStart = true;
-
-                    if (opponent == null || !opponent.readyToStart) {
+                    if (!opponent.readyToStart) {
                         continue;
                     }
 
