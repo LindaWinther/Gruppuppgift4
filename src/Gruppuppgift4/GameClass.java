@@ -111,9 +111,9 @@ public class GameClass {
 //    public
 //}
 
-    public Questions randomQuestion(String category) {
-
-        Random rand = new Random();
+//    public Questions randomQuestion(String category) {
+//
+//        Random rand = new Random();
 //        int siffra = rand.nextInt(0, categoryList.size());
 //        if (category.equalsIgnoreCase("DJUR")) {
 //            categoryListDjur = searchCategoryFromList("DJUR");
