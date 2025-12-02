@@ -9,21 +9,7 @@ public class Server {
 
     public static void main(String[] args) throws IOException {
 
-//        GameClass game = new GameClass();
-//        Questions q = new Questions();
-//
-//        String fråga = game.setGameQuestions();
-//        String [] svar = game.setGameAnswers();
-//
-//        game.readList();
-//        game.searchCategoryFromList();
-//        List<Questions> questions = game.searchQuestionsFromList();
-//        Questions q1 = game.searchQuestionsFromList();
-//        Questions q2 = game.searchQuestionsFromList();
-        //Questions q1 = questions.get(0)
-        // Questions q2 = questions.get(1);
-
-        ServerSocket server = new ServerSocket(55551);
+        ServerSocket server = new ServerSocket(55555);
         System.out.println("Server is running!");
 
         Socket p1 = server.accept();
