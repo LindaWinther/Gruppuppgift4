@@ -7,59 +7,26 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class GameClass {
-
-
 //    Config config = new Config();//
 //    int QuestionsinRound = config.getQuestionsinRound();
 //    int roundsInGame = config.getRoundsInGame();
 
-
     List<Questions> completeList = new ArrayList<>();
-    List<Questions> listOfGameQuest = new ArrayList<>();
-
-    //    List<Questions> completeListUse = new ArrayList<>();
-    List<Questions> categoryList = new ArrayList<>();
-    List<Questions> categoryListDjur = new ArrayList<>();
-    List<Questions> categoryListNatur = new ArrayList<>();
-    List<Questions> categoryListSport = new ArrayList<>();
-
-    Set<Questions> categorySet = new HashSet<>();
-//    List<Questions> categoryListCategory = new ArrayList<>();
-//    List<Questions> activeList = new ArrayList<>();
-//    List<Questions> wrongList = new ArrayList<>();
-    //    List<Questions> listOfCategory = new ArrayList<>();
-
     Set<String> listOfCategory = new HashSet<String>();
-    String natur = "natur";
-    Questions question;
-
 
     public GameClass() {
         readList();
-        categoryListDjur = searchCategoryFromList("DJUR");
-        categoryListNatur = searchCategoryFromList(natur);
-        categoryListSport = searchCategoryFromList("SPORT");
-//        categoryListCategory = searchCategoryFromList("CATEGORY");
-
         checkCategorys(completeList);
-//        listOfCategory=checkCategorys(completeList);
-//        question=randomQuestion("djur");
-
-
     }
 
     public List<Questions> readList() {
         Path path = Path.of("src/Gruppuppgift4/questions");
-
         try (BufferedReader br = new BufferedReader(new FileReader(path.toString()))) {
-
             String input;
             while ((input = br.readLine()) != null) {
                 String[] ql = input.split(";");
-
                 Questions quest = new Questions(ql[0], ql[1], ql[2], ql[3], ql[4], ql[5]);
                 completeList.add(quest);
-
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -70,47 +37,8 @@ public class GameClass {
     public Set<String> checkCategorys(List<Questions> questions) {
         for (Questions q : completeList) {
             listOfCategory.add(q.category);
-//            System.out.println(listOfCategory.size());
-
         }
-
         return listOfCategory;
-    }
-//    public Set<Questions> getListByCategory(String category) {
-//        for (Questions q : completeList) {
-//            if (q.category.equals(category)) {
-//                categoryList.add(q);
-//            }
-//        }
-//        return categorySet;
-//    }
-
-
-    public List<Questions> searchCategoryFromList(String category) {
-
-        for (Questions q2 : completeList) {
-            if (q2.category.equalsIgnoreCase(category)) {
-                categoryList.add(q2);
-            }
-        }
-        return categoryList;
-    }
-    public List<Questions> clearList(List<Questions> questions) {
-        questions.clear();
-        return questions;
-    }
-
-    public List<Questions> listOfGameQuestions (List<Questions> categoryList) {
-        Collections.shuffle(categoryList);
-        for (Questions q : categoryList) {
-            if(q.unused){
-                listOfGameQuest.add(q);
-                q.unused = false;
-
-            }
-
-        }
-        return listOfGameQuest;
     }
 
     public Questions getQuestions(String category, List<Questions> completeList ) {
@@ -118,114 +46,22 @@ public class GameClass {
         for (Questions q : completeList) {
             if (q.category.equalsIgnoreCase(category) && q.unused ) {
                 int i = completeList.indexOf(q);
+                q.unused = false;
                 completeList.get(i).unused = false;
                 return completeList.get(i);
             }
         } return null;
     }
-    public Questions getNextQ(List<Questions> hotdog) {
-        for (Questions q : hotdog) {
-            if (q.unused) {
-                 int i = hotdog.indexOf(q);
-                 hotdog.get(i).unused = false;
-
-                return hotdog.get(i);
-            }
-
-        }return null;
-    }
 
 }
-
-
-
-
-
-//    public
-//}
-
-//    public Questions randomQuestion(String category) {
+//    public Questions getNextQ(List<Questions> list) {
+//        for (Questions q : list) {
+//            if (q.unused) {
+//                 int i = list.indexOf(q);
+//                 list.get(i).unused = false;
 //
-//        Random rand = new Random();
-//        int siffra = rand.nextInt(0, categoryList.size());
-//        if (category.equalsIgnoreCase("DJUR")) {
-//            categoryListDjur = searchCategoryFromList("DJUR");
-//            return categoryListDjur.get(rand.nextInt(categoryListDjur.size()));
-//        }
-//        categoryList.get(siffra);
-//        activeList.add(categoryList.get(siffra));
-//        activeList.add(categoryList.get(siffra));
-//        activeList.add(categoryList.get(siffra));
-        // Fixa så den lägger in 3 olika RANDOMS
-
-//            return categoryList.get(rand.nextInt(categoryList.size())); //?}
-
-
-
-//    return activeList;
-
-//    }
-//}
-//    public String setGameQuestions() {
-//        readList();
-//        wrongList = searchCategoryFromList();
-//        System.out.println(wrongList.getFirst().question);
-//        System.out.println(activeList.size());
-//        gameQuestion = wrongList.getFirst().question;
-//        setGameAnswers();
-//        return gameQuestion;
-//    }
-
-//    public String[] setGameAnswers() {
+//                return list.get(i);
+//            }
 //
-//        gameQuestion = wrongList.get(0).question;
-//        gameAnswers = new String[]{wrongList.get(0).answer, wrongList.get(0).wrong1, wrongList.get(0).wrong2, wrongList.get(0).wrong3};
-//        wrongList.get(0).setAnswer(gameAnswers[0]);
-//        return gameAnswers;
+//        }return null;
 //    }
-
-
-/*
- *
- * input namn
- * anslutning upprättad
- * fråga klient 1 väntar klient2
- * sökerKategri()  -
- * 10 frågor lista
- * 3frågor random3 1,5,9 (1)  -
- *
- * SkrivUtFråga()
- * knapp1 = SVAR
- * knapp2 = Felsvar
- * knapp3 = Felsvar
- * knapp4 = Felsvar
- * *Collections.shullfe
- *
- *
- *     * kategori;fråga;SVAR;Felsvar;Felsvar;Felsvar;
- * reader:  delar upp i 5 delar (kategori)(1fråga) (4svar)
- *alltid svar 1 rätt.
- * lägger in i en arraylist
-
- *lägger ut på
- *
- *
- *     public List<Questions> searchCategoryFromList(String category) {
-        for (Questions q2 : completeList) {
-            if (q2.category.equalsIgnoreCase(category)) {
-                categoryList.add(q2);
-            }
-        }if (category.equalsIgnoreCase("DJUR")) {
-            return  categoryListDjur;
-        }else if (category.equalsIgnoreCase("Natur")) {
-            return  categoryListNatur;
-        }
-        else if (category.equalsIgnoreCase("SPORT")) {
-            return  categoryListSport;
-        }else if (category.equalsIgnoreCase("Category")) {
-            return  categoryList;
-        }else
-        return null;
-    }
- * */
-

@@ -30,15 +30,14 @@ public class GameGUI extends JFrame {
     private JLabel titleLabel;
 
     // Lägger in svar från gameClass
-    private String gameQuestion ;
-    private String[] gameAnswers;
-
-    private int correctAnswer = 0;
-    GameClass game = new GameClass();
-    Questions q = new Questions();
-    List<Questions> questions = new ArrayList<Questions>();
-
-    boolean unused = true;
+//    private String gameQuestion ;   // ta bort ner till 40?
+//    private String[] gameAnswers;
+//
+//    private int correctAnswer = 0;
+//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
+//    Questions q = new Questions();
+//    List<Questions> questions = new ArrayList<Questions>();
+//    boolean unused = true;
 
     private Client client;
 
@@ -280,8 +279,19 @@ public class GameGUI extends JFrame {
 
     // FRÅGELOGIK
 
+    public void shuffle(Object[]quest ){
+        int noOfAnswers = quest.length;
+        for (int i = 0; i <noOfAnswers; i++){
+            int s = i + (int) (Math.random() * (noOfAnswers - i));
+            Object temp = quest[s];
+            quest[s] = quest[i];
+            quest[i] = temp;
+        }
+    }
+
     private void loadQuestion(String question, String[] answers) {
         questionLabel.setText(question);
+        shuffle(answers);
 
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i].setText(answers[i]);
@@ -308,21 +318,6 @@ public class GameGUI extends JFrame {
 //        }
         lockAnswerButtons(false);
     }
-
-//    public String setGameQuestions() {
-//        game.readList();
-//        questions = game.searchCategoryFromList();
-//        gameQuestion = questions.getFirst().question;
-//        setGameAnswers();
-//        return gameQuestion;
-//    }
-//
-//    public String[] setGameAnswers() {
-//        gameQuestion = questions.get(0).question;
-//        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-//        questions.get(0).setAnswer(gameAnswers[0]);
-//        return gameAnswers;
-//    }
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
