@@ -459,9 +459,11 @@ public class GameGUI extends JFrame {
                 for(int i = 1; i < parts.length; i++){
                     stringToList.add(parts[i]);
                 }
-                //test
-                System.out.println(stringToList);
                 loadCategories(stringToList);
+            }
+            if (messageFromServer.startsWith("KATEGORI_VALD;")) {
+                categoryChosen = true;
+                return;
             }
             if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
                 cardLayout.show(mainPanel, "QUESTION");
