@@ -39,6 +39,11 @@ public class GameGUI extends JFrame {
     private JButton[] answerButtons;
     private JLabel titleLabel;
 
+    // Poängsidan
+    private JPanel scoreResultPanel;
+    private JPanel scoreRowsPanel;
+
+
     // Lägger in svar från gameClass
     private String gameQuestion ;
     private String[] gameAnswers;
@@ -82,6 +87,7 @@ public class GameGUI extends JFrame {
         buildStartPanel();
         buildCategoryPanel();
         buildQuestionPanel();
+        buildScoreResultPanel();
 
         cardLayout.show(mainPanel, "START");
         setVisible(true);
@@ -152,6 +158,54 @@ public class GameGUI extends JFrame {
         }
     }
 
+    // Resultatsida visas mellan ronderna
+    private void buildScoreResultPanel(){
+        scoreResultPanel = new JPanel(new BorderLayout());
+        scoreResultPanel.setBackground(new Color(27, 47, 112));
+        scoreResultPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
+
+
+        // Rubrik
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(new Color(27, 47, 112));
+        JLabel title = new JLabel("Rondresultat", SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+
+        scoreResultPanel.add(titlePanel, BorderLayout.NORTH);
+
+        // Panel med raderna
+        scoreRowsPanel = new JPanel();
+        scoreRowsPanel.setOpaque(false);
+        scoreRowsPanel.setLayout(new BoxLayout(scoreRowsPanel, BoxLayout.Y_AXIS));
+
+        // Test med hårdkodad data sålänge
+        String[] testRounds = {
+                "Rond 1: du 2 / 3 - motståndare 1 / 3",
+                "Rond 2: du 1 / 3 - motståndare 3 / 3"
+        };
+
+        for (String row : testRounds){
+            JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
+            rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            rowLabel.setForeground(Color.WHITE);
+            rowLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
+            rowLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            scoreRowsPanel.add(rowLabel);
+        }
+        scoreResultPanel.add(scoreRowsPanel, BorderLayout.CENTER);
+
+
+        JLabel totalLabel = new JLabel("Totalt: du 3 - motståndare 4", SwingConstants.CENTER);
+        totalLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        totalLabel.setForeground(Color.WHITE);
+        totalLabel.setBorder(new EmptyBorder(15, 0, 0, 0));
+        scoreResultPanel.add(totalLabel, BorderLayout.SOUTH);
+
+        mainPanel.add(scoreResultPanel, "ROUND_RESULTS");
+    }
+
 
     // Ladda in rätt storlek på ikoner
     private ImageIcon loadAvatarIcon(String fileName){
@@ -173,7 +227,7 @@ public class GameGUI extends JFrame {
         startPanel.add(centerPanel, BorderLayout.CENTER);
 
         // Titel
-        titleLabel = new JLabel("Quizduellen", SwingConstants.CENTER);
+        titleLabel = new JLabel("Quizkampen", SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 48));
         titleLabel.setForeground(Color.WHITE);
@@ -282,6 +336,16 @@ public class GameGUI extends JFrame {
         });
 
         buttonPanel.add(startButton);
+
+        // TEST FÖR ATT SE POÄNGSIDA
+        JButton testResultButton = new JButton("VISA TESTSIDA-POÄNG");
+        testResultButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        testResultButton.addActionListener(e ->
+                cardLayout.show(mainPanel, "ROUND_RESULTS")
+        );
+        buttonPanel.add(Box.createHorizontalStrut(15));
+        buttonPanel.add(testResultButton);
+
         centerPanel.add(buttonPanel);
 
         mainPanel.add(startPanel, "START");
