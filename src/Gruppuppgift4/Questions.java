@@ -16,8 +16,17 @@ public class Questions {
         this.wrong1 = wrong1;
         this.wrong2 = wrong2;
         this.wrong3 = wrong3;
+        this.unused = true;
     }
     public Questions() {}
+
+    public boolean isUnused() {
+        return unused;
+    }
+
+    public void setUnused(boolean unused) {
+        this.unused = unused;
+    }
 
     public String getCategory() {
         return category;

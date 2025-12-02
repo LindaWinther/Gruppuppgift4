@@ -40,15 +40,14 @@ public class GameGUI extends JFrame {
     private JLabel titleLabel;
 
     // Lägger in svar från gameClass
-    private String gameQuestion ;
-    private String[] gameAnswers;
-
-    private int correctAnswer = 0;
-    GameClass game = new GameClass();
-    Questions q = new Questions();
-    List<Questions> questions = new ArrayList<Questions>();
-
-    boolean unused = true;
+//    private String gameQuestion ;   // ta bort ner till 40?
+//    private String[] gameAnswers;
+//
+//    private int correctAnswer = 0;
+//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
+//    Questions q = new Questions();
+//    List<Questions> questions = new ArrayList<Questions>();
+//    boolean unused = true;
 
     private Client client;
     private boolean categoryChosen = false;
@@ -377,6 +376,7 @@ public class GameGUI extends JFrame {
             int index = i;
             btn.addActionListener(e -> checkAnswer(index));
 
+
             answerButtons[i] = btn;
             answersPanel.add(btn);
         }
@@ -386,14 +386,26 @@ public class GameGUI extends JFrame {
 
     // FRÅGELOGIK
 
+    public void shuffle(Object[]quest ){
+        int noOfAnswers = quest.length;
+        for (int i = 0; i <noOfAnswers; i++){
+            int s = i + (int) (Math.random() * (noOfAnswers - i));
+            Object temp = quest[s];
+            quest[s] = quest[i];
+            quest[i] = temp;
+        }
+    }
+
     private void loadQuestion(String question, String[] answers) {
         questionLabel.setText(question);
+        shuffle(answers);
 
         for (int i = 0; i < answerButtons.length; i++) {
             answerButtons[i].setText(answers[i]);
             answerButtons[i].setEnabled(true);
             answerButtons[i].setBackground(new Color(50, 44, 133));
         }
+        
     }
 
     private void lockAnswerButtons(boolean enabled) {
@@ -404,29 +416,15 @@ public class GameGUI extends JFrame {
 
     // Färgar svaret
     private void checkAnswer(int index) {
-        client.sendMessageToServer("SVAR;" + answerButtons[index].getText());
-        if (index == correctAnswer) {
-            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-        } else {
-            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-        }
+        String indexToString = Integer.toString(index);
+        client.sendMessageToServer("SVAR;" + answerButtons[index].getText() + ";" + indexToString);
+//        if (index == correctAnswer) {
+//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
+//        } else {
+//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
+//        }
         lockAnswerButtons(false);
     }
-
-//    public String setGameQuestions() {
-//        game.readList();
-//        questions = game.searchCategoryFromList();
-//        gameQuestion = questions.getFirst().question;
-//        setGameAnswers();
-//        return gameQuestion;
-//    }
-//
-//    public String[] setGameAnswers() {
-//        gameQuestion = questions.get(0).question;
-//        gameAnswers = new String[]{questions.get(0).answer, questions.get(0).wrong1, questions.get(0).wrong2, questions.get(0).wrong3};
-//        questions.get(0).setAnswer(gameAnswers[0]);
-//        return gameAnswers;
-//    }
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
@@ -470,10 +468,17 @@ public class GameGUI extends JFrame {
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
             }
-            if (messageFromServer.equals("RÄTT")) {
+            if (messageFromServer.startsWith("RÄTT")) {
+                String indexString = messageFromServer.split(";")[1];
+                int indexToInt = Integer.parseInt(indexString);
+                answerButtons[indexToInt].setBackground(new Color(0, 180, 0));
                 JOptionPane.showMessageDialog(this, "Rätt!");
+
             }
-            if (messageFromServer.equals("FEL")) {
+            if (messageFromServer.startsWith("FEL")) {
+                String indexString = messageFromServer.split(";")[1];
+                int indexToInt = Integer.parseInt(indexString);
+                answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
             //gör inget just nu, kan användas för en exit knapp i framtiden

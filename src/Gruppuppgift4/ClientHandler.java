@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +15,7 @@ public class ClientHandler extends Thread {
     BufferedReader in;
     PrintWriter out;
     Questions currentQuestion;
-    List<Questions> listanSomSkapas = new ArrayList<>();
+    List<Questions> questionsList = new ArrayList<>();
 
     ClientHandler opponent;
     boolean readyToStart;
@@ -45,9 +44,12 @@ public class ClientHandler extends Thread {
     }
 
     public void run() {
+        GameClass game = new GameClass();
+        questionsList = game.completeList;
+        Set<String> categories;
+
         try {
-            GameClass game = new GameClass();
-            listanSomSkapas = game.readList();
+
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
@@ -79,13 +81,11 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-                if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;") && chosenCategory == null) {
+                if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;") && chosenCategory == null){
 
-                    Set<String> testCategories = new HashSet<String>(); //byt nman
-                    testCategories = game.checkCategorys(listanSomSkapas);
+                    categories = game.listOfCategory;
 
-
-                    sendMessageToClient("KATEGORIER;" + String.join(";",testCategories));
+                    sendMessageToClient("KATEGORIER;" + String.join(";",categories));
                     continue;
                 }
 
@@ -93,23 +93,13 @@ public class ClientHandler extends Thread {
 
                     if(chosenCategory == null){
                         chosenCategory =  messageToServer.split(";")[1];
-                        listanSomSkapas = game.searchCategoryFromList(chosenCategory);
+                    currentQuestion= game.getQuestions(chosenCategory,questionsList);
                     }
-//                  game.readList();
-//                    String temp =  messageToServer.substring(messageToServer.indexOf(";")+1);// ta in värde på kategori Kör (Sträng?) i loopen?
-                    currentQuestion = game.randomQuestion();
-//                    Set<String> testCategories = game.searchCategoryFromList();
-//                   List<Questions> list = game.searchCategoryFromList();
-//                    currentQuestion = listanSomSkapas.get(0);
-
-                    //just nu skickar jag en hel frågestring och splittar det senare i recieveFromServer i GameGUI. Det var kanske det vi ville undvika egentligen.
-                    //Jag vet inte riktigt hur man löser det snyggt.
-
-
-                    // frågorna kommer random men p1 och p2 får inte samma fråga, är det ett serverproblem?
-                    // pingpong?
-                    // p1 ansluter, p2, ansluter, server generar kategori, genererar fråga, sparar den, skicckar till p1, väntar på svar, när svar fås skicka till p2 ? programeras i spel eller server?
-
+                    //TODO
+                    // lägger in randomfråga, men gör "två" listor en för varje klient. men det borde lösa sig när vi bara väljer kategori från en spelare
+//
+//                    System.out.println(temp);
+//                    System.out.println(messageToServer);
                     sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
                     questionsSent++;
                     continue;
@@ -117,11 +107,12 @@ public class ClientHandler extends Thread {
 
                 if(messageToServer.startsWith("SVAR;")) {
                     String answer = messageToServer.split(";")[1];
+                    String index =  messageToServer.split(";")[2];
 
                     if(answer.equals(currentQuestion.answer)) {
-                        sendMessageToClient("RÄTT");
+                        sendMessageToClient("RÄTT;" + index);
                     } else {
-                        sendMessageToClient("FEL");
+                        sendMessageToClient("FEL;" + index);
                     }
                     if (questionsSent< questionsPerRound){
                         sendMessageToClient("DIN_TUR");
@@ -140,7 +131,9 @@ public class ClientHandler extends Thread {
                     continue;
                 }
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessageToClient(String message){
