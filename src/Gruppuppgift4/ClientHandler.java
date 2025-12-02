@@ -26,6 +26,9 @@ public class ClientHandler extends Thread {
 
     String chosenCategory = null;
     int questionsPerRound = 3;
+
+    //hur många rundor som ska spelas i spelet
+    int roundsInGame;
     int questionsSent = 0;
 
 
