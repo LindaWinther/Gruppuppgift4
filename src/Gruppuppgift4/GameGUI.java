@@ -418,11 +418,6 @@ public class GameGUI extends JFrame {
     private void checkAnswer(int index) {
         String indexToString = Integer.toString(index);
         client.sendMessageToServer("SVAR;" + answerButtons[index].getText() + ";" + indexToString);
-//        if (index == correctAnswer) {
-//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-//        } else {
-//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-//        }
         lockAnswerButtons(false);
     }
 
@@ -437,8 +432,12 @@ public class GameGUI extends JFrame {
                 startButton.setEnabled(true);
                 startButton.setText("Starta nytt spel");
             }
-            if (messageFromServer.equals("NY_RUNDA")) {
+            if (messageFromServer.startsWith("NY_RUNDA")) {
                 categoryChosen = false;
+            }
+            if (messageFromServer.startsWith("KATEGORI_VALD")) {
+                categoryChosen = true;
+                return;
             }
             if (messageFromServer.equals("DIN_TUR")) {
                 if (!categoryChosen) {
@@ -461,10 +460,6 @@ public class GameGUI extends JFrame {
                 }
                 loadCategories(stringToList);
             }
-            if (messageFromServer.startsWith("KATEGORI_VALD;")) {
-                categoryChosen = true;
-                return;
-            }
             if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
                 cardLayout.show(mainPanel, "QUESTION");
                 String[] parts = messageFromServer.split(";");
@@ -482,10 +477,6 @@ public class GameGUI extends JFrame {
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
-            }
-            //gör inget just nu, kan användas för en exit knapp i framtiden
-            if (messageFromServer.equals("GAME_OVER")) {
-                JOptionPane.showMessageDialog(this, "Spelet är slut!");
             }
         });
     }

@@ -89,6 +89,7 @@ public class ClientHandler extends Thread {
                 }
 
                 if(messageToServer.startsWith("SVAR;")) {
+                    //kommer köras varenda gång en användare klickar på en svarknapp i GameGUI:n
                     handleAnswer(messageToServer);
                 }
             }
@@ -153,6 +154,7 @@ public class ClientHandler extends Thread {
             return;
         }
 
+        //kommer köra så länge isAnsweringQuestions är true, och det är den tills currentRoundQuestions inte har några frågor kvar.
         if (isAnsweringQuestions){
             sendNextQuestion();
         }
@@ -161,40 +163,27 @@ public class ClientHandler extends Thread {
     private void handleAnswer(String messageToServer){
 
         String[] parts = messageToServer.split(";");
+        //svaret, aka stringen som kommer från knappen som klickades
         String answer = parts[1];
+        //index sparas för att veta vilken knaapp det är som ska färgas
         String index = parts[2];
 
+        //lagrar vilken fråga det är som behandlas nu
         Questions question = currentRoundQuestions.get(questionsSent - 1);
 
+        //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
         if (answer.equals(question.answer))
             sendMessageToClient("RÄTT;" + index);
         else
             sendMessageToClient("FEL;" + index);
 
+        //fortsätter med spelarens tur tills questionsSent blir samma som questionsPerRound, eftersom det är limiten mängden frågor i rundan.
         if (questionsSent < questionsPerRound) {
             sendMessageToClient("DIN_TUR");
         } else {
+            //om vi har nått limiten så kör vi finishAnswering för att inte kolla på frågor utanför index.
             finishAnswering();
         }
-    }
-
-    private void startNewRound(){
-
-        chosenCategory = null;
-        currentRoundQuestions = new ArrayList<>();
-        questionsSent = 0;
-        isRoundFinished = false;
-        opponent.isRoundFinished = false;
-
-        isChoosingCategory = true;
-        isAnsweringQuestions = false;
-
-        myTurn = true;
-        opponent.myTurn = false;
-
-        sendMessageToClient("NY_RUNDA");
-        sendMessageToClient("DIN_TUR");
-        opponent.sendMessageToClient("INTE_DIN_TUR");
     }
 
     private void genereateQuestionsForRound(String chosenCategory){
@@ -209,6 +198,7 @@ public class ClientHandler extends Thread {
 
         //kollar så att det finns frågor i currentRoundQuestions listan, om det inte finns några kvar så kommer finishAnswering köras
         if (questionsSent >= currentRoundQuestions.size()) {
+            //den här kommer sätta isAnsweringQuestions till false så vi slutar skicka frågor!
             finishAnswering();
             return;
         }
@@ -221,10 +211,12 @@ public class ClientHandler extends Thread {
     }
 
     private void finishAnswering(){
+        //sätter så att man är klar med frågorna och ens turn är över, vilket i sin tur betyder att DEN HÄR klientens round är finished.
         isAnsweringQuestions = false;
         myTurn = false;
         isRoundFinished = true;
 
+        //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
         if(!opponent.isRoundFinished){
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
@@ -233,6 +225,8 @@ public class ClientHandler extends Thread {
             return;
         }
 
+        // när båda har svarat så kommer vi hit och beroende på vem som var roundstarter så bestäms det vem nästa roundstartern ska vara. Så efter den första
+        // rundan till exmepel så blir motståndaren den nya round startern.
         if (opponent.isRoundStarter) {
             opponent.isRoundStarter = false;
             this.isRoundStarter = true;
@@ -242,5 +236,28 @@ public class ClientHandler extends Thread {
             opponent.isRoundStarter = true;
             opponent.startNewRound();
         }
+    }
+
+    private void startNewRound(){
+
+        //den här metoden fungerar som en reset för rundan. Alla värden som vilken kategori/fråga som hade blivit vald resettas.
+        //den sätter också att en spelare är isChoosingCategory igen/vems tur det är.
+        chosenCategory = null;
+        currentRoundQuestions = new ArrayList<>();
+        questionsSent = 0;
+        isRoundFinished = false;
+        opponent.isRoundFinished = false;
+
+        isChoosingCategory = true;
+        isAnsweringQuestions = false;
+
+        myTurn = true;
+        opponent.myTurn = false;
+
+        //skickar så att båda klienterna vet att detbehövs väljas en ny kategori.
+        sendMessageToClient("NY_RUNDA");
+
+        sendMessageToClient("DIN_TUR");
+        opponent.sendMessageToClient("INTE_DIN_TUR");
     }
 }
