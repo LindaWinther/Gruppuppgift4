@@ -7,9 +7,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class GameClass {
-//    Config config = new Config();//
-//    int QuestionsinRound = config.getQuestionsinRound();
-//    int roundsInGame = config.getRoundsInGame();
+
 
     List<Questions> completeList = new ArrayList<>();
     Set<String> listOfCategory = new HashSet<String>();

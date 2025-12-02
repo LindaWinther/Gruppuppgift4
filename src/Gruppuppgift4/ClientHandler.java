@@ -10,6 +10,8 @@ import java.util.Set;
 
 public class ClientHandler extends Thread {
 
+
+
     char playerNumber;
     Socket socket;
     BufferedReader in;
@@ -37,6 +39,9 @@ public class ClientHandler extends Thread {
     }
 
     public void run() {
+//        Config config = new Config();//
+//        int QuestionsinRound = config.getQuestionsinRound();
+//        int roundsInGame = config.getRoundsInGame();
         GameClass game = new GameClass();
         questionsList = game.completeList;
         Set<String> categories;
