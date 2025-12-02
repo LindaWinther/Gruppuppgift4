@@ -17,17 +17,23 @@ public class ClientHandler extends Thread {
     Questions currentQuestion;
     List<Questions> questionsList = new ArrayList<>();
 
-    ClientHandler opponent;
-    boolean readyToStart;
-    boolean myTurn = false;
     String nickname;
     int avatarIndex;
 
-    String chosenCategory = null;
-    int questionsPerRound = 3;
 
     //hur många rundor som ska spelas i spelet
     int roundsInGame;
+
+    ClientHandler opponent;
+    boolean readyToStart;
+    boolean myTurn = false;
+
+    boolean iChooseCategory;
+    boolean opponentIsAnswering;
+
+    String chosenCategory = null;
+    List<Questions> currentRoundQuestions = new ArrayList<>();
+    int questionsPerRound = 3;
     int questionsSent = 0;
 
 
@@ -68,6 +74,7 @@ public class ClientHandler extends Thread {
                     opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
 
                     if (playerNumber == '1') {
+                        iChooseCategory = true;
                         myTurn = true;
                         sendMessageToClient("DIN_TUR");
                         opponent.sendMessageToClient("INTE_DIN_TUR");
@@ -81,29 +88,70 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-                if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;") && chosenCategory == null){
+                if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
+
+                    if(!iChooseCategory){
+                        sendMessageToClient("INTE_DIN_TUR");
+                        continue;
+                    }
 
                     categories = game.listOfCategory;
-
                     sendMessageToClient("KATEGORIER;" + String.join(";",categories));
                     continue;
                 }
 
                 if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
 
-                    if(chosenCategory == null){
+                    if(chosenCategory == null && iChooseCategory){
+
                         chosenCategory = messageToServer.split(";")[1];
+                        currentRoundQuestions.clear();
+                        questionsSent = 0;
+
+                        for (int i = 0; i < questionsPerRound; i++) {
+                            currentQuestion = game.getQuestions(chosenCategory, questionsList);
+                            currentRoundQuestions.add(currentQuestion);
+                        }
+
+                        //TODO
+                        // lägger in randomfråga, men gör "två" listor en för varje klient. men det borde lösa sig när vi bara väljer kategori från en spelare
+
+                        opponent.currentRoundQuestions = new ArrayList<>(currentRoundQuestions);
+                        opponent.chosenCategory = chosenCategory;
+                        opponent.questionsSent = 0;
+
+                        opponentIsAnswering = false;
+                        opponent.opponentIsAnswering = true;
                     }
 
-                    currentQuestion = game.getQuestions(chosenCategory, questionsList);
-                    //TODO
-                    // lägger in randomfråga, men gör "två" listor en för varje klient. men det borde lösa sig när vi bara väljer kategori från en spelare
-//
-//                    System.out.println(temp);
-//                    System.out.println(messageToServer);
-                    sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
-                    questionsSent++;
-                    continue;
+                    if(questionsSent < currentRoundQuestions.size()){
+                        currentQuestion = currentRoundQuestions.get(questionsSent);
+                        sendMessageToClient("FRÅGA;" + currentQuestion.question + ";" + currentQuestion.answer + ";" + currentQuestion.wrong1 + ";" + currentQuestion.wrong2 + ";" + currentQuestion.wrong3);
+                        questionsSent++;
+                        continue;
+                    }
+
+                    if(questionsSent >= questionsPerRound){
+                        questionsSent = 0;
+                        chosenCategory = null;
+
+
+                        myTurn = false;
+                        opponent.myTurn = true;
+
+                        sendMessageToClient("INTE_DIN_TUR");
+                        opponent.sendMessageToClient("INTE_DIN_TUR");
+
+                        if(opponentIsAnswering){
+
+                            opponentIsAnswering = false;
+                            opponent.iChooseCategory = true;
+                            iChooseCategory = false;
+
+                            opponent.sendMessageToClient("NY_RUNDA");
+                        }
+                        continue;
+                    }
                 }
 
                 if(messageToServer.startsWith("SVAR;")) {
@@ -115,21 +163,9 @@ public class ClientHandler extends Thread {
                     } else {
                         sendMessageToClient("FEL;" + index);
                     }
-                    if (questionsSent< questionsPerRound){
+                    if(questionsSent < questionsPerRound){
                         sendMessageToClient("DIN_TUR");
                     }
-                    else {
-                        questionsSent = 0;
-                        chosenCategory = null;
-                        myTurn = false;
-                        opponent.myTurn = true;
-
-                        opponent.sendMessageToClient("NY_RUNDA");
-                        opponent.sendMessageToClient("DIN_TUR");
-
-                        sendMessageToClient("INTE_DIN_TUR");
-                    }
-                    continue;
                 }
             }
         } catch (IOException e) {
