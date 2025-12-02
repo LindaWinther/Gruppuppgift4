@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class ClientHandler extends Thread {
 
@@ -21,7 +20,6 @@ public class ClientHandler extends Thread {
     String nickname;
     int avatarIndex;
 
-
     //hur många rundor som ska spelas i spelet
     int roundsInGame;
 
@@ -31,8 +29,7 @@ public class ClientHandler extends Thread {
 
     boolean isChoosingCategory = false;
     boolean isAnsweringQuestions = false;
-    boolean isChooserThisRound = false;
-    boolean roundFinished = false;
+    boolean isRoundFinished = false;
     boolean isRoundStarter = false;
 
     int questionsPerRound = 3;
@@ -55,6 +52,7 @@ public class ClientHandler extends Thread {
         }
     }
 
+    @Override
     public void run() {
 
         try {
@@ -62,11 +60,12 @@ public class ClientHandler extends Thread {
             while((messageToServer = in.readLine()) != null ) {
 
                 if (messageToServer.startsWith("START;")) {
-
+                    //Gör så att spelet kan inte gå vidare försän båda har connectat, sätter så att spelare 1 börjar och får välja kategori.
                     handleStart(messageToServer);
                     continue;
                 }
 
+                //säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
                 if (!myTurn) {
                     sendMessageToClient("INTE_DIN_TUR");
                     continue;
@@ -76,21 +75,21 @@ public class ClientHandler extends Thread {
 
                     if(!isChoosingCategory){
                         sendMessageToClient("INTE_DIN_TUR");
-                        continue;
+                        return;
                     }
-
+                    //skickar bara kategorierna som finns till gameGUI
                     sendCategories();
                     continue;
                 }
 
                 if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
+                    //hanterar och genererar frågor beroende på kategori klickad på
                     handleReadyForQuestions(messageToServer);
                     continue;
                 }
 
                 if(messageToServer.startsWith("SVAR;")) {
                     handleAnswer(messageToServer);
-                    continue;
                 }
             }
 
@@ -108,10 +107,10 @@ public class ClientHandler extends Thread {
         String[] parts = messageToServer.split(";");
         nickname = parts[1];
         avatarIndex = Integer.parseInt(parts[2]);
-        //kontroll om båda spelarana har skrivit in användarnamn/avatar
         readyToStart = true;
 
         if(opponent == null || !opponent.readyToStart) {
+            return;
         }
 
         sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
@@ -129,22 +128,27 @@ public class ClientHandler extends Thread {
 
     private void handleReadyForQuestions(String messageToServer){
 
+        //körs bara om det inte är någon kategori vald ännu
         if(isChoosingCategory && chosenCategory == null) {
 
             String[] parts = messageToServer.split(";");
             chosenCategory = parts[1];
 
+            // kommer generera och lägga till frågor beroende på chosenCategory i currentRoundQuestions listan.
             genereateQuestionsForRound(chosenCategory);
 
+            //ser till att andra klienten får dom genererade frågorna också, eftersom den ska svara på samma också
             opponent.currentRoundQuestions = new ArrayList<>(currentRoundQuestions);
             opponent.chosenCategory = chosenCategory;
-            opponent.questionsSent = 0;
 
+            //bara så att motståndaren ska veta att en kategori har blivit vald.
             opponent.sendMessageToClient("KATEGORI_VALD;" + chosenCategory);
 
+            //eftersom vi nu har valt kategori och ska svara på frågorna sätter vi isChoosingCategory till false och isAnsweringQuestions till true.
             isChoosingCategory = false;
             isAnsweringQuestions = true;
 
+            //skickar den första frågan och hoppar ut ur den här if satsen.
             sendNextQuestion();
             return;
         }
@@ -179,8 +183,8 @@ public class ClientHandler extends Thread {
         chosenCategory = null;
         currentRoundQuestions = new ArrayList<>();
         questionsSent = 0;
-        roundFinished = false;
-        opponent.roundFinished = false;
+        isRoundFinished = false;
+        opponent.isRoundFinished = false;
 
         isChoosingCategory = true;
         isAnsweringQuestions = false;
@@ -203,23 +207,25 @@ public class ClientHandler extends Thread {
 
     private void sendNextQuestion(){
 
+        //kollar så att det finns frågor i currentRoundQuestions listan, om det inte finns några kvar så kommer finishAnswering köras
         if (questionsSent >= currentRoundQuestions.size()) {
             finishAnswering();
             return;
         }
 
+        //skickar frågan med index av questionsSent till GameGUI,questionsSent++ varenda gång en fråga blir skickad.
         Questions question = currentRoundQuestions.get(questionsSent);
-        questionsSent++;
 
         sendMessageToClient("FRÅGA;" + question.question + ";" + question.answer + ";" + question.wrong1 + ";" + question.wrong2 + ";" + question.wrong3);
+        questionsSent++;
     }
 
     private void finishAnswering(){
         isAnsweringQuestions = false;
         myTurn = false;
-        roundFinished = true;
+        isRoundFinished = true;
 
-        if(!opponent.roundFinished){
+        if(!opponent.isRoundFinished){
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
             opponent.questionsSent = 0;
