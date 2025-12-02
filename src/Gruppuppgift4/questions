@@ -1,11 +1,19 @@
 category;question;answer;wrong1;wrong2;wrong3
-djur;djur1;rättsvar;svar;svar;svar;
-natur;natur1;rättsvar;svar;svar;svar;
-djur;Vem bor i skogen;rättsvar;svar;svar;svar;
-djur;djur2;rättsvar;svar;svar;svar;
-djur;djur3;rättsvar;svar;svar;svar;
-natur;natur2;rättsvar;svar;svar;svar;
-natur;natur3;rättsvar;svar;svar;svar;
-natur;natur4;rättsvar;svar;svar;svar;
-sport;sport1;rättsvar;svar;svar;svar;
-sportig;sport1;rättsvar;svar;svar;svar;
+natur;natur1;rättsvar;svar;svar;svar
+natur;natur2;rättsvar;svar;svar;svar
+natur;natur3;rättsvar;svar;svar;svar
+natur;natur4;rättsvar;svar;svar;svar
+sport;sport1;rättsvar;svar;svar;svar
+Djur;Fråga: Hur många ben har en hummer?;10 ben;14 ben;12 ben;8 ben
+Djur;Vilka djur hålls som lantbruksdjur i de höga Anderna och kallas även bergslamadjur?;Alpackor;Getter;Lamor;Vikunja
+Djur;Hur lång är dräktighetstiden för en giraff?;15 månader;10 månader;11 månader;14 månader
+Djur;Det finns nästan 200 arter av kameleonter på jorden, varav en tredjedel lever på en ö. Vilken ö är det?;Madagaskar;Galapagos;Sumatra;Sulawesi
+Djur;Vilket djur har det högsta blodtrycket av alla djur?;Giraffen;Haren;Kolibriern;Antilopen
+Djur;Hur många hjärtan har en bläckfisk?;3;1;2;4
+Onödig kunskap;Vilket djur finns på ett paket Camel-cigaretter?;Dromedar;Kamel;Krokodil;Häst
+Djur;Vilken färg har isbjörnens hud?;Svart;Rosa;Vit;Blå
+Djur;Hur många magar har en myra?;2 magar;1 mage;3 magar;4 magar
+Djur;Hur många hjärtan har en bläckfisk?;Tre;Ett;Två;Fyra
+Geografi;Vilken av följande floder rinner inte genom Tyskland?;Seine;Elbe;Rhen;Donau
+Onödig kunskap;Tomten har 8 renar som drar hans släde. Vilken är inte en av dem?;Boulder;Dasher;Comet;Cupid
+Onödig kunskap;Vilken blodgrupp är vanligast hos människor världen över?;Blodgrupp O;Blodgrupp A;Blodgrupp B;Blodgrupp AB

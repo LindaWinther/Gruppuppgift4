@@ -1,29 +1,68 @@
 package Gruppuppgift4;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public class Run {
+//public class Run {
 
-    List<Questions> questions = new ArrayList<Questions>();
-    GameClass game = new GameClass();
-    Set<String> list = new HashSet<String>();
+//    List<Questions> questions = new ArrayList<Questions>();
+//    List<Questions> hamburgare =  new ArrayList<>();
+//    GameClass game = new GameClass();
+//    Set<String> list = new HashSet<String>();
+//    Questions q;
+//
+//    public Run() {
+//        questions = game.readList();
+//       hamburgare = game.getQuestions("djur",questions,hamburgare);
+//        System.out.println(hamburgare.size());
+//        System.out.println(hamburgare.getFirst().isUnused());
+//        System.out.println(hamburgare.get(1).isUnused());
+//        q = game.getNextQ(hamburgare);
+//
+//        System.out.println(q.category);
+//        q =  game.getNextQ(hamburgare);
+//        System.out.println(q.category);
 
-    public Run() {
-        questions = game.readList();
-        list = game.checkCategorys(questions);
-        System.out.println(list.size());
-        System.out.println(list);
+//        String [] stringers = {"hej","då", "halå", "hejdå"};
+//
+//        shuffle(stringers);
+//        for (int i = 0; i < stringers.length; i++){
+//            System.out.println(stringers[i]+" ");
+//        }
+//
+//
+//    }
+//    public void shuffle(Object[]array ){
+//        int antalfrågor = array.length;
+//
+//        for (int i = 0; i <antalfrågor; i++){
+//            int s = i + (int) (Math.random() * (antalfrågor - i));
+//
+//            Object temp = array[s];
+//            array[s] = array[i];
+//            array[i] = temp;
+//        }
+//
+//
+//    }
 
-    }
 
 
-    void main() {
-    }
-}
+//        hamburgare = game.getQuestions("djur",questions,hamburgare,3);
+//        q = hamburgare.getFirst();
+//        System.out.println(q.getQuestion());
 
+
+
+//        list = game.checkCategorys(questions);
+//        System.out.println(list.size());
+//        System.out.println(list);
+
+
+//
+//    void main() {
+//    }
+//}
+//
 
 //    List<Questions> lista = new ArrayList<Questions>();
 //    public Main() {
