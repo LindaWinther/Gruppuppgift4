@@ -19,7 +19,11 @@ public class ClientHandler extends Thread {
     List<Questions> listanSomSkapas = new ArrayList<>();
 
     ClientHandler opponent;
+    boolean readyToStart;
     boolean myTurn = false;
+    String nickname;
+    int avatarIndex;
+
 
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
@@ -40,10 +44,26 @@ public class ClientHandler extends Thread {
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
 
-                if (messageToServer.startsWith("START;") && playerNumber == '1') {
-                    myTurn = true;
-                    sendMessageToClient("DIN_TUR");
-                    opponent.sendMessageToClient("INTE_DIN_TUR");
+                if (messageToServer.startsWith("START;")) {
+                    String[] parts = messageToServer.split(";");
+                    nickname = parts[1];
+                    avatarIndex = Integer.parseInt(parts[2]);
+
+                    //kontroll om båda spelarana har skrivit in användarnamn/avatar
+                    readyToStart = true;
+                    if (!opponent.readyToStart) {
+                        continue;
+                    }
+
+                    sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
+                    opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
+
+                    if (playerNumber == '1') {
+                        myTurn = true;
+                        sendMessageToClient("DIN_TUR");
+                        opponent.sendMessageToClient("INTE_DIN_TUR");
+                    }
+
                     continue;
                 }
 
@@ -55,7 +75,7 @@ public class ClientHandler extends Thread {
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
                     //Kod för att välja kategorier här
-//                    List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
+                    //List<String> testCategories = List.of("Djur", "Natur", "Sport", "Mat");
 
                     Set<String> testCategories = new HashSet<String>(); //byt nman
                     testCategories = game.checkCategorys(listanSomSkapas);
