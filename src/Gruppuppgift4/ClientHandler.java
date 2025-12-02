@@ -135,12 +135,11 @@ public class ClientHandler extends Thread {
                         questionsSent = 0;
                         chosenCategory = null;
 
-
                         myTurn = false;
                         opponent.myTurn = true;
 
                         sendMessageToClient("INTE_DIN_TUR");
-                        opponent.sendMessageToClient("INTE_DIN_TUR");
+                        opponent.sendMessageToClient("DIN_TUR");
 
                         if(opponentIsAnswering){
 
