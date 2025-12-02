@@ -92,9 +92,10 @@ public class ClientHandler extends Thread {
                 if(messageToServer.startsWith("REDO_FÖR_FRÅGOR;")) {
 
                     if(chosenCategory == null){
-                        chosenCategory =  messageToServer.split(";")[1];
-                    currentQuestion= game.getQuestions(chosenCategory,questionsList);
+                        chosenCategory = messageToServer.split(";")[1];
                     }
+
+                    currentQuestion = game.getQuestions(chosenCategory, questionsList);
                     //TODO
                     // lägger in randomfråga, men gör "två" listor en för varje klient. men det borde lösa sig när vi bara väljer kategori från en spelare
 //
