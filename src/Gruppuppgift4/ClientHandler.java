@@ -128,7 +128,10 @@ public class ClientHandler extends Thread {
                         chosenCategory = null;
                         myTurn = false;
                         opponent.myTurn = true;
+
+                        opponent.sendMessageToClient("NY_RUNDA");
                         opponent.sendMessageToClient("DIN_TUR");
+
                         sendMessageToClient("INTE_DIN_TUR");
                     }
                     continue;

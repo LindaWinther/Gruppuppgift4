@@ -51,6 +51,7 @@ public class GameGUI extends JFrame {
     boolean unused = true;
 
     private Client client;
+    private boolean categoryChosen = false;
 
     public GameGUI() {
         client = new Client(this);
@@ -331,6 +332,7 @@ public class GameGUI extends JFrame {
 
             btn.addActionListener(e-> {
                 // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
+                categoryChosen = true;
                 client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
                 cardLayout.show(mainPanel, "QUESTION");
             });
@@ -437,9 +439,15 @@ public class GameGUI extends JFrame {
                 startButton.setEnabled(true);
                 startButton.setText("Starta nytt spel");
             }
-
+            if (messageFromServer.equals("NY_RUNDA")) {
+                categoryChosen = false;
+            }
             if (messageFromServer.equals("DIN_TUR")) {
-                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+                if (!categoryChosen) {
+                    client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+                } else {
+                    client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
+                }
             }
             if (messageFromServer.equals("INTE_DIN_TUR")) {
                 JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
