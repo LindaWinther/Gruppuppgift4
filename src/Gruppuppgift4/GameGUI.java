@@ -13,15 +13,25 @@ public class GameGUI extends JFrame {
     private CardLayout cardLayout;
     private JPanel mainPanel;
 
+    // Headerpanel med bägge spelares avatar/användarnamn
+    private JPanel headerInfoPanel;
+    private JLabel myAvatarLabel, myUsernameLabel;
+    private JLabel oppAvatarLabel, oppUsernameLabel;
+    private JLabel vsLabel;
+
+    private String myNickname;
+    private int myAvatarIndex = -1;
+    private ImageIcon[] avatarIcons;
+
     // Startsidan
     private JPanel startPanel;
     private JButton startButton;
-
     private JTextField nicknameField;
     private int selectedAvatarIndex = -1;
 
     // Kategorisidan
     private JPanel categoryPanel;
+    private JPanel categoryButtonsPanel;
 
     // Frågesidan
     private JPanel questionPanel;
@@ -49,20 +59,98 @@ public class GameGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setBackground(new Color(27, 47, 112));
-        setTitle("Quizduellen");
+        setTitle("Quizkampen");
 
+        // Layout runt hela fönstret
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().setBackground(new Color(27, 47, 112));
+
+        // Cardlayout för sidorna
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-        add(mainPanel);
 
+        // HEADER FÖR SPELARES AVATAR OCH ANVÄNDARNAMN
+        buildHeaderInfoPanel();
+        getContentPane().add(headerInfoPanel, BorderLayout.NORTH);
+        getContentPane().add(mainPanel, BorderLayout.CENTER);
+
+        // DÖLJER HEADER TILLS SPELET BÖRJAR
+        headerInfoPanel.setVisible(false);
+
+        // Alla sidorna
         buildStartPanel();
         buildCategoryPanel();
         buildQuestionPanel();
 
         cardLayout.show(mainPanel, "START");
         setVisible(true);
-
     }
+
+    // HEADER (spelares avatar/användarnamn)
+    private void buildHeaderInfoPanel() {
+        headerInfoPanel = new JPanel(new BorderLayout());
+        headerInfoPanel.setBackground(new Color(27, 47, 112));
+        headerInfoPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
+
+        // Till vänster, "min spelare"
+        JPanel leftPanel = new JPanel();
+        leftPanel.setOpaque(false);
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS));
+
+        myAvatarLabel = new JLabel();
+        myUsernameLabel = new JLabel("Jag");
+        myUsernameLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        myUsernameLabel.setForeground(Color.WHITE);
+
+        leftPanel.add(myAvatarLabel);
+        leftPanel.add(Box.createHorizontalStrut(10));
+        leftPanel.add(myUsernameLabel);
+
+        // I MITTEN, VS
+        vsLabel = new JLabel("VS", SwingConstants.CENTER);
+        vsLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        vsLabel.setForeground(Color.WHITE);
+
+        // TILL HÖGER, MOSTÅNDAREN
+        JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+
+        oppUsernameLabel = new JLabel("Motståndare");
+        oppUsernameLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        oppUsernameLabel.setForeground(Color.WHITE);
+        oppAvatarLabel = new JLabel();
+
+        rightPanel.add(oppUsernameLabel);
+        rightPanel.add(Box.createHorizontalStrut(10));
+        rightPanel.add(oppAvatarLabel);
+
+        headerInfoPanel.add(leftPanel, BorderLayout.WEST);
+        headerInfoPanel.add(vsLabel, BorderLayout.CENTER);
+        headerInfoPanel.add(rightPanel, BorderLayout.EAST);
+    }
+
+   // TODO!!
+   // Metoderna uppdaterar headern med båda spelarnas avatar och anv.namn
+   // Ens egna info på vänster sida, uppdateras direkt, på höger sida ligger motståndarens och det måste komma från servern
+   // Visar nu info om ena spelaren, men inte motståndarens, servern måste skicka det till klienten
+
+    private void updateMyPlayerHeader(){
+        if(myNickname != null){
+            myUsernameLabel.setText(myNickname);
+        }
+        if (avatarIcons != null && myAvatarIndex >= 0 && myAvatarIndex < avatarIcons.length){
+            myAvatarLabel.setIcon(avatarIcons[myAvatarIndex]);
+        }
+    }
+
+    private void updateOppHeader(String name, int avatarIndex){
+        oppUsernameLabel.setText(name);
+        if (avatarIcons != null && avatarIndex >= 0 && avatarIndex < avatarIcons.length) {
+            oppAvatarLabel.setIcon(avatarIcons[avatarIndex]);
+        }
+    }
+
 
     // Ladda in rätt storlek på ikoner
     private ImageIcon loadAvatarIcon(String fileName){
@@ -108,16 +196,17 @@ public class GameGUI extends JFrame {
         ImageIcon chicken = loadAvatarIcon("chicken.png");
         ImageIcon panda = loadAvatarIcon("panda(1).png");
         ImageIcon bear = loadAvatarIcon("bear.png");
-        ImageIcon[] icons = { chicken, panda, bear };
+        avatarIcons = new ImageIcon[] { chicken, panda, bear };
+
 
         // Panel för avatarknappar
         JPanel avatarPanel = new JPanel();
         avatarPanel.setBackground(new Color(27, 47, 112));
         avatarPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 15, 0));
 
-        for (int i = 0; i < icons.length; i++) {
+        for (int i = 0; i < avatarIcons.length; i++) {
             int idx = i;
-            JButton avatarButton = new JButton(icons[i]);
+            JButton avatarButton = new JButton(avatarIcons[i]);
             avatarButton.setPreferredSize(new Dimension(70, 70));
             avatarButton.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
             avatarButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -160,7 +249,7 @@ public class GameGUI extends JFrame {
         buttonPanel.setBackground(new Color(27, 47, 112));
         buttonPanel.setBorder(new EmptyBorder(20, 0, 20, 0));
 
-        startButton = new JButton("Starta nytt spel");
+        startButton = new JButton("Login");
         startButton.setFont(new Font("Segoe UI", Font.BOLD, 24));
         startButton.setForeground(Color.white);
         startButton.setBackground(new Color(82, 217, 41));
@@ -178,10 +267,17 @@ public class GameGUI extends JFrame {
                 return;
             }
 
-            int avatarIndex = selectedAvatarIndex;
+            myNickname = nickname;
+            myAvatarIndex = selectedAvatarIndex;
+
+            updateMyPlayerHeader();
+            headerInfoPanel.setVisible(true);
+
+            startButton.setEnabled(false);
+            startButton.setText("Väntar på motståndaren");
 
             // SKICKAR BÅDE ANVÄNDARNAMN OCH AVATAR TILL SERVERN
-            client.sendMessageToServer("START;" + nickname + ";" + avatarIndex);
+            client.sendMessageToServer("START;" + nickname + ";" + myAvatarIndex);
         });
 
         buttonPanel.add(startButton);
@@ -214,12 +310,19 @@ public class GameGUI extends JFrame {
         categoryLabel.setBorder(new EmptyBorder(0, 0, 30, 0));
 
         categoryPanel.add(categoryLabel, BorderLayout.NORTH);
+
+        categoryButtonsPanel = new JPanel();
+        categoryButtonsPanel.setBackground(new Color(27, 47, 112));
+
+        categoryPanel.add(categoryButtonsPanel, BorderLayout.CENTER);
+
         mainPanel.add(categoryPanel, "CATEGORY");
     }
 
     public void loadCategories(List<String> categories) {
-        JPanel buttonsPanel = new JPanel(new GridLayout(0, 2, 20, 20));
-        buttonsPanel.setBackground(new Color(27, 47, 112));
+        categoryButtonsPanel.removeAll();
+        categoryButtonsPanel.setLayout(new GridLayout(0,2, 20, 20));
+        categoryButtonsPanel.setBackground(new Color(27, 47, 112));
 
         for (String category: categories) {
             JButton btn = new JButton(category);
@@ -232,9 +335,12 @@ public class GameGUI extends JFrame {
                 cardLayout.show(mainPanel, "QUESTION");
             });
 
-            buttonsPanel.add(btn);
+            categoryButtonsPanel.add(btn);
         }
-        categoryPanel.add(buttonsPanel, BorderLayout.CENTER);
+
+        categoryButtonsPanel.revalidate();
+        categoryButtonsPanel.repaint();
+
     }
 
     private void styleCategoryButton(JButton btn) {
@@ -321,6 +427,16 @@ public class GameGUI extends JFrame {
 
     public void receiveFromServer(String messageFromServer) {
         SwingUtilities.invokeLater(() -> {
+
+            if (messageFromServer.startsWith("FIENDEN_REGISTRERAD;")){
+                String [] parts = messageFromServer.split(";");
+                String name = parts [1];
+                int avatarIndex = Integer.parseInt(parts[2]);
+                updateOppHeader(name, avatarIndex);
+                startButton.setEnabled(true);
+                startButton.setText("Starta nytt spel");
+            }
+
             if (messageFromServer.equals("DIN_TUR")) {
                 client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
             }
