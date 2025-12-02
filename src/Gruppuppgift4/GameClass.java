@@ -68,6 +68,8 @@ public class GameClass {
 //System.out.println("Antal unika kategorier: " + antalKategorier);
 
     public List<Questions> searchCategoryFromList(String category) {
+        categoryList.clear();
+
         for (Questions q2 : completeList) {
             if (q2.category.equalsIgnoreCase(category)) {
                 categoryList.add(q2);

@@ -332,7 +332,6 @@ public class GameGUI extends JFrame {
             btn.addActionListener(e-> {
                 // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
                 client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
-                lockAnswerButtons(true);
                 cardLayout.show(mainPanel, "QUESTION");
             });
 
