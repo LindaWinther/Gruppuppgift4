@@ -88,7 +88,7 @@ public class ClientHandler extends Thread {
 //                        listanSomSkapas = game.searchCategoryFromList(temp);// ta in värde på kategori Kör (Sträng?) i loopen?
 //                             System.out.println(listanSomSkapas);
                     listanSomSkapas= game.completeList;
-                    currentQuestion = game.getQuestions(temp,listanSomSkapas);
+                    currentQuestion= game.getQuestions(temp,listanSomSkapas);
 
 //                        listanSomSkapas = game.getQuestions(temp,game.completeList,listanSomSkapas);
 //                    System.out.println(listanSomSkapas.size());
@@ -134,11 +134,12 @@ public class ClientHandler extends Thread {
 
                 if(messageToServer.startsWith("SVAR;")) {
                     String answer = messageToServer.split(";")[1];
+                    String index =  messageToServer.split(";")[2];
 
                     if(answer.equals(currentQuestion.answer)) {
-                        sendMessageToClient("RÄTT");
+                        sendMessageToClient("RÄTT;" + index);
                     } else {
-                        sendMessageToClient("FEL");
+                        sendMessageToClient("FEL;" + index);
                     }
                 }
 
