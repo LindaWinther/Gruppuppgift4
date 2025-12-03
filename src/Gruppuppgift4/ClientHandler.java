@@ -142,7 +142,7 @@ public class ClientHandler extends Thread {
                 categoriesLeft.add(category);
             }
             //bara för utskrift i konsollen
-            System.out.println(category + " har" + amountOfUnusedLeft + " fråger kvar");
+            System.out.println(category + " har" + amountOfUnusedLeft + " frågor kvar");
         }
 
         sendMessageToClient("KATEGORIER;" + String.join(";", categoriesLeft));
