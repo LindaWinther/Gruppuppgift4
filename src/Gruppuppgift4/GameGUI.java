@@ -42,7 +42,7 @@ public class GameGUI extends JFrame {
     // Poängsidan
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
-    
+
     private Client client;
     private boolean categoryChosen = false;
 
