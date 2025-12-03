@@ -14,7 +14,7 @@ public class GameClass {
 
     public GameClass() {
         readList();
-        checkCategorys(completeList);
+        checkCategorys();
     }
 
     public List<Questions> readList() {
@@ -32,11 +32,35 @@ public class GameClass {
         return completeList;
     }
 
-    public Set<String> checkCategorys(List<Questions> questions) {
+    public Set<String> checkCategorys() {
         for (Questions q : completeList) {
             listOfCategory.add(q.category);
         }
         return listOfCategory;
+    }
+    public List<String> getAvailableCategories(int number) {
+        List <String> list = new ArrayList<>();
+        list.clear();
+        for (Questions q : completeList) {
+            if (q.unused){
+                String cat = q.category;
+
+                if (!list.contains(cat)) {
+                    int count = 0;
+                    for (Questions q2 : completeList) {
+                        if (q2.isUnused() && q2.category.equalsIgnoreCase(cat)) {
+                            count++;
+                        }
+                    }
+                    if (count >= number){
+                        list.add(cat);
+                    }else {
+                        list.remove(cat);
+                    }
+                }
+            }
+        }
+        return list;
     }
 
     public Questions getQuestions(String category, List<Questions> completeList ) {
