@@ -17,7 +17,7 @@ public class ClientHandler extends Thread {
     BufferedReader in;
     PrintWriter out;
     Questions currentQuestion;
-    GameClass game = new GameClass();
+    GameClass game;
     List<Questions> completeList = game.completeList;
 
     String nickname;
@@ -42,9 +42,10 @@ public class ClientHandler extends Thread {
     String chosenCategory = null;
 
 
-    public ClientHandler(Socket socket, char playerNumber) {
+    public ClientHandler(Socket socket, char playerNumber, GameClass game) {
         this.socket = socket;
         this.playerNumber = playerNumber;
+        this.game = game;
 
         try{
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));

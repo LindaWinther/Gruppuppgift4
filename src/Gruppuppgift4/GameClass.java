@@ -43,6 +43,51 @@ public class GameClass {
             }
         return listOfCategory;
     }
+    public List<String> getAvailableCategories(int number) {
+    List <String> list = new ArrayList<>();
+    list.clear();
+        for (Questions q : completeList) {
+            if (q.unused){
+                String cat = q.category;
+
+                if (!list.contains(cat)) {
+                    int count = 0;
+                    for (Questions q2 : completeList) {
+                        if (q2.isUnused() && q2.category.equalsIgnoreCase(cat)) {
+                            count++;
+                        }
+                    }
+                    if (count >= number){
+                        list.add(cat);
+                    }else {
+                        list.remove(cat);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    public List<Questions> helpMe(List<Questions> questions) {
+
+        for (Questions q : completeList) {
+            if(q.unused)
+                annanlista.add(q);
+        }
+
+        return annanlista;
+
+
+    }
+//    public void helpYourSelf(List<Questions> q, Set<String> c) {
+//            List<Questions> test = new ArrayList<>();
+//            String a = listOfCategory.get(1);
+//        for (Questions s : annanlista) {
+//            if (s.category) {
+//
+//            }
+//        }
+//    }
 
     public Questions getQuestions(String category, List<Questions> completeList ) {
         Collections.shuffle(completeList);
