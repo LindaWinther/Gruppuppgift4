@@ -126,8 +126,10 @@ public class ClientHandler extends Thread {
 
     //todo fixa så att om questionsperround är > unused frågor i en kateogri, skicka inte kategorin.
 
-    private void sendCategories(){
-        sendMessageToClient("KATEGORIER;" + String.join(";", game.listOfCategory));
+    private void sendCategories() {
+//        if (game.listOfCategory.contains(true)) {
+            sendMessageToClient("KATEGORIER;" + String.join(";", game.listOfCategory));
+//        }
     }
 
     private void handleReadyForQuestions(String messageToServer){
