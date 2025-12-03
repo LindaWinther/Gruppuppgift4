@@ -39,6 +39,11 @@ public class GameGUI extends JFrame {
     private JButton[] answerButtons;
     private JLabel titleLabel;
 
+    // Poängsidan
+    private JPanel scoreResultPanel;
+    private JPanel scoreRowsPanel;
+
+
     // Lägger in svar från gameClass
 //    private String gameQuestion ;   // ta bort ner till 40?
 //    private String[] gameAnswers;
@@ -50,6 +55,7 @@ public class GameGUI extends JFrame {
 //    boolean unused = true;
 
     private Client client;
+    private boolean categoryChosen = false;
 
     public GameGUI() {
         client = new Client(this);
@@ -81,6 +87,7 @@ public class GameGUI extends JFrame {
         buildStartPanel();
         buildCategoryPanel();
         buildQuestionPanel();
+        buildScoreResultPanel();
 
         cardLayout.show(mainPanel, "START");
         setVisible(true);
@@ -151,6 +158,54 @@ public class GameGUI extends JFrame {
         }
     }
 
+    // Resultatsida visas mellan ronderna
+    private void buildScoreResultPanel(){
+        scoreResultPanel = new JPanel(new BorderLayout());
+        scoreResultPanel.setBackground(new Color(27, 47, 112));
+        scoreResultPanel.setBorder(new EmptyBorder(40, 40, 40, 40));
+
+
+        // Rubrik
+        JPanel titlePanel = new JPanel();
+        titlePanel.setBackground(new Color(27, 47, 112));
+        JLabel title = new JLabel("Rondresultat", SwingConstants.CENTER);
+        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+
+        scoreResultPanel.add(titlePanel, BorderLayout.NORTH);
+
+        // Panel med raderna
+        scoreRowsPanel = new JPanel();
+        scoreRowsPanel.setOpaque(false);
+        scoreRowsPanel.setLayout(new BoxLayout(scoreRowsPanel, BoxLayout.Y_AXIS));
+
+        // Test med hårdkodad data sålänge
+        String[] testRounds = {
+                "Rond 1: du 2 / 3 - motståndare 1 / 3",
+                "Rond 2: du 1 / 3 - motståndare 3 / 3"
+        };
+
+        for (String row : testRounds){
+            JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
+            rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            rowLabel.setForeground(Color.WHITE);
+            rowLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
+            rowLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            scoreRowsPanel.add(rowLabel);
+        }
+        scoreResultPanel.add(scoreRowsPanel, BorderLayout.CENTER);
+
+
+        JLabel totalLabel = new JLabel("Totalt: du 3 - motståndare 4", SwingConstants.CENTER);
+        totalLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
+        totalLabel.setForeground(Color.WHITE);
+        totalLabel.setBorder(new EmptyBorder(15, 0, 0, 0));
+        scoreResultPanel.add(totalLabel, BorderLayout.SOUTH);
+
+        mainPanel.add(scoreResultPanel, "ROUND_RESULTS");
+    }
+
 
     // Ladda in rätt storlek på ikoner
     private ImageIcon loadAvatarIcon(String fileName){
@@ -172,7 +227,7 @@ public class GameGUI extends JFrame {
         startPanel.add(centerPanel, BorderLayout.CENTER);
 
         // Titel
-        titleLabel = new JLabel("Quizduellen", SwingConstants.CENTER);
+        titleLabel = new JLabel("Quizkampen", SwingConstants.CENTER);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 48));
         titleLabel.setForeground(Color.WHITE);
@@ -281,6 +336,16 @@ public class GameGUI extends JFrame {
         });
 
         buttonPanel.add(startButton);
+
+        // TEST FÖR ATT SE POÄNGSIDA
+        JButton testResultButton = new JButton("VISA TESTSIDA-POÄNG");
+        testResultButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+        testResultButton.addActionListener(e ->
+                cardLayout.show(mainPanel, "ROUND_RESULTS")
+        );
+        buttonPanel.add(Box.createHorizontalStrut(15));
+        buttonPanel.add(testResultButton);
+
         centerPanel.add(buttonPanel);
 
         mainPanel.add(startPanel, "START");
@@ -330,8 +395,8 @@ public class GameGUI extends JFrame {
 
             btn.addActionListener(e-> {
                 // Den får kategorin från server och när den skickar REDO, till servern så får den ut frågorna från servern beroende på kategorin
+                categoryChosen = true;
                 client.sendMessageToServer("REDO_FÖR_FRÅGOR;" + category);
-                lockAnswerButtons(true);
                 cardLayout.show(mainPanel, "QUESTION");
             });
 
@@ -417,11 +482,6 @@ public class GameGUI extends JFrame {
     private void checkAnswer(int index) {
         String indexToString = Integer.toString(index);
         client.sendMessageToServer("SVAR;" + answerButtons[index].getText() + ";" + indexToString);
-//        if (index == correctAnswer) {
-//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-//        } else {
-//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-//        }
         lockAnswerButtons(false);
     }
 
@@ -436,9 +496,19 @@ public class GameGUI extends JFrame {
                 startButton.setEnabled(true);
                 startButton.setText("Starta nytt spel");
             }
-
+            if (messageFromServer.startsWith("NY_RUNDA")) {
+                categoryChosen = false;
+            }
+            if (messageFromServer.startsWith("KATEGORI_VALD")) {
+                categoryChosen = true;
+                return;
+            }
             if (messageFromServer.equals("DIN_TUR")) {
-                client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+                if (!categoryChosen) {
+                    client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
+                } else {
+                    client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
+                }
             }
             if (messageFromServer.equals("INTE_DIN_TUR")) {
                 JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
@@ -452,8 +522,6 @@ public class GameGUI extends JFrame {
                 for(int i = 1; i < parts.length; i++){
                     stringToList.add(parts[i]);
                 }
-                //test
-                System.out.println(stringToList);
                 loadCategories(stringToList);
             }
             if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
@@ -468,15 +536,23 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Rätt!");
 
             }
+            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
             if (messageFromServer.startsWith("FEL")) {
-                String indexString = messageFromServer.split(";")[1];
-                int indexToInt = Integer.parseInt(indexString);
-                answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
+                String[] parts =  messageFromServer.split(";");
+                int wrongIndexToInt = Integer.parseInt(parts[1]);
+                String correctAnswer = parts[2];
+
+                answerButtons[wrongIndexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
-            }
-            //gör inget just nu, kan användas för en exit knapp i framtiden
-            if (messageFromServer.equals("GAME_OVER")) {
-                JOptionPane.showMessageDialog(this, "Spelet är slut!");
+
+                for (int i = 0;  i < answerButtons.length; i++) {
+                    System.out.println("Texten för knappen av index i:" + answerButtons[i].getText());
+                    System.out.println("CorrectAnswer från servern: " + correctAnswer);
+                    if (answerButtons[i].getText().equals(correctAnswer)){
+                        answerButtons[i].setBackground(new Color(0, 180, 0));
+                    }
+                }
+
             }
         });
     }
