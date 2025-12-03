@@ -180,7 +180,7 @@ public class ClientHandler extends Thread {
         if (answer.equals(question.answer))
             sendMessageToClient("RÄTT;" + index);
         else
-            sendMessageToClient("FEL;" + index);
+            sendMessageToClient("FEL;" + index + ";" + answer);
 
         //fortsätter med spelarens tur tills questionsSent blir samma som questionsPerRound, eftersom det är limiten mängden frågor i rundan.
         if (questionsSent < questionsPerRound) {
