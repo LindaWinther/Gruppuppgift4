@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+//extends thread så den körs i separata trådar
 public class ClientHandler extends Thread {
     Config config = new Config();//
 

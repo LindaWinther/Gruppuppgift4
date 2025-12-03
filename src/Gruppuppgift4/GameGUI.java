@@ -54,6 +54,7 @@ public class GameGUI extends JFrame {
 //    List<Questions> questions = new ArrayList<Questions>();
 //    boolean unused = true;
 
+    //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
     private Client client;
     private boolean categoryChosen = false;
 
