@@ -10,10 +10,14 @@ public class GameClass {
 
     List<Questions> completeList = new ArrayList<>();
     Set<String> listOfCategory = new HashSet<String>();
+    List<Questions> annanlista = new ArrayList<>();
+    Config c = new Config();
+    List<Questions> annanLista = new ArrayList<>();
 
     public GameClass() {
         readList();
         checkCategorys(completeList);
+        int number = c.getRoundsInGame();
     }
 
     public List<Questions> readList() {
@@ -32,9 +36,11 @@ public class GameClass {
     }
 
     public Set<String> checkCategorys(List<Questions> questions) {
+        listOfCategory.clear();
         for (Questions q : completeList) {
-            listOfCategory.add(q.category);
-        }
+            if(q.unused)
+                listOfCategory.add(q.category);
+            }
         return listOfCategory;
     }
 

@@ -12,13 +12,15 @@ public class Server {
         ServerSocket server = new ServerSocket(55555);
         System.out.println("Server is running!");
 
+        GameClass game = new GameClass(); // test
+
         try {
             while (true) {
                 Socket p1 = server.accept();
                 Socket p2 = server.accept();
 
-                ClientHandler s1 = new ClientHandler(p1, '1');
-                ClientHandler s2 = new ClientHandler(p2, '2');
+                ClientHandler s1 = new ClientHandler(p1, '1', game);
+                ClientHandler s2 = new ClientHandler(p2, '2',game);
 
                 s1.opponent = s2;
                 s2.opponent = s1;
