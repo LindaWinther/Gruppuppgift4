@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 public class ClientHandler extends Thread {
+    Config config = new Config();//
+    int questionsPerRound = config.getQuestionsinRound();
+    int roundsInGame = config.getRoundsInGame();
 
     char playerNumber;
     Socket socket;
@@ -26,9 +29,9 @@ public class ClientHandler extends Thread {
     String chosenCategory = null;
 
 
-    int questionsPerRound = 3;
-    //hur många rundor som ska spelas i spelet
-    int roundsInGame;
+//    int questionsPerRound = 3;
+//    //hur många rundor som ska spelas i spelet
+//    int roundsInGame;
     int questionsSent = 0;
 
 
