@@ -503,14 +503,14 @@ public class GameGUI extends JFrame {
                 categoryChosen = true;
                 return;
             }
-            if (messageFromServer.equals("DIN_TUR")) {
+            if (messageFromServer.startsWith("DIN_TUR")) {
                 if (!categoryChosen) {
                     client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
                 } else {
                     client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
                 }
             }
-            if (messageFromServer.equals("INTE_DIN_TUR")) {
+            if (messageFromServer.startsWith("INTE_DIN_TUR")) {
                 JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
@@ -541,6 +541,9 @@ public class GameGUI extends JFrame {
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
+            }
+            if (messageFromServer.startsWith("GAME_OVER")) {
+                cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
     }
