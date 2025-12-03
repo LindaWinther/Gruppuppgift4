@@ -42,23 +42,12 @@ public class GameGUI extends JFrame {
     // Poängsidan
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
-
-
-    // Lägger in svar från gameClass
-//    private String gameQuestion ;   // ta bort ner till 40?
-//    private String[] gameAnswers;
-//
-//    private int correctAnswer = 0;
-//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
-//    Questions q = new Questions();
-//    List<Questions> questions = new ArrayList<Questions>();
-//    boolean unused = true;
-
-    //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
+    
     private Client client;
     private boolean categoryChosen = false;
 
     public GameGUI() {
+        //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
         client = new Client(this);
         client.start();
 
