@@ -15,7 +15,7 @@ public class ClientHandler extends Thread {
     PrintWriter out;
     Questions currentQuestion;
     GameClass game = new GameClass();
-    List<Questions> questionsList = game.completeList;
+    List<Questions> completeList = game.completeList;
 
     String nickname;
     int avatarIndex;
@@ -52,7 +52,6 @@ public class ClientHandler extends Thread {
         }
     }
 
-    @Override
     public void run() {
 
         try {
@@ -123,6 +122,8 @@ public class ClientHandler extends Thread {
         }
     }
 
+    //todo fixa så att om questionsperround är > unused frågor i en kateogri, skicka inte kategorin.
+
     private void sendCategories(){
         sendMessageToClient("KATEGORIER;" + String.join(";", game.listOfCategory));
     }
@@ -136,10 +137,12 @@ public class ClientHandler extends Thread {
             chosenCategory = parts[1];
 
             // kommer generera och lägga till frågor beroende på chosenCategory i currentRoundQuestions listan.
-            genereateQuestionsForRound(chosenCategory);
+            generateQuestionsForRound(chosenCategory);
 
             //ser till att andra klienten får dom genererade frågorna också, eftersom den ska svara på samma också
-            opponent.currentRoundQuestions = new ArrayList<>(currentRoundQuestions);
+            opponent.currentRoundQuestions = currentRoundQuestions;
+            System.out.println(opponent.currentRoundQuestions.getFirst().unused);
+            System.out.println(opponent.currentRoundQuestions.size());
             opponent.chosenCategory = chosenCategory;
 
             //bara så att motståndaren ska veta att en kategori har blivit vald.
@@ -165,7 +168,7 @@ public class ClientHandler extends Thread {
         String[] parts = messageToServer.split(";");
         //svaret, aka stringen som kommer från knappen som klickades
         String answer = parts[1];
-        //index sparas för att veta vilken knaapp det är som ska färgas
+        //index sparas för att veta vilken knapp det är som ska färgas
         String index = parts[2];
 
         //lagrar vilken fråga det är som behandlas nu
@@ -186,11 +189,12 @@ public class ClientHandler extends Thread {
         }
     }
 
-    private void genereateQuestionsForRound(String chosenCategory){
+    private void generateQuestionsForRound(String chosenCategory){
         currentRoundQuestions.clear();
         for (int i = 0; i < questionsPerRound; i++) {
-            Questions question = game.getQuestions(chosenCategory, questionsList);
+            Questions question = game.getQuestions(chosenCategory, completeList);
             currentRoundQuestions.add(question);
+            opponent.completeList = completeList;
         }
     }
 
@@ -203,7 +207,7 @@ public class ClientHandler extends Thread {
             return;
         }
 
-        //skickar frågan med index av questionsSent till GameGUI,questionsSent++ varenda gång en fråga blir skickad.
+        //skickar frågan med index av questionsSent till GameGUI, questionsSent++ varenda gång en fråga blir skickad.
         Questions question = currentRoundQuestions.get(questionsSent);
 
         sendMessageToClient("FRÅGA;" + question.question + ";" + question.answer + ";" + question.wrong1 + ";" + question.wrong2 + ";" + question.wrong3);

@@ -15,7 +15,6 @@ public class Server {
         try {
             while (true) {
                 Socket p1 = server.accept();
-
                 Socket p2 = server.accept();
 
                 ClientHandler s1 = new ClientHandler(p1, '1');
