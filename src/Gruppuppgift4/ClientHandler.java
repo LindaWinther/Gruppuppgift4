@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientHandler extends Thread {
+    Config config = new Config();//
+    int questionsPerRound = config.getQuestionsinRound();
+    int roundsInGame = config.getRoundsInGame();
 
     char playerNumber;
     Socket socket;
@@ -32,7 +35,6 @@ public class ClientHandler extends Thread {
     boolean isRoundFinished = false;
     boolean isRoundStarter = false;
 
-    int questionsPerRound = 3;
 
     List<Questions> currentRoundQuestions = new ArrayList<>();
     int questionsSent = 0;

@@ -10,7 +10,7 @@ public class Config {
     private Properties prop = new Properties();
     public Config() {
         try {
-            prop.load(new FileInputStream("src/config.properties"));
+            prop.load(new FileInputStream("src/Gruppuppgift4/config.properties"));
         } catch (IOException e) {
             throw new RuntimeException("Kunde inte läsa config.properties");
         }
