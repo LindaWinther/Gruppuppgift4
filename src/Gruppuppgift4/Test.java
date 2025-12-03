@@ -1,8 +1,45 @@
 package Gruppuppgift4;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-//public class Run {
+public class Test {
+
+        GameClass game =  new GameClass();
+        List<String> tryMe = new ArrayList<>();
+    public Test() {
+
+//        sendCategories();
+//        sendCategories();
+
+//        tryMe = game.getAvailableCategories(2);
+//        System.out.println("Got " + tryMe.toString());
+//        tryMe = game.getAvailableCategories(2);
+//        System.out.println(tryMe.get(1));
+//        System.out.println("Got " + tryMe.toString());
+
+
+
+    }
+//    private void sendCategories(){
+//        List<String> categoriesLeft = new ArrayList<>();
+//        for (String category : game.listOfCategory){
+//            int amountOfUnusedLeft = 0;
+//            for(Questions question : game.completeList){
+//                if (question.category.equalsIgnoreCase(category) && (question.unused == true)){
+//                    amountOfUnusedLeft++;
+//                }
+//            }
+//            if (amountOfUnusedLeft >= 2){
+//                categoriesLeft.add(category);
+//            }
+//            System.out.println(category + "har" + amountOfUnusedLeft + " frågr kvar");
+//        }
+//    }
+
+
+    void main(){}
+}
 
 //    List<Questions> questions = new ArrayList<Questions>();
 //    List<Questions> hamburgare =  new ArrayList<>();
@@ -10,7 +47,7 @@ import java.util.*;
 //    Set<String> list = new HashSet<String>();
 //    Questions q;
 //
-//    public Run() {
+//
 //        questions = game.readList();
 //       hamburgare = game.getQuestions("djur",questions,hamburgare);
 //        System.out.println(hamburgare.size());
