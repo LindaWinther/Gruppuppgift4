@@ -37,28 +37,50 @@ public class GameClass {
         }
         return listOfCategory;
     }
+
+    //todo Försökt mixtra i denna men gått bet...
     public List<String> getAvailableCategories(int number) {
         List <String> list = new ArrayList<>();
-        list.clear();
+//        list.clear();
         for (Questions q : completeList) {
-            if (q.unused){
+            if (q.unused) {
                 String cat = q.category;
 
+
+                int index;
                 if (!list.contains(cat)) {
                     int count = 0;
                     for (Questions q2 : completeList) {
                         if (q2.isUnused() && q2.category.equalsIgnoreCase(cat)) {
                             count++;
+                            index = q2.category.indexOf(q.category);
+                            System.out.println(index);
+
+
+
                         }
                     }
-                    if (count >= number){
+                    if (count >= number) {
                         list.add(cat);
-                    }else {
-                        list.remove(cat);
+
+
+//                        q2.setUnused(false);
+//                        q2.unused = false;
+                        System.out.println("added" + list.size());
+//                    }else {
+//                        list.remove(cat);
+//                        System.out.println("removed" + list.size());
+//                    }
                     }
+//                else {
+//                    list.remove(cat);
+//                    System.out.println("removed botten" + list.size());
+//                }
                 }
             }
-        }
+
+
+        }System.out.println("list" + list.size());
         return list;
     }
 
