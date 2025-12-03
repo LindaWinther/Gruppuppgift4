@@ -24,7 +24,7 @@ public class ClientHandler extends Thread {
     int avatarIndex;
 
     //hur många rundor som ska spelas i spelet
-    int roundsInGame;
+//    int roundsInGame;
 
     ClientHandler opponent;
     boolean readyToStart;
