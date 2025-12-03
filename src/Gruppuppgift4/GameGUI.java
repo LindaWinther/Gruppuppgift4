@@ -536,11 +536,23 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Rätt!");
 
             }
+            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
             if (messageFromServer.startsWith("FEL")) {
-                String indexString = messageFromServer.split(";")[1];
-                int indexToInt = Integer.parseInt(indexString);
-                answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
+                String[] parts =  messageFromServer.split(";");
+                int wrongIndexToInt = Integer.parseInt(parts[1]);
+                String correctAnswer = parts[2];
+
+                answerButtons[wrongIndexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
+
+                for (int i = 0;  i < answerButtons.length; i++) {
+                    System.out.println("Texten för knappen av index i:" + answerButtons[i].getText());
+                    System.out.println("CorrectAnswer från servern: " + correctAnswer);
+                    if (answerButtons[i].getText().equals(correctAnswer)){
+                        answerButtons[i].setBackground(new Color(0, 180, 0));
+                    }
+                }
+
             }
         });
     }
