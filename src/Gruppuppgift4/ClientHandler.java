@@ -141,7 +141,7 @@ public class ClientHandler extends Thread {
             if (amountOfUnusedLeft >= questionsPerRound){
                 categoriesLeft.add(category);
             }
-            System.out.println(category + "has" + amountOfUnusedLeft + " questions left");
+            System.out.println(category + "har" + amountOfUnusedLeft + " frågr kvar");
         }
 
         sendMessageToClient("KATEGORIER;" + String.join(";", categoriesLeft));
