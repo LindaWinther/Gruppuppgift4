@@ -250,6 +250,7 @@ public class ClientHandler extends Thread {
         isRoundFinished = true;
         sendMessageToClient("INTE_DIN_TUR");
         //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
+
         if(!opponent.isRoundFinished){
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
@@ -257,6 +258,7 @@ public class ClientHandler extends Thread {
             opponent.sendMessageToClient("DIN_TUR");
             return;
         }
+
         roundCounter++;
         opponent.roundCounter = roundCounter;
 
@@ -267,8 +269,9 @@ public class ClientHandler extends Thread {
         String opponentResultString = "Rond" + roundCounter + ":du " + opponent.roundScore + "/" + questionsPerRound + " -motståndare" + roundScore + " / " + questionsPerRound;
         opponent.sendMessageToClient("RESULTAT;" + opponentResultString +";" + opponent.totalMatchScore + ";" + totalQuestionsInGame);
 
-
-
+        //test
+        System.out.println(opponentResultString);
+        System.out.println(resultString);
 
 
         //om conditionen fylls så stängs spelet och man kommer till score-screen
