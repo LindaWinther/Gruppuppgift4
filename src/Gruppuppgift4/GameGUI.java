@@ -477,11 +477,11 @@ public class GameGUI extends JFrame {
     }
 
     // FRÅGELOGIK
-    public void shuffle(Object[]quest ){
+    public void shuffle(String[] quest) {
         int noOfAnswers = quest.length;
         for (int i = 0; i <noOfAnswers; i++){
             int s = i + (int) (Math.random() * (noOfAnswers - i));
-            Object temp = quest[s];
+            String temp = quest[s];
             quest[s] = quest[i];
             quest[i] = temp;
         }
