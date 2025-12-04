@@ -47,17 +47,8 @@ public class GameGUI extends JFrame {
     private JPanel waitOverlay;
     private JLabel waitLabel;
 
-    private List<String> roundResults = new  ArrayList<>();
-
-    // Lägger in svar från gameClass
-//    private String gameQuestion ;   // ta bort ner till 40?
-//    private String[] gameAnswers;
-//
-//    private int correctAnswer = 0;
-//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
-//    Questions q = new Questions();
-//    List<Questions> questions = new ArrayList<Questions>();
-//    boolean unused = true;
+    private List<String> roundScore = new  ArrayList<>();
+    private String totalScore;
 
     private Client client;
     private boolean categoryChosen = false;
@@ -205,9 +196,7 @@ public class GameGUI extends JFrame {
         scoreRowsPanel.setOpaque(false);
         scoreRowsPanel.setLayout(new BoxLayout(scoreRowsPanel, BoxLayout.Y_AXIS));
 
-        // Test med hårdkodad data sålänge
-
-        for (String row : roundResults){
+        for (String row : roundScore){
             JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
             rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             rowLabel.setForeground(Color.WHITE);
@@ -598,7 +587,9 @@ public class GameGUI extends JFrame {
             }
             if (messageFromServer.startsWith("RESULTAT;")) {
                 String[] parts = messageFromServer.split(";");
-                roundResults.add(parts[1]);
+                roundScore.add(parts[1]);
+                totalScore = parts [2];
+                String totalQuestionsInGame = parts[3];
 
             }
             if (messageFromServer.startsWith("GAME_OVER")) {

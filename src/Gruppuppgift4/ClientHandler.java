@@ -40,6 +40,8 @@ public class ClientHandler extends Thread {
     int questionIndex = 0;
     int roundCounter = 0;
     int roundScore = 0;
+    int totalMatchScore = 0;
+    int totalQuestionsInGame = roundsInGame * questionsPerRound;
 
 
     String chosenCategory = null;
@@ -200,6 +202,7 @@ public class ClientHandler extends Thread {
         //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
         if (answer.equals(question.answer)){
             roundScore++;
+            totalMatchScore++;
             sendMessageToClient("RÄTT;" + index);
         }
         else {
@@ -254,18 +257,18 @@ public class ClientHandler extends Thread {
             opponent.sendMessageToClient("DIN_TUR");
             return;
         }
-
-        int myScore = 0;
-        int opponentScore = 0;
-
-        String resultString = "Rond" + roundCounter + ":du " + myScore + "/" + questionsPerRound + " -motståndare" + opponentScore + " / " + questionsPerRound;
-        sendMessageToClient("RESULTAT;" + resultString);
-
-        String opponentResultString = "Rond" + roundCounter + ":du " + opponentScore + "/" + questionsPerRound + " -motståndare" + myScore + " / " + questionsPerRound;
-        opponent.sendMessageToClient("RESULTAT;" + opponentResultString);
-
         roundCounter++;
         opponent.roundCounter = roundCounter;
+
+        //skickar resultaten när båda användarna är klara med sin round
+        String resultString = "Rond" + roundCounter + ":du " + roundScore + "/" + questionsPerRound + " -motståndare" + opponent.roundScore + " / " + questionsPerRound;
+        sendMessageToClient("RESULTAT;" + resultString + ";" + totalMatchScore + ";" + totalQuestionsInGame);
+
+        String opponentResultString = "Rond" + roundCounter + ":du " + opponent.roundScore + "/" + questionsPerRound + " -motståndare" + roundScore + " / " + questionsPerRound;
+        opponent.sendMessageToClient("RESULTAT;" + opponentResultString +";" + opponent.totalMatchScore + ";" + totalQuestionsInGame);
+
+
+
 
 
         //om conditionen fylls så stängs spelet och man kommer till score-screen
@@ -293,9 +296,14 @@ public class ClientHandler extends Thread {
 
         //den här metoden fungerar som en reset för rundan. Alla värden som vilken kategori/fråga som hade blivit vald resettas.
         //den sätter också att en spelare är isChoosingCategory igen/vems tur det är.
+
         chosenCategory = null;
         currentRoundQuestions = new ArrayList<>();
         questionIndex = 0;
+
+        roundScore = 0;
+        opponent.roundScore = 0;
+
         isRoundFinished = false;
         opponent.isRoundFinished = false;
 
