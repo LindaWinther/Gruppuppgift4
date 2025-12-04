@@ -22,7 +22,7 @@ public class ClientHandler extends Thread {
     int avatarIndex;
 
     //hur många rundor som ska spelas i spelet
-//    int roundsInGame;
+    //int roundsInGame;
 
     ClientHandler opponent;
     boolean readyToStart;
@@ -68,10 +68,10 @@ public class ClientHandler extends Thread {
                 }
 
                 //säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
-                if (!myTurn) {
-                    sendMessageToClient("INTE_DIN_TUR");
-                    continue;
-                }
+//                if (!myTurn) {
+//                    sendMessageToClient("INTE_DIN_TUR");
+//                    continue;
+//                }
 
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
@@ -240,7 +240,7 @@ public class ClientHandler extends Thread {
         isAnsweringQuestions = false;
         myTurn = false;
         isRoundFinished = true;
-
+        sendMessageToClient("INTE_DIN_TUR");
         //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
         if(!opponent.isRoundFinished){
             opponent.myTurn = true;
@@ -254,10 +254,11 @@ public class ClientHandler extends Thread {
         opponent.roundCounter = roundCounter;
         //om conditionen fylls så stängs spelet och man kommer till score-screen
         if (roundCounter >= roundsInGame) {
+            sendMessageToClient("DIN_TUR");
+            opponent.sendMessageToClient("DIN_TUR");
             endGame();
             return;
         }
-
         // när båda har svarat så kommer vi hit och beroende på vem som var roundstarter så bestäms det vem nästa roundstartern ska vara. Så efter den första
         // rundan till exmepel så blir motståndaren den nya round startern.
         if (opponent.isRoundStarter) {
@@ -269,6 +270,7 @@ public class ClientHandler extends Thread {
             opponent.isRoundStarter = true;
             opponent.startNewRound();
         }
+
     }
 
     private void startNewRound(){
