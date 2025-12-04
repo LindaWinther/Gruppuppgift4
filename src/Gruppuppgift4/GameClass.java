@@ -45,7 +45,6 @@ public class GameClass {
         for (Questions q : completeList) {
             if (q.category.equalsIgnoreCase(category) && q.unused ) {
                 int i = completeList.indexOf(q);
-                q.unused = false;
                 completeList.get(i).unused = false;
                 return completeList.get(i);
             }
