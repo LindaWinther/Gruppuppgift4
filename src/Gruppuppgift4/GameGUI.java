@@ -572,7 +572,6 @@ public class GameGUI extends JFrame {
                showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
-
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
                 List<String> stringToList = new ArrayList<>();
