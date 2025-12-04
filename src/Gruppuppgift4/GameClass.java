@@ -102,14 +102,3 @@ public class GameClass {
     }
 
 }
-//    public Questions getNextQ(List<Questions> list) {
-//        for (Questions q : list) {
-//            if (q.unused) {
-//                 int i = list.indexOf(q);
-//                 list.get(i).unused = false;
-//
-//                return list.get(i);
-//            }
-//
-//        }return null;
-//    }

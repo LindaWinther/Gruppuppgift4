@@ -19,6 +19,7 @@ public class Questions {
         this.wrong3 = wrong3;
         this.unused = true;
     }
+
     public Questions() {}
 
     public boolean isUnused() {
@@ -36,6 +37,7 @@ public class Questions {
     public void setCategory(String category) {
         this.category = category;
     }
+
     public String getQuestion() {
         return question;
     }

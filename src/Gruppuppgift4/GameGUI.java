@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,22 +42,16 @@ public class GameGUI extends JFrame {
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
     private JButton nextRoundButton;
+    private JLabel totalLabel;
 
     // Overlaypanel för att vänta på motspelaren
     private JPanel waitOverlay;
     private JLabel waitLabel;
 
-    private List<String> roundResults = new  ArrayList<>();
-
-    // Lägger in svar från gameClass
-//    private String gameQuestion ;   // ta bort ner till 40?
-//    private String[] gameAnswers;
-//
-//    private int correctAnswer = 0;
-//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
-//    Questions q = new Questions();
-//    List<Questions> questions = new ArrayList<Questions>();
-//    boolean unused = true;
+    // Variabler för att kunna tracka score
+    private List<String> roundScore = new  ArrayList<>();
+    private String totalScore;
+    private String totalQuestionsInGame;
 
     private Client client;
     private boolean categoryChosen = false;
@@ -206,13 +199,7 @@ public class GameGUI extends JFrame {
         scoreRowsPanel.setOpaque(false);
         scoreRowsPanel.setLayout(new BoxLayout(scoreRowsPanel, BoxLayout.Y_AXIS));
 
-        // Test med hårdkodad data sålänge
-        String[] testRounds = {
-                "Rond 1: du 2 / 3 - motståndare 1 / 3",
-                "Rond 2: du 1 / 3 - motståndare 3 / 3"
-        };
-
-        for (String row : testRounds){
+        for (String row : roundScore){
             JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
             rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             rowLabel.setForeground(Color.WHITE);
@@ -226,15 +213,16 @@ public class GameGUI extends JFrame {
         bottomPanel.setBackground(new Color(27, 47, 112));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
-        JLabel totalLabel = new JLabel("Totalt: du 3 - motståndare 4", SwingConstants.CENTER);
+        //jag ändrade så att totalLabeln deklareras utanför metoden så att jag kan nå åt sanmma label från en annan metod /Nils
+        totalLabel = new JLabel("Totalt: -", SwingConstants.CENTER);
         totalLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         totalLabel.setForeground(Color.WHITE);
         totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         totalLabel.setBorder(new EmptyBorder( 0,0, 10, 0));
         bottomPanel.add(totalLabel);
 
-        // Nästa rond-knapp
-        nextRoundButton = new JButton("Nästa rond");
+        // Tillbaka-knapp
+        nextRoundButton = new JButton("Tillbaka");
         nextRoundButton.setFont(new Font("Segoe UI", Font.BOLD, 24));
         nextRoundButton.setForeground(Color.WHITE);
         nextRoundButton.setBackground(new Color(82, 217, 41));
@@ -243,7 +231,10 @@ public class GameGUI extends JFrame {
         nextRoundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         nextRoundButton.addActionListener(e -> {
-            // client.sendMessageToServer("NÄSTA_ROND")
+            cardLayout.show(mainPanel, "START");
+
+            startButton.setEnabled(true);
+            startButton.setText("Starta nytt spel");
         });
 
         bottomPanel.add(nextRoundButton);
@@ -384,15 +375,6 @@ public class GameGUI extends JFrame {
 
         buttonPanel.add(startButton);
 
-        // TEST FÖR ATT SE POÄNGSIDA
-        JButton testResultButton = new JButton("VISA TESTSIDA-POÄNG");
-        testResultButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        testResultButton.addActionListener(e ->
-                cardLayout.show(mainPanel, "ROUND_RESULTS")
-        );
-        buttonPanel.add(Box.createHorizontalStrut(15));
-        buttonPanel.add(testResultButton);
-
         centerPanel.add(buttonPanel);
 
         mainPanel.add(startPanel, "START");
@@ -518,6 +500,25 @@ public class GameGUI extends JFrame {
         
     }
 
+    public void loadScoreResults() {
+        scoreRowsPanel.removeAll();
+
+        for (String row : roundScore) {
+            JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
+            rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            rowLabel.setForeground(Color.WHITE);
+            rowLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
+            rowLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            scoreRowsPanel.add(rowLabel);
+        }
+
+        totalLabel.setText("Totalt: " + totalScore + "/" + totalQuestionsInGame);
+
+        scoreRowsPanel.revalidate();
+        scoreRowsPanel.repaint();
+    }
+
     private void lockAnswerButtons(boolean enabled) {
         for (JButton btn : answerButtons) {
             btn.setEnabled(enabled);
@@ -572,17 +573,16 @@ public class GameGUI extends JFrame {
                showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
+
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
-                //jag måste göra om det från en string till en list eftersom sendMessageToClient tar bara en sträng just nu, och loadCategories tar en list.
-                //Det är nog någonting som går att ändra antingen i sendMessageToClient eller loadCategories. För det här känns inte supersmart, men det funkar.
                 List<String> stringToList = new ArrayList<>();
                 for(int i = 1; i < parts.length; i++){
                     stringToList.add(parts[i]);
                 }
                 loadCategories(stringToList);
             }
-            if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
+            if (messageFromServer.startsWith("FRÅGA;")) {
                 cardLayout.show(mainPanel, "QUESTION");
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
@@ -594,14 +594,21 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Rätt!");
 
             }
-            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
+
             if (messageFromServer.startsWith("FEL")) {
                 String indexString = messageFromServer.split(";")[1];
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
+            if (messageFromServer.startsWith("RESULTAT;")) {
+                String[] parts = messageFromServer.split(";");
+                roundScore.add(parts[1]);
+                totalScore = parts [2];
+                totalQuestionsInGame = parts[3];
+            }
             if (messageFromServer.startsWith("GAME_OVER")) {
+                loadScoreResults();
                 cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
