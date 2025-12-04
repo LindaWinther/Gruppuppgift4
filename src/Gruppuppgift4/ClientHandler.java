@@ -39,6 +39,8 @@ public class ClientHandler extends Thread {
     int roundsInGame = config.getRoundsInGame();
     int questionIndex = 0;
     int roundCounter = 0;
+
+
     int roundScore = 0;
     int totalMatchScore = 0;
     int totalQuestionsInGame = roundsInGame * questionsPerRound;

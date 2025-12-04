@@ -48,6 +48,7 @@ public class GameGUI extends JFrame {
     private JPanel waitOverlay;
     private JLabel waitLabel;
 
+    // Variabler för att kunna tracka score
     private List<String> roundScore = new  ArrayList<>();
     private String totalScore;
     private String totalQuestionsInGame;
