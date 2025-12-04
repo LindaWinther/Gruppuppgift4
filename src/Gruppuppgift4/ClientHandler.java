@@ -39,8 +39,12 @@ public class ClientHandler extends Thread {
     int roundsInGame = config.getRoundsInGame();
     int questionIndex = 0;
     int roundCounter = 0;
+
+
     int roundScore = 0;
-    List<String> roundResultsinString = new ArrayList<>();
+    int totalMatchScore = 0;
+    int totalQuestionsInGame = roundsInGame * questionsPerRound;
+
 
     String chosenCategory = null;
 
@@ -68,12 +72,6 @@ public class ClientHandler extends Thread {
                     handleStart(messageToServer);
                     continue;
                 }
-
-                //säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
-//                if (!myTurn) {
-//                    sendMessageToClient("INTE_DIN_TUR");
-//                    continue;
-//                }
 
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
@@ -126,8 +124,6 @@ public class ClientHandler extends Thread {
             startNewRound();
         }
     }
-
-    //todo fixa så att om questionsperround är > unused frågor i en kateogri, skicka inte kategorin.
 
     private void sendCategories(){
         List<String> categoriesLeft = new ArrayList<>();
@@ -199,7 +195,9 @@ public class ClientHandler extends Thread {
 
         //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
         if (answer.equals(question.answer)){
+
             roundScore++;
+            totalMatchScore++;
             sendMessageToClient("RÄTT;" + index);
         }
         else {
@@ -216,6 +214,7 @@ public class ClientHandler extends Thread {
     }
 
     private void generateQuestionsForRound(String chosenCategory){
+
         currentRoundQuestions.clear();
         for (int i = 0; i < questionsPerRound; i++) {
             Questions question = game.getQuestions(chosenCategory, completeList);
@@ -247,7 +246,9 @@ public class ClientHandler extends Thread {
         isRoundFinished = true;
         sendMessageToClient("INTE_DIN_TUR");
         //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
+
         if(!opponent.isRoundFinished){
+
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
             opponent.questionIndex = 0;
@@ -257,6 +258,19 @@ public class ClientHandler extends Thread {
 
         roundCounter++;
         opponent.roundCounter = roundCounter;
+
+        //skickar resultaten när båda användarna är klara med sin round
+        String resultString = "Rond" + roundCounter + ":du " + roundScore + "/" + questionsPerRound + " -motståndare" + opponent.roundScore + " / " + questionsPerRound;
+        sendMessageToClient("RESULTAT;" + resultString + ";" + totalMatchScore + ";" + totalQuestionsInGame);
+
+        String opponentResultString = "Rond" + roundCounter + ":du " + opponent.roundScore + "/" + questionsPerRound + " -motståndare" + roundScore + " / " + questionsPerRound;
+        opponent.sendMessageToClient("RESULTAT;" + opponentResultString +";" + opponent.totalMatchScore + ";" + totalQuestionsInGame);
+
+        //test
+        System.out.println(opponentResultString);
+        System.out.println(resultString);
+
+
         //om conditionen fylls så stängs spelet och man kommer till score-screen
         if (roundCounter >= roundsInGame) {
             sendMessageToClient("DIN_TUR");
@@ -267,10 +281,12 @@ public class ClientHandler extends Thread {
         // när båda har svarat så kommer vi hit och beroende på vem som var roundstarter så bestäms det vem nästa roundstartern ska vara. Så efter den första
         // rundan till exmepel så blir motståndaren den nya round startern.
         if (opponent.isRoundStarter) {
+
             opponent.isRoundStarter = false;
             this.isRoundStarter = true;
             startNewRound();
         } else {
+
             this.isRoundStarter = false;
             opponent.isRoundStarter = true;
             opponent.startNewRound();
@@ -282,9 +298,14 @@ public class ClientHandler extends Thread {
 
         //den här metoden fungerar som en reset för rundan. Alla värden som vilken kategori/fråga som hade blivit vald resettas.
         //den sätter också att en spelare är isChoosingCategory igen/vems tur det är.
+
         chosenCategory = null;
         currentRoundQuestions = new ArrayList<>();
         questionIndex = 0;
+
+        roundScore = 0;
+        opponent.roundScore = 0;
+
         isRoundFinished = false;
         opponent.isRoundFinished = false;
 
@@ -302,6 +323,7 @@ public class ClientHandler extends Thread {
     }
 
     private void endGame(){
+
         sendMessageToClient("GAME_OVER");
         opponent.sendMessageToClient("GAME_OVER");
     }

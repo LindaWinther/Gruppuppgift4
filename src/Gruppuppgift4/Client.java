@@ -10,7 +10,7 @@ public class Client {
     private GameGUI gui;
     private PrintWriter out;
     private BufferedReader in;
-    private Socket s;
+    private Socket socket;
 
     public Client(GameGUI gui) {
         this.gui = gui;
@@ -23,7 +23,7 @@ public class Client {
         try{
 
             //ansluter till servern via socket
-            Socket socket = new Socket("localhost", 55555);
+            socket = new Socket("localhost", 55555);
             //tar emot från servern
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             //skickar text till servern
