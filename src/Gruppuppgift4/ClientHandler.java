@@ -7,24 +7,22 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+//extends thread så den körs i separata trådar
 public class ClientHandler extends Thread {
     Config config = new Config();//
-    int questionsPerRound = config.getQuestionsinRound();
-    int roundsInGame = config.getRoundsInGame();
 
     char playerNumber;
     Socket socket;
     BufferedReader in;
     PrintWriter out;
-    Questions currentQuestion;
-    GameClass game;
+    GameClass game = new GameClass();
     List<Questions> completeList = game.completeList;
 
     String nickname;
     int avatarIndex;
 
     //hur många rundor som ska spelas i spelet
-//    int roundsInGame;
+    //int roundsInGame;
 
     ClientHandler opponent;
     boolean readyToStart;
@@ -35,17 +33,21 @@ public class ClientHandler extends Thread {
     boolean isRoundFinished = false;
     boolean isRoundStarter = false;
 
-
     List<Questions> currentRoundQuestions = new ArrayList<>();
-    int questionsSent = 0;
+
+    int questionsPerRound = config.getQuestionsinRound();
+    int roundsInGame = config.getRoundsInGame();
+    int questionIndex = 0;
+    int roundCounter = 0;
+    int roundScore = 0;
+    List<String> roundResultsinString = new ArrayList<>();
 
     String chosenCategory = null;
 
 
-    public ClientHandler(Socket socket, char playerNumber, GameClass game) {
+    public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;
         this.playerNumber = playerNumber;
-        this.game = game;
 
         try{
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -56,6 +58,7 @@ public class ClientHandler extends Thread {
     }
 
     public void run() {
+
 
         try {
             String messageToServer;
@@ -68,10 +71,10 @@ public class ClientHandler extends Thread {
                 }
 
                 //säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
-                if (!myTurn) {
-                    sendMessageToClient("INTE_DIN_TUR");
-                    continue;
-                }
+//                if (!myTurn) {
+//                    sendMessageToClient("INTE_DIN_TUR");
+//                    continue;
+//                }
 
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
@@ -125,14 +128,28 @@ public class ClientHandler extends Thread {
         }
     }
 
-
     //todo fixa så att om questionsperround är > unused frågor i en kateogri, skicka inte kategorin.
 
-    private void sendCategories() {
+    private void sendCategories(){
+        List<String> categoriesLeft = new ArrayList<>();
 
-            sendMessageToClient("KATEGORIER;" + String.join(";", game.getAvailableCategories(questionsPerRound)));
-        System.out.println("");
+        for (String category : game.listOfCategory){
 
+            int amountOfUnusedLeft = 0;
+
+            for(Questions question : completeList){
+                if (question.category.equalsIgnoreCase(category) && (question.unused == true)){
+                    amountOfUnusedLeft++;
+                }
+            }
+            if (amountOfUnusedLeft >= questionsPerRound){
+                categoriesLeft.add(category);
+            }
+            //bara för utskrift i konsollen
+            System.out.println(category + " har" + amountOfUnusedLeft + " frågor kvar");
+        }
+
+        sendMessageToClient("KATEGORIER;" + String.join(";", categoriesLeft));
     }
 
     private void handleReadyForQuestions(String messageToServer){
@@ -179,16 +196,19 @@ public class ClientHandler extends Thread {
         String index = parts[2];
 
         //lagrar vilken fråga det är som behandlas nu
-        Questions question = currentRoundQuestions.get(questionsSent - 1);
+        Questions question = currentRoundQuestions.get(questionIndex - 1);
 
         //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
-        if (answer.equals(question.answer))
+        if (answer.equals(question.answer)){
+            roundScore++;
             sendMessageToClient("RÄTT;" + index);
-        else
+        }
+        else {
             sendMessageToClient("FEL;" + index + ";" + answer);
+        }
 
         //fortsätter med spelarens tur tills questionsSent blir samma som questionsPerRound, eftersom det är limiten mängden frågor i rundan.
-        if (questionsSent < questionsPerRound) {
+        if (questionIndex < questionsPerRound) {
             sendMessageToClient("DIN_TUR");
         } else {
             //om vi har nått limiten så kör vi finishAnswering för att inte kolla på frågor utanför index.
@@ -208,17 +228,17 @@ public class ClientHandler extends Thread {
     private void sendNextQuestion(){
 
         //kollar så att det finns frågor i currentRoundQuestions listan, om det inte finns några kvar så kommer finishAnswering köras
-        if (questionsSent >= currentRoundQuestions.size()) {
+        if (questionIndex >= currentRoundQuestions.size()) {
             //den här kommer sätta isAnsweringQuestions till false så vi slutar skicka frågor!
             finishAnswering();
             return;
         }
 
         //skickar frågan med index av questionsSent till GameGUI, questionsSent++ varenda gång en fråga blir skickad.
-        Questions question = currentRoundQuestions.get(questionsSent);
+        Questions question = currentRoundQuestions.get(questionIndex);
 
         sendMessageToClient("FRÅGA;" + question.question + ";" + question.answer + ";" + question.wrong1 + ";" + question.wrong2 + ";" + question.wrong3);
-        questionsSent++;
+        questionIndex++;
     }
 
     private void finishAnswering(){
@@ -226,16 +246,25 @@ public class ClientHandler extends Thread {
         isAnsweringQuestions = false;
         myTurn = false;
         isRoundFinished = true;
-
+        sendMessageToClient("INTE_DIN_TUR");
         //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
         if(!opponent.isRoundFinished){
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
-            opponent.questionsSent = 0;
+            opponent.questionIndex = 0;
             opponent.sendMessageToClient("DIN_TUR");
             return;
         }
 
+        roundCounter++;
+        opponent.roundCounter = roundCounter;
+        //om conditionen fylls så stängs spelet och man kommer till score-screen
+        if (roundCounter >= roundsInGame) {
+            sendMessageToClient("DIN_TUR");
+            opponent.sendMessageToClient("DIN_TUR");
+            endGame();
+            return;
+        }
         // när båda har svarat så kommer vi hit och beroende på vem som var roundstarter så bestäms det vem nästa roundstartern ska vara. Så efter den första
         // rundan till exmepel så blir motståndaren den nya round startern.
         if (opponent.isRoundStarter) {
@@ -247,6 +276,7 @@ public class ClientHandler extends Thread {
             opponent.isRoundStarter = true;
             opponent.startNewRound();
         }
+
     }
 
     private void startNewRound(){
@@ -255,7 +285,7 @@ public class ClientHandler extends Thread {
         //den sätter också att en spelare är isChoosingCategory igen/vems tur det är.
         chosenCategory = null;
         currentRoundQuestions = new ArrayList<>();
-        questionsSent = 0;
+        questionIndex = 0;
         isRoundFinished = false;
         opponent.isRoundFinished = false;
 
@@ -270,5 +300,10 @@ public class ClientHandler extends Thread {
 
         sendMessageToClient("DIN_TUR");
         opponent.sendMessageToClient("INTE_DIN_TUR");
+    }
+
+    private void endGame(){
+        sendMessageToClient("GAME_OVER");
+        opponent.sendMessageToClient("GAME_OVER");
     }
 }

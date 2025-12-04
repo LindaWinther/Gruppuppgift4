@@ -42,7 +42,13 @@ public class GameGUI extends JFrame {
     // Poängsidan
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
+    private JButton nextRoundButton;
 
+    // Overlaypanel för att vänta på motspelaren
+    private JPanel waitOverlay;
+    private JLabel waitLabel;
+
+    private List<String> roundResults = new  ArrayList<>();
 
     // Lägger in svar från gameClass
 //    private String gameQuestion ;   // ta bort ner till 40?
@@ -58,6 +64,7 @@ public class GameGUI extends JFrame {
     private boolean categoryChosen = false;
 
     public GameGUI() {
+        //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
         client = new Client(this);
         client.start();
 
@@ -67,6 +74,10 @@ public class GameGUI extends JFrame {
         getContentPane().setBackground(new Color(27, 47, 112));
         setTitle("Quizkampen");
 
+        // Appikon
+        Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/Gruppuppgift4/avatarImages/app_icon.png"));
+        setIconImage(icon);
+
         // Layout runt hela fönstret
         getContentPane().setLayout(new BorderLayout());
         getContentPane().setBackground(new Color(27, 47, 112));
@@ -75,12 +86,12 @@ public class GameGUI extends JFrame {
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
 
-        // HEADER FÖR SPELARES AVATAR OCH ANVÄNDARNAMN
+        // Header för spelares avatar och användarnamn
         buildHeaderInfoPanel();
         getContentPane().add(headerInfoPanel, BorderLayout.NORTH);
         getContentPane().add(mainPanel, BorderLayout.CENTER);
 
-        // DÖLJER HEADER TILLS SPELET BÖRJAR
+        // Döljer header tills spelet börjar
         headerInfoPanel.setVisible(false);
 
         // Alla sidorna
@@ -89,6 +100,26 @@ public class GameGUI extends JFrame {
         buildQuestionPanel();
         buildScoreResultPanel();
 
+        // Overlay för väntan på andra spelaren
+        waitOverlay = new JPanel();
+        waitOverlay.setBackground(new Color(27, 47, 112));
+        waitOverlay.setLayout(new GridBagLayout());
+        waitOverlay.setVisible(false);
+
+        waitLabel = new JLabel("Vänta, motståndaren svarar...");
+        waitLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+        waitLabel.setForeground(Color.WHITE);
+
+        waitOverlay.add(waitLabel);
+        getLayeredPane().add(waitOverlay, JLayeredPane.MODAL_LAYER);
+        waitOverlay.setBounds(0, 0, getWidth(), getHeight());
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                waitOverlay.setSize(getSize());
+            }
+
+        });
         cardLayout.show(mainPanel, "START");
         setVisible(true);
     }
@@ -136,11 +167,6 @@ public class GameGUI extends JFrame {
         headerInfoPanel.add(vsLabel, BorderLayout.CENTER);
         headerInfoPanel.add(rightPanel, BorderLayout.EAST);
     }
-
-   // TODO!!
-   // Metoderna uppdaterar headern med båda spelarnas avatar och anv.namn
-   // Ens egna info på vänster sida, uppdateras direkt, på höger sida ligger motståndarens och det måste komma från servern
-   // Visar nu info om ena spelaren, men inte motståndarens, servern måste skicka det till klienten
 
     private void updateMyPlayerHeader(){
         if(myNickname != null){
@@ -196,12 +222,33 @@ public class GameGUI extends JFrame {
         }
         scoreResultPanel.add(scoreRowsPanel, BorderLayout.CENTER);
 
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(27, 47, 112));
+        bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
         JLabel totalLabel = new JLabel("Totalt: du 3 - motståndare 4", SwingConstants.CENTER);
         totalLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         totalLabel.setForeground(Color.WHITE);
-        totalLabel.setBorder(new EmptyBorder(15, 0, 0, 0));
-        scoreResultPanel.add(totalLabel, BorderLayout.SOUTH);
+        totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        totalLabel.setBorder(new EmptyBorder( 0,0, 10, 0));
+        bottomPanel.add(totalLabel);
+
+        // Nästa rond-knapp
+        nextRoundButton = new JButton("Nästa rond");
+        nextRoundButton.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        nextRoundButton.setForeground(Color.WHITE);
+        nextRoundButton.setBackground(new Color(82, 217, 41));
+        nextRoundButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        nextRoundButton.setFocusPainted(false);
+        nextRoundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        nextRoundButton.addActionListener(e -> {
+            // client.sendMessageToServer("NÄSTA_ROND")
+        });
+
+        bottomPanel.add(nextRoundButton);
+
+        scoreResultPanel.add(bottomPanel, BorderLayout.SOUTH);
 
         mainPanel.add(scoreResultPanel, "ROUND_RESULTS");
     }
@@ -449,7 +496,6 @@ public class GameGUI extends JFrame {
     }
 
     // FRÅGELOGIK
-
     public void shuffle(Object[]quest ){
         int noOfAnswers = quest.length;
         for (int i = 0; i <noOfAnswers; i++){
@@ -478,6 +524,17 @@ public class GameGUI extends JFrame {
         }
     }
 
+
+    // Overlay: vänta på motspelaren
+    public void showWaitOverlay(String text){
+        waitLabel.setText(text);
+        waitOverlay.setVisible(true);
+    }
+
+    public void hideWaitOverlay(){
+        waitOverlay.setVisible(false);
+    }
+
     // Färgar svaret
     private void checkAnswer(int index) {
         String indexToString = Integer.toString(index);
@@ -503,15 +560,16 @@ public class GameGUI extends JFrame {
                 categoryChosen = true;
                 return;
             }
-            if (messageFromServer.equals("DIN_TUR")) {
+            if (messageFromServer.startsWith("DIN_TUR")) {
+                hideWaitOverlay();
                 if (!categoryChosen) {
                     client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
                 } else {
                     client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
                 }
             }
-            if (messageFromServer.equals("INTE_DIN_TUR")) {
-                JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
+            if (messageFromServer.startsWith("INTE_DIN_TUR")) {
+               showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
                 cardLayout.show(mainPanel, "CATEGORY");
@@ -538,21 +596,13 @@ public class GameGUI extends JFrame {
             }
             //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
             if (messageFromServer.startsWith("FEL")) {
-                String[] parts =  messageFromServer.split(";");
-                int wrongIndexToInt = Integer.parseInt(parts[1]);
-                String correctAnswer = parts[2];
-
-                answerButtons[wrongIndexToInt].setBackground(new Color(180, 0, 0));
+                String indexString = messageFromServer.split(";")[1];
+                int indexToInt = Integer.parseInt(indexString);
+                answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
-
-                for (int i = 0;  i < answerButtons.length; i++) {
-                    System.out.println("Texten för knappen av index i:" + answerButtons[i].getText());
-                    System.out.println("CorrectAnswer från servern: " + correctAnswer);
-                    if (answerButtons[i].getText().equals(correctAnswer)){
-                        answerButtons[i].setBackground(new Color(0, 180, 0));
-                    }
-                }
-
+            }
+            if (messageFromServer.startsWith("GAME_OVER")) {
+                cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
     }
@@ -561,3 +611,4 @@ public class GameGUI extends JFrame {
         new GameGUI();
     }
 }
+
