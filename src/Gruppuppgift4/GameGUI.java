@@ -43,21 +43,11 @@ public class GameGUI extends JFrame {
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
 
-
-    // Lägger in svar från gameClass
-//    private String gameQuestion ;   // ta bort ner till 40?
-//    private String[] gameAnswers;
-//
-//    private int correctAnswer = 0;
-//    GameClass game = new GameClass();  tror att denna kod är bara att deletea
-//    Questions q = new Questions();
-//    List<Questions> questions = new ArrayList<Questions>();
-//    boolean unused = true;
-
     private Client client;
     private boolean categoryChosen = false;
 
     public GameGUI() {
+        //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
         client = new Client(this);
         client.start();
 
@@ -503,14 +493,14 @@ public class GameGUI extends JFrame {
                 categoryChosen = true;
                 return;
             }
-            if (messageFromServer.equals("DIN_TUR")) {
+            if (messageFromServer.startsWith("DIN_TUR")) {
                 if (!categoryChosen) {
                     client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
                 } else {
                     client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
                 }
             }
-            if (messageFromServer.equals("INTE_DIN_TUR")) {
+            if (messageFromServer.startsWith("INTE_DIN_TUR")) {
                 JOptionPane.showMessageDialog(this,"Vänta. Din motståndare svarar på frågorna.");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
@@ -553,6 +543,9 @@ public class GameGUI extends JFrame {
                     }
                 }
 
+            }
+            if (messageFromServer.startsWith("GAME_OVER")) {
+                cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
     }
