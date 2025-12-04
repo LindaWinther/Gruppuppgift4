@@ -231,7 +231,6 @@ public class GameGUI extends JFrame {
         nextRoundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         nextRoundButton.addActionListener(e -> {
-            roundScore.clear();
             cardLayout.show(mainPanel, "START");
             startButton.setEnabled(true);
             startButton.setText("Starta nytt spel");
@@ -609,6 +608,7 @@ public class GameGUI extends JFrame {
             if (messageFromServer.startsWith("GAME_OVER")) {
                 loadScoreResults();
                 cardLayout.show(mainPanel, "ROUND_RESULTS");
+                roundScore.clear();
             }
         });
     }
