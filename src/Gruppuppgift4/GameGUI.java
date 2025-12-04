@@ -42,6 +42,7 @@ public class GameGUI extends JFrame {
     private JPanel scoreResultPanel;
     private JPanel scoreRowsPanel;
     private JButton nextRoundButton;
+    private JLabel totalLabel;
 
     // Overlaypanel för att vänta på motspelaren
     private JPanel waitOverlay;
@@ -49,6 +50,7 @@ public class GameGUI extends JFrame {
 
     private List<String> roundScore = new  ArrayList<>();
     private String totalScore;
+    private String totalQuestionsInGame;
 
     private Client client;
     private boolean categoryChosen = false;
@@ -210,7 +212,8 @@ public class GameGUI extends JFrame {
         bottomPanel.setBackground(new Color(27, 47, 112));
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
 
-        JLabel totalLabel = new JLabel("Totalt: du 3 - motståndare 4", SwingConstants.CENTER);
+        //jag ändrade så att totalLabeln deklareras utanför metoden så att jag kan nå åt sanmma label från en annan metod /Nils
+        totalLabel = new JLabel("Totalt: -", SwingConstants.CENTER);
         totalLabel.setFont(new Font("Segoe UI", Font.PLAIN, 20));
         totalLabel.setForeground(Color.WHITE);
         totalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -502,6 +505,25 @@ public class GameGUI extends JFrame {
         
     }
 
+    public void loadScoreResults() {
+        scoreRowsPanel.removeAll();
+
+        for (String row : roundScore) {
+            JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
+            rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
+            rowLabel.setForeground(Color.WHITE);
+            rowLabel.setBorder(new EmptyBorder(5, 0, 5, 0));
+            rowLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            scoreRowsPanel.add(rowLabel);
+        }
+
+        totalLabel.setText("Totalt: " + totalScore + "/" + totalQuestionsInGame);
+
+        scoreRowsPanel.revalidate();
+        scoreRowsPanel.repaint();
+    }
+
     private void lockAnswerButtons(boolean enabled) {
         for (JButton btn : answerButtons) {
             btn.setEnabled(enabled);
@@ -587,12 +609,14 @@ public class GameGUI extends JFrame {
             }
             if (messageFromServer.startsWith("RESULTAT;")) {
                 String[] parts = messageFromServer.split(";");
+                //just nu lagras dom här i variabler utanför metoden så att dom kan bli accesssed i game_over
+                // man skulle kunna ändra så att det bara är instansvariabler
                 roundScore.add(parts[1]);
                 totalScore = parts [2];
-                String totalQuestionsInGame = parts[3];
-
+                totalQuestionsInGame = parts[3];
             }
             if (messageFromServer.startsWith("GAME_OVER")) {
+                loadScoreResults();
                 cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
