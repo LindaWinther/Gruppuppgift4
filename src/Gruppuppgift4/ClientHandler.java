@@ -73,12 +73,6 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-//                säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
-//                if (!myTurn) {
-//                    sendMessageToClient("INTE_DIN_TUR");
-//                    continue;
-//                }
-
                 if(messageToServer.startsWith("REDO_FÖR_KATEGORIER;")){
 
                     if(!isChoosingCategory){

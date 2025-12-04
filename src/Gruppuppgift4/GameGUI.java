@@ -579,17 +579,16 @@ public class GameGUI extends JFrame {
                showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
+
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
-                //jag måste göra om det från en string till en list eftersom sendMessageToClient tar bara en sträng just nu, och loadCategories tar en list.
-                //Det är nog någonting som går att ändra antingen i sendMessageToClient eller loadCategories. För det här känns inte supersmart, men det funkar.
                 List<String> stringToList = new ArrayList<>();
                 for(int i = 1; i < parts.length; i++){
                     stringToList.add(parts[i]);
                 }
                 loadCategories(stringToList);
             }
-            if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
+            if (messageFromServer.startsWith("FRÅGA;")) {
                 cardLayout.show(mainPanel, "QUESTION");
                 String[] parts = messageFromServer.split(";");
                 loadQuestion(parts[1], new String[]{parts[2],parts[3],parts[4],parts[5]});
@@ -601,7 +600,7 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Rätt!");
 
             }
-            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
+
             if (messageFromServer.startsWith("FEL")) {
                 String indexString = messageFromServer.split(";")[1];
                 int indexToInt = Integer.parseInt(indexString);
@@ -610,8 +609,6 @@ public class GameGUI extends JFrame {
             }
             if (messageFromServer.startsWith("RESULTAT;")) {
                 String[] parts = messageFromServer.split(";");
-                //just nu lagras dom här i variabler utanför metoden så att dom kan bli accesssed i game_over
-                // man skulle kunna ändra så att det bara är instansvariabler
                 roundScore.add(parts[1]);
                 totalScore = parts [2];
                 totalQuestionsInGame = parts[3];
