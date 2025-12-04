@@ -48,6 +48,8 @@ public class GameGUI extends JFrame {
     private JPanel waitOverlay;
     private JLabel waitLabel;
 
+    private List<String> roundResults = new  ArrayList<>();
+
     // Lägger in svar från gameClass
 //    private String gameQuestion ;   // ta bort ner till 40?
 //    private String[] gameAnswers;
