@@ -233,8 +233,8 @@ public class GameGUI extends JFrame {
         totalLabel.setBorder(new EmptyBorder( 0,0, 10, 0));
         bottomPanel.add(totalLabel);
 
-        // Nästa rond-knapp
-        nextRoundButton = new JButton("Nästa rond");
+        // Tillbaka-knapp
+        nextRoundButton = new JButton("Tillbaka");
         nextRoundButton.setFont(new Font("Segoe UI", Font.BOLD, 24));
         nextRoundButton.setForeground(Color.WHITE);
         nextRoundButton.setBackground(new Color(82, 217, 41));
@@ -243,7 +243,10 @@ public class GameGUI extends JFrame {
         nextRoundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         nextRoundButton.addActionListener(e -> {
-            // client.sendMessageToServer("NÄSTA_ROND")
+            cardLayout.show(mainPanel, "START");
+
+            startButton.setEnabled(true);
+            startButton.setText("Starta nytt spel");
         });
 
         bottomPanel.add(nextRoundButton);
@@ -383,15 +386,6 @@ public class GameGUI extends JFrame {
         });
 
         buttonPanel.add(startButton);
-
-        // TEST FÖR ATT SE POÄNGSIDA
-        JButton testResultButton = new JButton("VISA TESTSIDA-POÄNG");
-        testResultButton.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-        testResultButton.addActionListener(e ->
-                cardLayout.show(mainPanel, "ROUND_RESULTS")
-        );
-        buttonPanel.add(Box.createHorizontalStrut(15));
-        buttonPanel.add(testResultButton);
 
         centerPanel.add(buttonPanel);
 
@@ -594,7 +588,7 @@ public class GameGUI extends JFrame {
                 JOptionPane.showMessageDialog(this, "Rätt!");
 
             }
-            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
+
             if (messageFromServer.startsWith("FEL")) {
                 String indexString = messageFromServer.split(";")[1];
                 int indexToInt = Integer.parseInt(indexString);
