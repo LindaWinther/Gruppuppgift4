@@ -511,8 +511,7 @@ public class GameGUI extends JFrame {
 
             scoreRowsPanel.add(rowLabel);
         }
-
-        totalLabel.setText("Totalt: " + totalScore + "/" + totalQuestionsInGame);
+        totalLabel.setText(totalScore);
 
         scoreRowsPanel.revalidate();
         scoreRowsPanel.repaint();
