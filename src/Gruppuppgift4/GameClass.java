@@ -79,15 +79,6 @@ public class GameClass {
 
 
     }
-//    public void helpYourSelf(List<Questions> q, Set<String> c) {
-//            List<Questions> test = new ArrayList<>();
-//            String a = listOfCategory.get(1);
-//        for (Questions s : annanlista) {
-//            if (s.category) {
-//
-//            }
-//        }
-//    }
 
     public Questions getQuestions(String category, List<Questions> completeList ) {
         Collections.shuffle(completeList);
