@@ -187,7 +187,7 @@ public class GameGUI extends JFrame {
         // Rubrik
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(new Color(27, 47, 112));
-        JLabel title = new JLabel("Rondresultat", SwingConstants.CENTER);
+        JLabel title = new JLabel("Match resultat", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setForeground(Color.WHITE);
         titlePanel.add(title);
@@ -231,6 +231,7 @@ public class GameGUI extends JFrame {
         nextRoundButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         nextRoundButton.addActionListener(e -> {
+            roundScore.clear();
             cardLayout.show(mainPanel, "START");
             startButton.setEnabled(true);
             startButton.setText("Starta nytt spel");

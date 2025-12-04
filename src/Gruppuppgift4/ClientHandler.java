@@ -111,6 +111,29 @@ public class ClientHandler extends Thread {
             return;
         }
 
+        //ÅTERSTÄLLER ALLA VÄRDEN NÄR VI STARTAR ETT NYTT GAME!
+        roundCounter = 0;
+        totalMatchScore = 0;
+        questionIndex = 0;
+        roundScore = 0;
+
+        opponent.roundCounter = 0;
+        opponent.totalMatchScore = 0;
+        opponent.questionIndex = 0;
+        opponent.roundScore = 0;
+
+        chosenCategory = null;
+        opponent.chosenCategory = null;
+
+        isRoundFinished = false;
+        opponent.isRoundFinished = false;
+
+        isChoosingCategory = false;
+        opponent.isChoosingCategory = false;
+
+        isAnsweringQuestions = false;
+        opponent.isAnsweringQuestions = false;
+
         sendMessageToClient("FIENDEN_REGISTRERAD;" + opponent.nickname + ";" + opponent.avatarIndex);
         opponent.sendMessageToClient("FIENDEN_REGISTRERAD;" + nickname + ";" + avatarIndex);
 
