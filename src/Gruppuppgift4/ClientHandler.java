@@ -9,7 +9,7 @@ import java.util.List;
 
 //extends thread så den körs i separata trådar
 public class ClientHandler extends Thread {
-    Config config = new Config();//
+    Config config = new Config();
 
     char playerNumber;
     Socket socket;
@@ -20,9 +20,6 @@ public class ClientHandler extends Thread {
 
     String nickname;
     int avatarIndex;
-
-    //hur många rundor som ska spelas i spelet
-    //int roundsInGame;
 
     ClientHandler opponent;
     boolean readyToStart;
@@ -40,14 +37,11 @@ public class ClientHandler extends Thread {
     int questionIndex = 0;
     int roundCounter = 0;
 
-
     int roundScore = 0;
     int totalMatchScore = 0;
     int totalQuestionsInGame = roundsInGame * questionsPerRound;
 
-
     String chosenCategory = null;
-
 
     public ClientHandler(Socket socket, char playerNumber) {
         this.socket = socket;

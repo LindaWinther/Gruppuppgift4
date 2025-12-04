@@ -232,7 +232,6 @@ public class GameGUI extends JFrame {
 
         nextRoundButton.addActionListener(e -> {
             cardLayout.show(mainPanel, "START");
-
             startButton.setEnabled(true);
             startButton.setText("Starta nytt spel");
         });
@@ -592,7 +591,6 @@ public class GameGUI extends JFrame {
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(0, 180, 0));
                 JOptionPane.showMessageDialog(this, "Rätt!");
-
             }
 
             if (messageFromServer.startsWith("FEL")) {
