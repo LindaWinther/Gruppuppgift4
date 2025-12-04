@@ -255,13 +255,12 @@ public class ClientHandler extends Thread {
         opponent.roundCounter = roundCounter;
         String winner;
         if (totalMatchScore > opponent.totalMatchScore){
-             winner = "Vinnaren är " + nickname + "med " + totalMatchScore + " poäng.";
+             winner = "Vinnaren är " + nickname + " med " + totalMatchScore + " poäng.";
         } else if  (opponent.totalMatchScore > totalMatchScore){
-             winner = "Vinnaren är " + opponent.nickname + "med " + opponent.totalMatchScore + " poäng.";;
+             winner = "Vinnaren är " + opponent.nickname + " med " + opponent.totalMatchScore + " poäng.";;
         } else winner = "Oavgjort";
 
         //skickar resultaten när båda användarna är klara med sin round
-        //"Rond" + roundCounter + ": " +
         String resultString =  chosenCategory + ": " + nickname + " " + roundScore + "/" + questionsPerRound + " - " + opponent.nickname + " " + opponent.roundScore + "/" + questionsPerRound;
         sendMessageToClient("RESULTAT;" + resultString + ";" + winner);
 
