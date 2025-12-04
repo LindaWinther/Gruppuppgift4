@@ -39,6 +39,8 @@ public class ClientHandler extends Thread {
     int roundsInGame = config.getRoundsInGame();
     int questionIndex = 0;
     int roundCounter = 0;
+    int roundScore = 0;
+    List<String> roundResultsinString = new ArrayList<>();
 
     String chosenCategory = null;
 
@@ -196,10 +198,13 @@ public class ClientHandler extends Thread {
         Questions question = currentRoundQuestions.get(questionIndex - 1);
 
         //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
-        if (answer.equals(question.answer))
+        if (answer.equals(question.answer)){
+            roundScore++;
             sendMessageToClient("RÄTT;" + index);
-        else
+        }
+        else {
             sendMessageToClient("FEL;" + index + ";" + answer);
+        }
 
         //fortsätter med spelarens tur tills questionsSent blir samma som questionsPerRound, eftersom det är limiten mängden frågor i rundan.
         if (questionIndex < questionsPerRound) {
