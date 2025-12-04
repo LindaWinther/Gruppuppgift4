@@ -603,7 +603,7 @@ public class GameGUI extends JFrame {
                 String[] parts = messageFromServer.split(";");
                 roundScore.add(parts[1]);
                 totalScore = parts [2];
-                totalQuestionsInGame = parts[3];
+//                totalQuestionsInGame = parts[3];
             }
             if (messageFromServer.startsWith("GAME_OVER")) {
                 loadScoreResults();

@@ -253,13 +253,21 @@ public class ClientHandler extends Thread {
 
         roundCounter++;
         opponent.roundCounter = roundCounter;
+        String winner;
+        if (totalMatchScore > opponent.totalMatchScore){
+             winner = "Vinnaren är " + nickname + "med " + totalMatchScore + " poäng.";
+        } else if  (opponent.totalMatchScore > totalMatchScore){
+             winner = "Vinnaren är " + opponent.nickname + "med " + opponent.totalMatchScore + " poäng.";;
+        } else winner = "Oavgjort";
 
         //skickar resultaten när båda användarna är klara med sin round
-        String resultString = "Rond" + roundCounter + ":du " + roundScore + "/" + questionsPerRound + " -motståndare" + opponent.roundScore + " / " + questionsPerRound;
-        sendMessageToClient("RESULTAT;" + resultString + ";" + totalMatchScore + ";" + totalQuestionsInGame);
+        //"Rond" + roundCounter + ": " +
+        String resultString =  chosenCategory + ": " + nickname + " " + roundScore + "/" + questionsPerRound + " - " + opponent.nickname + " " + opponent.roundScore + "/" + questionsPerRound;
+        sendMessageToClient("RESULTAT;" + resultString + ";" + winner);
 
-        String opponentResultString = "Rond" + roundCounter + ":du " + opponent.roundScore + "/" + questionsPerRound + " -motståndare" + roundScore + " / " + questionsPerRound;
-        opponent.sendMessageToClient("RESULTAT;" + opponentResultString +";" + opponent.totalMatchScore + ";" + totalQuestionsInGame);
+
+        String opponentResultString =  chosenCategory + ": " + opponent.nickname + " " + opponent.roundScore + "/" + questionsPerRound + " - " + nickname + " " + roundScore + "/" + questionsPerRound;
+        opponent.sendMessageToClient("RESULTAT;" + opponentResultString +";" + winner);
 
         //test
         System.out.println(opponentResultString);

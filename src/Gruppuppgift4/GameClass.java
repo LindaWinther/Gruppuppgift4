@@ -8,8 +8,6 @@ import java.util.*;
 
 public class GameClass {
 
-   //// test test
-
     List<Questions> completeList = new ArrayList<>();
     Set<String> listOfCategory = new HashSet<String>();
 
