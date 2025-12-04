@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.EmptyBorder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -126,11 +125,6 @@ public class GameGUI extends JFrame {
         headerInfoPanel.add(vsLabel, BorderLayout.CENTER);
         headerInfoPanel.add(rightPanel, BorderLayout.EAST);
     }
-
-   // TODO!!
-   // Metoderna uppdaterar headern med båda spelarnas avatar och anv.namn
-   // Ens egna info på vänster sida, uppdateras direkt, på höger sida ligger motståndarens och det måste komma från servern
-   // Visar nu info om ena spelaren, men inte motståndarens, servern måste skicka det till klienten
 
     private void updateMyPlayerHeader(){
         if(myNickname != null){
