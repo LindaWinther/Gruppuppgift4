@@ -40,7 +40,7 @@ public class ClientHandler extends Thread {
     int questionIndex = 0;
     int roundCounter = 0;
     int roundScore = 0;
-    List<String> roundResultsinString = new ArrayList<>();
+
 
     String chosenCategory = null;
 
@@ -255,8 +255,19 @@ public class ClientHandler extends Thread {
             return;
         }
 
+        int myScore = 0;
+        int opponentScore = 0;
+
+        String resultString = "Rond" + roundCounter + ":du " + myScore + "/" + questionsPerRound + " -motståndare" + opponentScore + " / " + questionsPerRound;
+        sendMessageToClient("RESULTAT;" + resultString);
+
+        String opponentResultString = "Rond" + roundCounter + ":du " + opponentScore + "/" + questionsPerRound + " -motståndare" + myScore + " / " + questionsPerRound;
+        opponent.sendMessageToClient("RESULTAT;" + opponentResultString);
+
         roundCounter++;
         opponent.roundCounter = roundCounter;
+
+
         //om conditionen fylls så stängs spelet och man kommer till score-screen
         if (roundCounter >= roundsInGame) {
             sendMessageToClient("DIN_TUR");

@@ -206,12 +206,8 @@ public class GameGUI extends JFrame {
         scoreRowsPanel.setLayout(new BoxLayout(scoreRowsPanel, BoxLayout.Y_AXIS));
 
         // Test med hårdkodad data sålänge
-        String[] testRounds = {
-                "Rond 1: du 2 / 3 - motståndare 1 / 3",
-                "Rond 2: du 1 / 3 - motståndare 3 / 3"
-        };
 
-        for (String row : testRounds){
+        for (String row : roundResults){
             JLabel rowLabel = new JLabel(row, SwingConstants.CENTER);
             rowLabel.setFont(new Font("Segoe UI", Font.PLAIN, 18));
             rowLabel.setForeground(Color.WHITE);
@@ -599,6 +595,11 @@ public class GameGUI extends JFrame {
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
+            }
+            if (messageFromServer.startsWith("RESULTAT;")) {
+                String[] parts = messageFromServer.split(";");
+                roundResults.add(parts[1]);
+
             }
             if (messageFromServer.startsWith("GAME_OVER")) {
                 cardLayout.show(mainPanel, "ROUND_RESULTS");
