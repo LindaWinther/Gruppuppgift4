@@ -63,6 +63,7 @@ public class ClientHandler extends Thread {
 
     public void run() {
 
+
         try {
             String messageToServer;
             while((messageToServer = in.readLine()) != null ) {
