@@ -1,19 +1,41 @@
 category;question;answer;wrong1;wrong2;wrong3
-natur;natur1;rättsvar;svar;svar;svar
-natur;natur2;rättsvar;svar;svar;svar
-natur;natur3;rättsvar;svar;svar;svar
-natur;natur4;rättsvar;svar;svar;svar
-sport;sport1;rättsvar;svar;svar;svar
-Djur;Fråga: Hur många ben har en hummer?;10 ben;14 ben;12 ben;8 ben
-Djur;Vilka djur hålls som lantbruksdjur i de höga Anderna och kallas även bergslamadjur?;Alpackor;Getter;Lamor;Vikunja
+Djur;Fråga:Hur många ben har en hummer?;10 ben;14 ben;12 ben;8 ben
+Djur;Vilka lantbruksdjur i Anderna kallas bergslamadjur?;Alpackor;Getter;Lamor;Vikunja
 Djur;Hur lång är dräktighetstiden för en giraff?;15 månader;10 månader;11 månader;14 månader
-Djur;Det finns nästan 200 arter av kameleonter på jorden, varav en tredjedel lever på en ö. Vilken ö är det?;Madagaskar;Galapagos;Sumatra;Sulawesi
-Djur;Vilket djur har det högsta blodtrycket av alla djur?;Giraffen;Haren;Kolibriern;Antilopen
+Djur;Vilket djur har det högsta blodtrycket?;Giraffen;Haren;Kolibriern;Antilopen
 Djur;Hur många hjärtan har en bläckfisk?;3;1;2;4
-Onödig kunskap;Vilket djur finns på ett paket Camel-cigaretter?;Dromedar;Kamel;Krokodil;Häst
 Djur;Vilken färg har isbjörnens hud?;Svart;Rosa;Vit;Blå
 Djur;Hur många magar har en myra?;2 magar;1 mage;3 magar;4 magar
 Djur;Hur många hjärtan har en bläckfisk?;Tre;Ett;Två;Fyra
 Geografi;Vilken av följande floder rinner inte genom Tyskland?;Seine;Elbe;Rhen;Donau
-Onödig kunskap;Tomten har 8 renar som drar hans släde. Vilken är inte en av dem?;Boulder;Dasher;Comet;Cupid
-Onödig kunskap;Vilken blodgrupp är vanligast hos människor världen över?;Blodgrupp O;Blodgrupp A;Blodgrupp B;Blodgrupp AB
+Geografi;Vilket län ligger Bengtsfor i?;Västra Götaland;Norrbotten;Dalarna;Skåne
+Geografi;Vilket land är störst?;Ryssland;Kanada;Kina;USA
+Geografi;Vilken stad är Italiens huvudstad?;Rom;Milano;Neapel;Turin
+Geografi;Vilken ö är störst i världen?;Grönland;Nya Guinea;Borneo;Madagaskar
+Geografi;Vilket hav ligger vid Indien?;Indiska oceanen;Atlanten;Stilla havet;Norra ishavet
+Geografi;Var ligger Saharaöknen?;Afrika;Asien;Australien;Sydamerika
+Geografi;Vilken svensk stad brann nästan ner helt år 1888?;Sundsvall;Umeå;Uppsala;Bengtsfors
+Onödig kunskap;Vilket djur finns på ett paket Camel-cigaretter?;Dromedar;Kamel;Krokodil;Häst
+Onödig kunskap;Vem är inte en av tomtens renar?;Boulder;Dasher;Comet;Cupid
+Onödig kunskap;Vilken blodgrupp är vanligast?;Blodgrupp O;Blodgrupp A;Blodgrupp B;Blodgrupp AB
+Onödig kunskap;Vad var Post-it misstag av?;Lim;Tejp;Färg;Lack
+Onödig kunskap;Vilket år kom Lego?;1949;1962;1930;1971
+Onödig kunskap;Vad uppfanns först?;Chips;Telefon;Gaffel;Radio
+Kroppen;Vilket är kroppens tyngsta organ?;Huden;Hjärnan;Levern;Tarmen
+Kroppen;Vilket av dessa är inte ett öronben?;Högaffeln;Hammaren;Stigbygeln;Städet
+Kroppen;Hur många hårstrån tappar man varje dag?;100 stycken;50 stycken;250 stycken;175 stycken
+Kroppen;Vad kallas den svarta pricken?;Pupill;Pistill;Irier;Iris
+Kroppen;Hur många ben har kroppen?;206;180;220;250
+Kroppen;Vilket sinne reagerar snabbast?;Hörsel;Syn;Känsel;Smak
+Historia;Vem målade Mona Lisa?;Da Vinci;Michelangelo;Raphael;Donatello
+Historia;Vilket år föll Berlinmuren?;1989;1985;1991;1993
+Historia;Vem upptäckte penicillin?;Fleming;Pasteur;Curie;Salk
+Historia;Vad var Colosseum?;Arena;Tempel;Palats;Marknad
+Historia;Vilket år skedde Stockholms blodbad?;År 1520;År 1740;År 1350;År 1650
+Historia;Var uppstod demokratin?;Aten;Rom;Sparta;Babylon
+Allmänbildning;Vilket år började andra världskriget?;1939;1940;1938;1941
+Allmänbildning;Vilket ämne är bokstaven O?;Syre;Guld;Väte;Kväve
+Allmänbildning;Vem skrev Hamlet?;Shakespeare;Dante;Goethe;Cervantes
+Allmänbildning;Vilket land har flest invånare?;Kina;Indien;USA;Indonesien
+Allmänbildning;Vilken kontinent ligger Egypten på?;Afrika;Asien;Europa;Sydamerika
+Allmänbildning;Vem uppfann glödlampan?;Edison;Tesla;Bell;Fleming
