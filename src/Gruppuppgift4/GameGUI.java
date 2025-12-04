@@ -62,6 +62,7 @@ public class GameGUI extends JFrame {
     private boolean categoryChosen = false;
 
     public GameGUI() {
+        //skapar ett client objekt för att sköta kommunikationen mellan gamegui och clienthandlern/servern.
         client = new Client(this);
         client.start();
 
@@ -536,11 +537,6 @@ public class GameGUI extends JFrame {
     private void checkAnswer(int index) {
         String indexToString = Integer.toString(index);
         client.sendMessageToServer("SVAR;" + answerButtons[index].getText() + ";" + indexToString);
-//        if (index == correctAnswer) {
-//            answerButtons[index].setBackground(new Color(0, 180, 0)); // Grönt för rätt
-//        } else {
-//            answerButtons[index].setBackground(new Color(180, 0, 0)); // Rött för fel
-//        }
         lockAnswerButtons(false);
     }
 
@@ -555,10 +551,14 @@ public class GameGUI extends JFrame {
                 startButton.setEnabled(true);
                 startButton.setText("Starta nytt spel");
             }
-            if (messageFromServer.equals("NY_RUNDA")) {
+            if (messageFromServer.startsWith("NY_RUNDA")) {
                 categoryChosen = false;
             }
-            if (messageFromServer.equals("DIN_TUR")) {
+            if (messageFromServer.startsWith("KATEGORI_VALD")) {
+                categoryChosen = true;
+                return;
+            }
+            if (messageFromServer.startsWith("DIN_TUR")) {
                 hideWaitOverlay();
                 if (!categoryChosen) {
                     client.sendMessageToServer("REDO_FÖR_KATEGORIER;");
@@ -566,7 +566,7 @@ public class GameGUI extends JFrame {
                     client.sendMessageToServer("REDO_FÖR_FRÅGOR;");
                 }
             }
-            if (messageFromServer.equals("INTE_DIN_TUR")) {
+            if (messageFromServer.startsWith("INTE_DIN_TUR")) {
                showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
@@ -578,8 +578,6 @@ public class GameGUI extends JFrame {
                 for(int i = 1; i < parts.length; i++){
                     stringToList.add(parts[i]);
                 }
-                //test
-                System.out.println(stringToList);
                 loadCategories(stringToList);
             }
             if (messageFromServer.startsWith("FRÅGA;")) {     // Ta bort hela if stycke?
@@ -592,18 +590,17 @@ public class GameGUI extends JFrame {
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(0, 180, 0));
                 JOptionPane.showMessageDialog(this, "Rätt!");
-                }
 
+            }
+            //todo filip lovade mig att han skulle fixa det här, jag vet inte varför det är så svårt.
             if (messageFromServer.startsWith("FEL")) {
                 String indexString = messageFromServer.split(";")[1];
                 int indexToInt = Integer.parseInt(indexString);
                 answerButtons[indexToInt].setBackground(new Color(180, 0, 0));
                 JOptionPane.showMessageDialog(this, "Fel svar!");
             }
-
-            //gör inget just nu, kan användas för en exit knapp i framtiden
-            if (messageFromServer.equals("GAME_OVER")) {
-                JOptionPane.showMessageDialog(this, "Spelet är slut!");
+            if (messageFromServer.startsWith("GAME_OVER")) {
+                cardLayout.show(mainPanel, "ROUND_RESULTS");
             }
         });
     }
