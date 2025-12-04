@@ -73,7 +73,7 @@ public class ClientHandler extends Thread {
                     continue;
                 }
 
-                //säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
+//                säkerhetställer att om myTurn = false så kan inte den klienten göra någonting.
 //                if (!myTurn) {
 //                    sendMessageToClient("INTE_DIN_TUR");
 //                    continue;
@@ -130,8 +130,6 @@ public class ClientHandler extends Thread {
             startNewRound();
         }
     }
-
-    //todo fixa så att om questionsperround är > unused frågor i en kateogri, skicka inte kategorin.
 
     private void sendCategories(){
         List<String> categoriesLeft = new ArrayList<>();
@@ -203,6 +201,7 @@ public class ClientHandler extends Thread {
 
         //kollar om stringen på knappen som klickas på är lika med det question objektet som behandlas answer.
         if (answer.equals(question.answer)){
+
             roundScore++;
             totalMatchScore++;
             sendMessageToClient("RÄTT;" + index);
@@ -221,6 +220,7 @@ public class ClientHandler extends Thread {
     }
 
     private void generateQuestionsForRound(String chosenCategory){
+
         currentRoundQuestions.clear();
         for (int i = 0; i < questionsPerRound; i++) {
             Questions question = game.getQuestions(chosenCategory, completeList);
@@ -254,6 +254,7 @@ public class ClientHandler extends Thread {
         //kollar om motståndaren har fått svara på sina frågor, om den inte har det så får den köra sitt tur och svara på frågorna.
 
         if(!opponent.isRoundFinished){
+
             opponent.myTurn = true;
             opponent.isAnsweringQuestions = true;
             opponent.questionIndex = 0;
@@ -286,10 +287,12 @@ public class ClientHandler extends Thread {
         // när båda har svarat så kommer vi hit och beroende på vem som var roundstarter så bestäms det vem nästa roundstartern ska vara. Så efter den första
         // rundan till exmepel så blir motståndaren den nya round startern.
         if (opponent.isRoundStarter) {
+
             opponent.isRoundStarter = false;
             this.isRoundStarter = true;
             startNewRound();
         } else {
+
             this.isRoundStarter = false;
             opponent.isRoundStarter = true;
             opponent.startNewRound();
@@ -326,6 +329,7 @@ public class ClientHandler extends Thread {
     }
 
     private void endGame(){
+
         sendMessageToClient("GAME_OVER");
         opponent.sendMessageToClient("GAME_OVER");
     }
