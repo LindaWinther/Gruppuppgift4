@@ -29,7 +29,7 @@ public class Server {
                 s1.opponent = s2;
                 s2.opponent = s1;
 
-                //skapar en ny tråd och låter den tråden sen köra run() i clienthandlern.
+                //skapar nya trådar och låter den tråden sen köra run() i clienthandlern.
                 s1.start();
                 s2.start();
 
