@@ -187,7 +187,7 @@ public class GameGUI extends JFrame {
         // Rubrik
         JPanel titlePanel = new JPanel();
         titlePanel.setBackground(new Color(27, 47, 112));
-        JLabel title = new JLabel("Rondresultat", SwingConstants.CENTER);
+        JLabel title = new JLabel("Match resultat", SwingConstants.CENTER);
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setForeground(Color.WHITE);
         titlePanel.add(title);
@@ -477,11 +477,11 @@ public class GameGUI extends JFrame {
     }
 
     // FRÅGELOGIK
-    public void shuffle(Object[]quest ){
+    public void shuffle(String[] quest) {
         int noOfAnswers = quest.length;
         for (int i = 0; i <noOfAnswers; i++){
             int s = i + (int) (Math.random() * (noOfAnswers - i));
-            Object temp = quest[s];
+            String temp = quest[s];
             quest[s] = quest[i];
             quest[i] = temp;
         }
@@ -571,7 +571,6 @@ public class GameGUI extends JFrame {
                showWaitOverlay("Vänta. Din motståndare svarar...");
             }
             if(messageFromServer.startsWith("KATEGORIER;")){
-
                 cardLayout.show(mainPanel, "CATEGORY");
                 String[] parts =  messageFromServer.split(";");
                 List<String> stringToList = new ArrayList<>();
@@ -607,6 +606,7 @@ public class GameGUI extends JFrame {
             if (messageFromServer.startsWith("GAME_OVER")) {
                 loadScoreResults();
                 cardLayout.show(mainPanel, "ROUND_RESULTS");
+                roundScore.clear();
             }
         });
     }
